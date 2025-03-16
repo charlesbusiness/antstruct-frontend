@@ -59,6 +59,15 @@ export default function Dashboard() {
           <Button
             variant="contained"
             size="large"
+            startIcon={<VerifiedUserTwoTone />}
+            onClick={() => navigate('/map-resources')}
+            fullWidth
+          >
+            Map Resources to Role
+          </Button>
+          <Button
+            variant="contained"
+            size="large"
             startIcon={<VerifiedUser />}
             onClick={() => navigate('/assign-role')}
             fullWidth

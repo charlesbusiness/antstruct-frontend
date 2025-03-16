@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Container, Box, Typography, Button, FormControl, InputLabel, Select, MenuItem, Checkbox,ListItemText  } from "@mui/material";
-import { employees, roles } from "../../utils/data";
+import { resources, roles } from "../../utils/data";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
@@ -22,13 +22,13 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-export default function AssignRole() {
-  const [selectedEmployee, setSelectedEmployee] = React.useState("");
-  const [selectedRole, setSelectedRole] = React.useState([]);
+export default function MapResources() {
+  const [selectedRole, setSelectedRole] = React.useState("");
+  const [selectedResource, setSelectedResource] = React.useState([]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Assigned Role:", { employee: selectedEmployee, role: selectedRole });
+    console.log("Assigned Resource:", { employee: selectedRole, resource: selectedResource });
     // You can handle form submission here (e.g., send data to an API)
   };
 
@@ -36,7 +36,7 @@ export default function AssignRole() {
     const {
       target: { value },
     } = event;
-    setSelectedRole(
+    setSelectedResource(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
@@ -47,37 +47,37 @@ export default function AssignRole() {
       <Card variant="outlined">
         <Box sx={{ mt: 1 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Assign Role
+            Map Resources to Role
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
             <FormControl fullWidth margin="normal" required>
-              <InputLabel>Employee</InputLabel>
+              <InputLabel>Role</InputLabel>
               <Select
-                value={selectedEmployee}
-                onChange={(e) => setSelectedEmployee(e.target.value)}
-                label="Employee"
+                value={selectedRole}
+                onChange={(e) => setSelectedRole(e.target.value)}
+                label="Role"
               >
-                {employees.map((employee) => (
-                  <MenuItem key={employee.id} value={employee.id}>
-                    {employee.firstName} {employee.lastName}
+                {roles.map((role, index) => (
+                  <MenuItem key={index} value={role}>
+                    {role}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <FormControl fullWidth margin="normal" required>
-              <InputLabel>Role</InputLabel>
+              <InputLabel>Resources</InputLabel>
               <Select
-                value={selectedRole}
+                value={selectedResource}
                 onChange={handleChange}
                 input={<OutlinedInput label="Tag" />}
                 renderValue={(selected) => selected.join(', ')}
-                label="Role"
+                label="Resource"
                 multiple
               >
-                {roles.map((role, index) => (
-                  <MenuItem key={index} value={role}>
-                     <Checkbox checked={selectedRole.includes(role)} />
-                     <ListItemText primary={role} />
+                {resources.map((resource, index) => (
+                  <MenuItem key={index} value={resource}>
+                     <Checkbox checked={selectedResource.includes(resource)} />
+                     <ListItemText primary={resource} />
                   </MenuItem>
                 ))}
               </Select>

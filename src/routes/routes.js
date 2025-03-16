@@ -1,5 +1,6 @@
 import { lazy } from "react";
-import Employees from "../components/Pages/Employees";
+
+
 const CreateBusiness = lazy(() =>
   import("../components/business_creation/BusinessCreation")
 );
@@ -7,6 +8,7 @@ const CreateDepartment = lazy(() =>
   import("../components/dept_creation/DepartmentCreation")
 );
 const Dashboard = lazy(() => import("../components/Pages/Home"));
+const Employees = lazy(() => import("../components/Pages/Employees"));
 const CreateEmployee = lazy(() =>
   import("../components/employee_creation/EmployeeCreation")
 );
@@ -14,6 +16,7 @@ const CreateRole = lazy(() =>
   import("../components/employee_role/employee_role")
 );
 const AssignRole = lazy(() => import("../components/assign_role/AssignRole"));
+const MapResources = lazy(() => import("../components/map_resources_to_roles/MapResources"));
 
 const coreRoutes = [
   {
@@ -50,6 +53,12 @@ const coreRoutes = [
     path: "/assign-role",
     title: "Assign Role",
     component: AssignRole,
+  },
+
+  {
+    path: "/map-resources",
+    title: "Map Resources to Role",
+    component: MapResources,
   },
 ];
 
