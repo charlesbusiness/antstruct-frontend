@@ -3,13 +3,10 @@ import Stack from '@mui/material/Stack';
 import SignInForm from './sub_components/SignInForm';
 import Content from './sub_components/Content';
 import { CustomStack } from '../../common/Custom-Stack';
-import { Navigate } from 'react-router-dom';
-import auth from '../../services/authentication/authService';
+import VerifyEmailAddressForm from './sub_components/VerifyEmailAddressForm';
 
 
-export default function SignIn() {
-  if (auth.getCurrentUser()) { return <Navigate to='/dashboard' /> }
-
+export default function VerifyEmailAddress() {
   return (
     <CustomStack>
       <Stack
@@ -31,7 +28,7 @@ export default function SignIn() {
           }}
         >
           <Content />
-          <SignInForm />
+          <VerifyEmailAddressForm />
         </Stack>
       </Stack>
     </CustomStack>

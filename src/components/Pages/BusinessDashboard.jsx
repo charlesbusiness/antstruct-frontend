@@ -5,9 +5,29 @@ import AddBusinessRoundedIcon from '@mui/icons-material/AddBusinessRounded';
 import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
 import AddHomeWorkRoundedIcon from '@mui/icons-material/AddHomeWorkRounded';
 import { VerifiedUser, VerifiedUserTwoTone } from '@mui/icons-material';
+import useSubmitData from '../../hooks/useSubmitData';
+import { ApiRoutes } from '../../utils/ApiRoutes';
 
-export default function Dashboard() {
+export default function BusinessDashboard() {
   const navigate = useNavigate();
+  const { submitData, isLoading } = useSubmitData()
+  const [businessUserprofile, setBusinessUserProfile] = React.useState(null)
+  
+  const getBusinessUserProfile = async () => {
+    const response = await submitData({
+      data: {},
+      endpoint: ApiRoutes.business.businessProfile,
+      method: 'get'
+    })
+
+    if (!response?.error) {
+      setBusinessUserProfile(response?.data)
+    }
+  }
+
+  React.useEffect(() => {
+    getBusinessUserProfile()
+  }, [])
 
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
@@ -29,15 +49,18 @@ export default function Dashboard() {
           >
             Create Department
           </Button>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<AddHomeWorkRoundedIcon />}
-            onClick={() => navigate('/create-business')}
-            fullWidth
-          >
-            Create Business
-          </Button>
+          {
+            businessUserprofile == null &&
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<AddHomeWorkRoundedIcon />}
+              onClick={() => navigate('/create-business')}
+              fullWidth
+            >
+              Create Business
+            </Button>
+          }
           <Button
             variant="contained"
             size="large"

@@ -1,46 +1,37 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import MuiCard from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
 import ForgotPassword from '../ForgetPassword';
 import { GoogleIcon, SitemarkIcon } from './CustomIcons';
-import { useNavigate } from 'react-router-dom'; 
+import { Card } from '../../../common/Card';
+import { validate } from '../../../services/validation/validate';
+import useSubmitData from '../../../hooks/useSubmitData';
+import { LoginSchema } from '../../../validations/authentication/login-schema';
+import { ApiRoutes } from '../../../utils/ApiRoutes';
+import ScreenLoader from '../../../common/Loader/scren-loader';
+import ButtonLoader from '../../../common/Loader/button-loader';
+import auth from '../../../services/authentication/authService';
 
-
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  [theme.breakpoints.up('sm')]: {
-    width: '450px',
-  },
-  ...theme.applyStyles('dark', {
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-  }),
-}));
-
-export default function CreateBusiness() {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+export default function SignInForm() {
+  const [errors, setErrors] = React.useState({});
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate(); 
+  const { submitData, error, isLoading } = useSubmitData()
+  const [formData, setFormData] = React.useState({
+    email: '',
+    password: '',
+  })
+  const location = useLocation()
+
+  const { from } = location.state || { from: { pathname: '/dashboard' } };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -49,48 +40,39 @@ export default function CreateBusiness() {
     setOpen(false);
   };
 
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
+  const handleInputChange = (e) => {
+    setErrors('')
+    const { name, value } = e.target
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = async (event) => {
+
+    event.preventDefault();
+    const validationErrors = validate(formData, LoginSchema);
+    if (validationErrors) {
+      setErrors(validationErrors);
       return;
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    navigate('/dashboard');
-  };
 
-  const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-
-    let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
+    const response = await submitData({
+      data: formData,
+      endpoint: ApiRoutes.authentication.login,
+      navigationPath: from
+    })
+    const data = {
+      token: response?.data?.token,
+      expiration: response?.data?.expire_at
     }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
-    return isValid;
-  };
+    auth.setJWT(JSON.stringify(data))
+  }
 
   return (
     <Card variant="outlined">
+      <ScreenLoader status={isLoading} />
       <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
         <SitemarkIcon />
       </Box>
@@ -110,8 +92,7 @@ export default function CreateBusiness() {
         <FormControl>
           <FormLabel htmlFor="email">Email</FormLabel>
           <TextField
-            error={emailError}
-            helperText={emailErrorMessage}
+
             id="email"
             type="email"
             name="email"
@@ -121,7 +102,11 @@ export default function CreateBusiness() {
             required
             fullWidth
             variant="outlined"
-            color={emailError ? 'error' : 'primary'}
+            error={!!errors.email}
+            helperText={errors.email}
+            color={errors.email ? 'error' : 'primary'}
+            value={formData.email}
+            onChange={handleInputChange}
           />
         </FormControl>
         <FormControl>
@@ -138,8 +123,6 @@ export default function CreateBusiness() {
             </Link>
           </Box>
           <TextField
-            error={passwordError}
-            helperText={passwordErrorMessage}
             name="password"
             placeholder="••••••"
             type="password"
@@ -149,16 +132,22 @@ export default function CreateBusiness() {
             required
             fullWidth
             variant="outlined"
-            color={passwordError ? 'error' : 'primary'}
+            error={!!errors.password}
+            helperText={errors.password}
+            color={errors.password ? 'error' : 'primary'}
+            value={formData.password}
+            onChange={handleInputChange}
           />
         </FormControl>
         <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         />
-        <ForgotPassword open={open} handleClose={handleClose} />
-        <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
-          Sign In
+
+        <Button type="submit"
+          disabled={isLoading ?? false}
+          fullWidth variant="contained">
+          {isLoading ? <ButtonLoader /> : 'Sign In'}
         </Button>
         <Typography sx={{ textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
@@ -183,6 +172,7 @@ export default function CreateBusiness() {
           Sign in with Google
         </Button>
       </Box>
+      <ForgotPassword open={open} handleClose={handleClose} />
     </Card>
   );
 }

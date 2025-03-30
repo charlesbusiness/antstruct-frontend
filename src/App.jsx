@@ -1,29 +1,26 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+  import { ToastContainer } from 'react-toastify';
+
 import Loader from './common/Loader';
 import './App.css'
 import routes from './routes/routes'
 import BusinessSignUp from './components/authentication/BusinessSignUp'
 import BusinessSignIn from './components/authentication/BusinessSignIn'
 import { ProtectedRoute } from './components/Layout/ProtectedRoute'
+import VerifyEmailAddress from './components/authentication/VerifyEmailAddress';
 
 const Layout = lazy(() => import('./components/Layout/Dashboard'));
 
 function App() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
-
-
-  return loading ? (
-    <Loader />
-  ) : (
+  
+  return (
     <Router>
+     <ToastContainer/>
       <Routes>
       <Route path="/" element={<BusinessSignIn />} />
       <Route path="/sign-up" element={<BusinessSignUp />} />
+      <Route path="/verify" element={<VerifyEmailAddress />} />
         <Route element={<Layout />} >
           <Route path='/' element={<ProtectedRoute />}>
             {routes.map((route, index) => {

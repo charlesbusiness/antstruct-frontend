@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuContent from './MenuContent';
+import { Link } from 'react-router-dom';
 
 function SideMenuMobile({ open, toggleDrawer }) {
   return (
@@ -52,7 +53,7 @@ function SideMenuMobile({ open, toggleDrawer }) {
         </Stack>
         <Stack sx={{ p: 2 }}>
           <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
-            Logout
+            <Link path={'/logout'}>Logout</Link>
           </Button>
         </Stack>
       </Stack>

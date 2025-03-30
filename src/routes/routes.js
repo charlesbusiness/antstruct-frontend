@@ -1,12 +1,22 @@
 import { lazy } from "react";
-import Employees from "../components/Pages/Employees";
+import { Logout } from "../Logout";
+
 const CreateBusiness = lazy(() =>
   import("../components/business_creation/BusinessCreation")
+);
+
+
+const Departments = lazy(() =>
+  import("../components/Pages/Departments")
+);
+
+const Employees = lazy(() =>
+  import("../components/Pages/Employees")
 );
 const CreateDepartment = lazy(() =>
   import("../components/dept_creation/DepartmentCreation")
 );
-const Dashboard = lazy(() => import("../components/Pages/Home"));
+const Dashboard = lazy(() => import("../components/Pages/BusinessDashboard"));
 const CreateEmployee = lazy(() =>
   import("../components/employee_creation/EmployeeCreation")
 );
@@ -50,6 +60,17 @@ const coreRoutes = [
     path: "/assign-role",
     title: "Assign Role",
     component: AssignRole,
+  },
+  {
+    path: "/departments",
+    title: "Departments",
+    component: Departments,
+  },
+
+  {
+    path: "/logout",
+    title: "Logout",
+    component: Logout,
   },
 ];
 

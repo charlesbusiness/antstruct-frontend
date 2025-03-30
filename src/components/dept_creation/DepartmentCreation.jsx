@@ -2,38 +2,47 @@ import { Container } from "@mui/material";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import MuiCard from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
-
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignSelf: "center",
-  width: "100%",
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
-  [theme.breakpoints.up("sm")]: {
-    width: "450px",
-  },
-  ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
-  }),
-}));
+import { Card } from "../../common/Card";
+import useSubmitData from "../../hooks/useSubmitData";
+import { ApiRoutes } from "../../utils/ApiRoutes";
+import ButtonLoader from "../../common/Loader/button-loader";
+import { validate } from "../../services/validation/validate";
+import { CreateDepartmentSchema } from "../../validations/business/create-department-schema";
 
 export default function DepartmentCreation() {
+  const [errors, setErrors] = React.useState({});
+  const { submitData, isLoading } = useSubmitData()
+
+  const [formData, setFormData] = React.useState({
+    department_name: '',
+    department_detail:'',
+  })
+
+  const handleInputChange = (e) => {
+    setErrors('')
+    const { name, value } = e.target
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }))
+  }
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const departmentName = formData.get("departmentName");
-    console.log("Department Name:", departmentName);
-    // You can handle form submission here (e.g., send data to an API)
-  };
-
+    const validationErrors = validate(formData, CreateDepartmentSchema)
+    if (validationErrors) {
+      setErrors(validationErrors);
+      return;
+    }
+    submitData({
+      data: formData,
+      endpoint: ApiRoutes.business.createDepartment,
+      navigationPath: '/dashboard'
+    })
+  }
   return (
     <Container maxWidth="sm" sx={{ mt: 1 }}>
       <Card variant="outlined">
@@ -56,14 +65,45 @@ export default function DepartmentCreation() {
           }}
         >
           <TextField
-            name="departmentName"
-            placeholder="Department Name"
+            name="department_name"
+            placeholder="xyz"
+            type="text"
+            id="department_name"
+            autoComplete="department_name"
+            autoFocus
             required
             fullWidth
+            variant="outlined"
+            error={!!errors.department_name}
+            helperText={errors.department_name}
+            color={errors.department_name ? 'error' : 'primary'}
+            value={formData.department_name}
+            onChange={handleInputChange}
           />
-          <Button type="submit" fullWidth variant="contained">
-            Submit
+
+          <TextField
+            name="department_detail"
+            placeholder="xyz"
+            type="text"
+            id="department_detail"
+            autoComplete="department_detail"
+            autoFocus
+            required
+            fullWidth
+            variant="outlined"
+            error={!!errors.department_detail}
+            helperText={errors.department_detail}
+            color={errors.department_detail ? 'error' : 'primary'}
+            value={formData.department_detail}
+            onChange={handleInputChange}
+          />
+
+          <Button type="submit"
+            disabled={isLoading ?? false}
+            fullWidth variant="contained">
+            {isLoading ? <ButtonLoader /> : 'Create Business'}
           </Button>
+
         </Box>
       </Card>
     </Container>
