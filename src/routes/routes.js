@@ -24,6 +24,7 @@ const CreateRole = lazy(() =>
   import("../components/employee_role/employee_role")
 );
 const AssignRole = lazy(() => import("../components/assign_role/AssignRole"));
+const MapResources = lazy(() => import("../components/map_resources_to_roles/MapResources"));
 
 const coreRoutes = [
   {
