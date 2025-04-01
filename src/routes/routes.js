@@ -10,6 +10,10 @@ const Departments = lazy(() =>
   import("../components/Pages/Departments")
 );
 
+const Roles = lazy(() =>
+  import("../components/Pages/Roles")
+);
+
 const Employees = lazy(() =>
   import("../components/Pages/Employees")
 );
@@ -21,9 +25,9 @@ const CreateEmployee = lazy(() =>
   import("../components/employee_creation/EmployeeCreation")
 );
 const CreateRole = lazy(() =>
-  import("../components/employee_role/employee_role")
+  import("../components/role/create-roles")
 );
-const AssignRole = lazy(() => import("../components/assign_role/AssignRole"));
+const AssignRole = lazy(() => import("../components/role/assign-role"));
 const MapResources = lazy(() => import("../components/map_resources_to_roles/MapResources"));
 
 const coreRoutes = [
@@ -62,6 +66,13 @@ const coreRoutes = [
     title: "Assign Role",
     component: AssignRole,
   },
+
+  {
+    path: "/map-resources",
+    title: "Map Resource To Role",
+    component: MapResources,
+  },
+
   {
     path: "/departments",
     title: "Departments",
@@ -69,10 +80,17 @@ const coreRoutes = [
   },
 
   {
+    path: "/roles",
+    title: "Roles",
+    component: Roles,
+  },
+
+  {
     path: "/logout",
     title: "Logout",
     component: Logout,
   },
+
 ];
 
 const routes = [...coreRoutes];

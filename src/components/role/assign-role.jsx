@@ -4,22 +4,18 @@ import { Card } from "../../common/Card";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import { validate } from "../../services/validation/validate";
-
-import { MapRoleAndResourceSchema } from "../../validations/business/mapp-resource-to-roles";
-import { MultipleSelectFiled } from "../../common/MultipleSelect";
+import { AssignRoleSchema } from "../../validations/business/assign-role-schema";
 import { MultipleSelectWithFilter } from "../../common/MultipleSelectWithFilter";
 
-export default function ResourceToRoleMapping() {
+export default function AssignRole() {
   const [errors, setErrors] = React.useState({});
   const [roles, setRoles] = React.useState(null);
-  const [resources, setResource] = React.useState(null);
-  const [mappedResource, setMappedResource] = React.useState(null);
-
+  const [employees, setEmployees] = React.useState(null);
+  const [assignedRoles, setAssignedRoles] = React.useState(null);
   const { submitData, isLoading } = useSubmitData()
-
   const [formData, setFormData] = React.useState({
-    api_resource: [],
-    business_role_id: ''
+    employee: '',
+    business_role_id: []
   })
 
   const handleInputChange = (e) => {
@@ -29,48 +25,46 @@ export default function ResourceToRoleMapping() {
       ...prevData,
       [name]: value
     }))
-    if (name == 'business_role_id') {
-      getMappedResource(value)
+    if (name == 'employee') {
+      getAssignedRole(value)
     }
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const validationErrors = validate(formData, MapRoleAndResourceSchema)
+    const validationErrors = validate(formData, AssignRoleSchema)
     if (validationErrors) {
       setErrors(validationErrors)
       return;
     }
     submitData({
       data: formData,
-      endpoint: ApiRoutes.employeeResourceMap.map,
+      endpoint: ApiRoutes.employees.assignRole,
       navigationPath: '/dashboard'
     })
   }
 
 
-  const getApiResource = async () => {
+  const getEmployees = async () => {
     const response = await submitData({
       data: {},
-      endpoint: ApiRoutes.business.apiResources.publicApis,
+      endpoint: ApiRoutes.employees.getEmployees,
       method: 'get'
     })
     if (response?.error == false) {
-      setResource(response?.data)
+      setEmployees(response?.data)
     }
   }
-
-
-  const getMappedResource = async (business_role_id) => {
+  const getAssignedRole = async (employeeId) => {
     const response = await submitData({
       data: {},
-      endpoint: ApiRoutes.employeeResourceMap.getMapped + `/${business_role_id}`,
+      endpoint: ApiRoutes.employees.getAssignedRole + `/${employeeId}`,
       method: 'get'
     })
     if (response?.error == false) {
-      setMappedResource(response?.data)
+      setAssignedRoles(response?.data)
     } else {
-      setMappedResource([])
+      setAssignedRoles([])
     }
   }
 
@@ -86,20 +80,20 @@ export default function ResourceToRoleMapping() {
     }
   }
 
-  const unmapResource = async (businessRoleId, resourceId) => {
+  const removeAssignedRole = async (employeeId, roleId) => {
     const response = await submitData({
       data: {},
-      endpoint: ApiRoutes.employeeResourceMap.unmapResource + `?business_role_id=${businessRoleId}&resource_id=${resourceId}`,
+      endpoint: ApiRoutes.employees.removeAssignRole + `/${employeeId}/${roleId}`,
       method: 'delete'
     })
     if (response?.error == false) {
-      getMappedResource(businessRoleId)
+      getAssignedRole(employeeId)
     }
   }
 
   React.useEffect(() => {
     getRoles()
-    getApiResource()
+    getEmployees()
   }, [])
 
   return (
@@ -107,48 +101,48 @@ export default function ResourceToRoleMapping() {
       <Card variant="outlined">
         <Box sx={{ mt: 1 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-           Mapp API Resources
+            Assign Role
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
             <FormControl fullWidth margin="normal" required>
-              <InputLabel>Business Roles</InputLabel>
+              <InputLabel>Employee</InputLabel>
               <Select
-                value={formData.business_role_id}
+                value={formData.employee}
                 onChange={handleInputChange}
-                label="Business Role"
-                name="business_role_id"
-                error={!!errors.business_role_id}
-                helperText={errors.business_role_id}
-                color={errors.business_role_id ? 'error' : 'primary'}
+                label="Employee"
+                name="employee"
+                error={!!errors.employee}
+                helperText={errors.employee}
+                color={errors.employee ? 'error' : 'primary'}
               >
-                {roles?.map((role) => (
-                  <MenuItem key={role.id} value={role.id}>
-                    {role.name}
+                {employees?.map((employee) => (
+                  <MenuItem key={employee.id} value={employee.id}>
+                    {employee.firstname} {employee.lastname}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            
-            <MultipleSelectWithFilter
-              fieldName={'api_resource'}
+
+             <MultipleSelectWithFilter
+              fieldName={'business_role_id'}
               errors={errors}
               formData={formData}
               setFormData={setFormData}
-              inputs={resources}
+              inputs={roles}
               required={true}
-              dbField={'description'}
-              comparedResult={mappedResource}
+              dbField={'name'}
+              comparedResult={assignedRoles}
             />
 
-            {mappedResource && mappedResource.length > 0 && (
+            {assignedRoles && assignedRoles.length > 0 && (
               <ul>
-                {mappedResource.map((mapped) => (
-                  <li key={mapped.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    {mapped.description}
+                {assignedRoles.map((role) => (
+                  <li key={role.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    {role.name}
                     <button
                       type="button"
                       onClick={() => {
-                        unmapResource(formData.business_role_id, mapped.id);
+                        removeAssignedRole(formData.employee, role.id);
                       }}
                       style={{
                         background: "none",
@@ -167,7 +161,7 @@ export default function ResourceToRoleMapping() {
             )}
 
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-              Map Resource
+              Assign Role
             </Button>
           </Box>
         </Box>

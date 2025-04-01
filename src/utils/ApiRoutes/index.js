@@ -33,18 +33,23 @@ export const ApiRoutes = {
     createRoles: 'config/business/role',
     createDepartment: 'config/business/department',
     getDepartments: 'config/business/department',
-    businessProfile: 'config/business/profile'
+    businessProfile: 'config/business/profile',
+    apiResources:{
+      publicApis: 'config/business/public/resources'
+    }
   },
 
   employees: {
     create: 'config/business/employees',
     getEmployees: 'config/business/employees',
     assignRole: 'config/business/employees/roles',
+    removeAssignRole: 'config/business/employees/roles',
     getAssignedRole: 'config/business/employees/roles',
   },
 
   employeeResourceMap: {
-    map: 'role/resources',
-    getMapped: 'role/resources',
+    map: 'config/business/role/resources/map',
+    getMapped: 'config/business/role/resources/map',
+    unmapResource: 'config/business/role/resources/map/unmap',
   }
 }

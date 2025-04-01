@@ -4,7 +4,6 @@ const refreshTokenKey = 'refresh_token'
 const userKey = 'user'
 
 function logout() {
-console.log(localStorage.getItem(tokenKey))
     localStorage.removeItem(tokenKey);
     // localStorage.removeItem(userKey);
 }

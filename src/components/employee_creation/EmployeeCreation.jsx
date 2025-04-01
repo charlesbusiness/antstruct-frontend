@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Container, Box, Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { Container, Box, Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, FormHelperText } from "@mui/material";
 import { Card } from "../../common/Card";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import useSubmitData from "../../hooks/useSubmitData";
@@ -151,33 +151,36 @@ export default function CreateEmployee() {
               value={formData.address}
               onChange={handleInputChange}
             />
-
-            <FormControl fullWidth margin="normal" required>
+            <FormControl fullWidth margin="normal" required error={!!errors.department_id}>
               <InputLabel>Department</InputLabel>
               <Select
                 name="department_id"
                 label="Department"
-                value={formData?.department_id}
+                value={formData?.department_id || ''}
                 onChange={handleInputChange}
+                color={errors.department_id ? 'error' : 'primary'}
               >
-                <MenuItem value="">Select</MenuItem>
-                {
-                  departments?.map((dept) => (
-                    <MenuItem key={dept.id} value={dept.id}>{dept.department_name}</MenuItem>
-                  ))
-                }
+                {departments?.map((dept) => (
+                  <MenuItem key={dept.id} value={dept.id}>
+                    {dept.department_name}
+                  </MenuItem>
+                ))}
               </Select>
+              {errors.department_id && <FormHelperText>{errors.department_id}</FormHelperText>}
             </FormControl>
 
-            <FormControl fullWidth margin="normal" required>
+            <FormControl fullWidth margin="normal">
               <InputLabel>Gender</InputLabel>
               <Select
                 name="gender"
                 label="Gender"
                 value={formData?.gender}
                 onChange={handleInputChange}
+                error={!!errors.gender}
+                helperText={errors.gender}
+                color={errors.gender ? 'error' : 'primary'}
               >
-                <MenuItem value="">Select</MenuItem>
+
                 {
                   gender?.map((gender) => (
                     <MenuItem key={gender} value={gender}>{gender}</MenuItem>

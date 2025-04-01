@@ -9,15 +9,15 @@ import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import ButtonLoader from "../../common/Loader/button-loader";
 import { validate } from "../../services/validation/validate";
-import { CreateDepartmentSchema } from "../../validations/business/create-department-schema";
+import { CreateRoleSchema } from "../../validations/business/create-role-schema";
 
-export default function DepartmentCreation() {
+export default function RoleCreation() {
+
   const [errors, setErrors] = React.useState({});
   const { submitData, isLoading } = useSubmitData()
 
   const [formData, setFormData] = React.useState({
-    department_name: '',
-    department_detail:'',
+    name: '',
   })
 
   const handleInputChange = (e) => {
@@ -29,20 +29,20 @@ export default function DepartmentCreation() {
     }))
   }
 
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    const validationErrors = validate(formData, CreateDepartmentSchema)
+    const validationErrors = validate(formData, CreateRoleSchema)
     if (validationErrors) {
       setErrors(validationErrors);
       return;
     }
     submitData({
       data: formData,
-      endpoint: ApiRoutes.business.createDepartment,
+      endpoint: ApiRoutes.business.createRoles,
       navigationPath: '/dashboard'
     })
   }
+
   return (
     <Container maxWidth="sm" sx={{ mt: 1 }}>
       <Card variant="outlined">
@@ -51,7 +51,7 @@ export default function DepartmentCreation() {
           variant="h4"
           sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
         >
-          Department Creation
+          Roles Creation
         </Typography>
         <Box
           component="form"
@@ -65,45 +65,27 @@ export default function DepartmentCreation() {
           }}
         >
           <TextField
-            name="department_name"
-            placeholder="Enter Department Name"
-            type="text"
-            id="department_name"
-            autoComplete="department_name"
-            autoFocus
-            required
-            fullWidth
-            variant="outlined"
-            error={!!errors.department_name}
-            helperText={errors.department_name}
-            color={errors.department_name ? 'error' : 'primary'}
-            value={formData.department_name}
-            onChange={handleInputChange}
-          />
-
-          <TextField
-            name="department_detail"
+            name="name"
             placeholder="xyz"
             type="text"
-            id="department_detail"
-            autoComplete="department_detail"
+            id="name"
+            autoComplete="name"
             autoFocus
             required
             fullWidth
             variant="outlined"
-            error={!!errors.department_detail}
-            helperText={errors.department_detail}
-            color={errors.department_detail ? 'error' : 'primary'}
-            value={formData.department_detail}
+            error={!!errors.name}
+            helperText={errors.name}
+            color={errors.name ? 'error' : 'primary'}
+            value={formData.name}
             onChange={handleInputChange}
           />
 
           <Button type="submit"
             disabled={isLoading ?? false}
             fullWidth variant="contained">
-            {isLoading ? <ButtonLoader /> : 'Create Business'}
+            {isLoading ? <ButtonLoader /> : 'Create Role'}
           </Button>
-
         </Box>
       </Card>
     </Container>

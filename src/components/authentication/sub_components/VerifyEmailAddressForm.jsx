@@ -13,6 +13,7 @@ import { validate } from '../../../services/validation/validate';
 import useSubmitData from '../../../hooks/useSubmitData';
 import { ApiRoutes } from '../../../utils/ApiRoutes';
 import { VerifyAcccountSchema } from '../../../validations/authentication/verify-account-schema';
+import ButtonLoader from '../../../common/Loader/button-loader';
 
 export default function VerifyEmailAddressForm() {
   const [errors, setErrors] = React.useState({});
