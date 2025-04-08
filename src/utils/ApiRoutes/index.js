@@ -51,5 +51,11 @@ export const ApiRoutes = {
     map: 'config/business/role/resources/map',
     getMapped: 'config/business/role/resources/map',
     unmapResource: 'config/business/role/resources/map/unmap',
+  },
+  
+  employeeDeptMap: {
+    map: 'config/business/employees/department/map',
+    getMapped: 'config/business/employees/department/map',
+    unmapDept: 'config/business/employees/department/map',
   }
 }

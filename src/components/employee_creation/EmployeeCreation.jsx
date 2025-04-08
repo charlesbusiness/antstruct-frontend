@@ -6,14 +6,14 @@ import useSubmitData from "../../hooks/useSubmitData";
 import { CreateEmployeeSchema } from "../../validations/business/create-employees-schema";
 import { validate } from "../../services/validation/validate";
 
-export default function CreateEmployee() {
+export default function DepartmentManager() {
   const [errors, setErrors] = React.useState({});
   const [departments, setDepartment] = React.useState(null);
   const { submitData, isLoading } = useSubmitData()
 
   const [formData, setFormData] = React.useState({
-    firstname: '',
-    lastname: '',
+    employee: '',
+    department_id: '',
     email: '',
     phone: '',
     dob: '',
@@ -36,8 +36,9 @@ export default function CreateEmployee() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = validate(formData, CreateEmployeeSchema)
+    
     if (validationErrors) {
-      console.log(validationErrors)
+     
       setErrors(validationErrors);
       return;
     }

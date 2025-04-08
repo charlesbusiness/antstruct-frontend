@@ -1,7 +1,8 @@
-import Joi from "joi-browser";
+import Joi from "joi";
 import { PasswordRegex, PasswordRegexMessage } from "../../utils/consts";
 
-export const RegisterSchema = {
+export const RegisterSchema =  Joi.object(
+{
     email: Joi.string().email({ tlds: { allow: false } }).required().label('Email'),
     password: Joi.string()
         .min(6)
@@ -26,4 +27,4 @@ export const RegisterSchema = {
             });
         }),
     phone: Joi.string().min(6).required().label('Phone Number'),
-};
+})

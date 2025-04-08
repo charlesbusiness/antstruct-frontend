@@ -1,6 +1,6 @@
-import Joi from "joi-browser";
+import Joi from "joi";
 
-export const CreateBusinessSchema = {
+export const CreateBusinessSchema = Joi.object( {
     email: Joi.string().email({ tlds: { allow: false } }).required().label("Email"),
     phone: Joi.string().required().min(6).label('Phone Number'),
     address: Joi.string().min(15).required().label('Business Address'),
@@ -9,4 +9,4 @@ export const CreateBusinessSchema = {
     business_size_id: Joi.required().label('Business Size'),
     details: Joi.string().allow('').label('Business Description'),
     business_number: Joi.string().allow('').label('Business Registration Number'),
-}
+})

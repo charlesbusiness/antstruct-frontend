@@ -88,6 +88,7 @@ export default function BusinessDashboard() {
           >
             Map Resources to Role
           </Button>
+
           <Button
             variant="contained"
             size="large"
@@ -97,6 +98,17 @@ export default function BusinessDashboard() {
           >
             Assign Employee Role
           </Button>
+
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<VerifiedUser />}
+            onClick={() => navigate('/department-managers')}
+            fullWidth
+          >
+            Department Managers
+          </Button>
+
         </Stack>
       </Paper>
     </Container>

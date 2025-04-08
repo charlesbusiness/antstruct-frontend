@@ -19,6 +19,7 @@ import { ApiRoutes } from '../../../utils/ApiRoutes';
 import ScreenLoader from '../../../common/Loader/scren-loader';
 import ButtonLoader from '../../../common/Loader/button-loader';
 import auth from '../../../services/authentication/authService';
+import { PasswordField } from '../../../common/PasswordFiled';
 
 export default function SignInForm() {
   const [errors, setErrors] = React.useState({});
@@ -28,6 +29,7 @@ export default function SignInForm() {
     email: '',
     password: '',
   })
+
   const location = useLocation()
 
   const { from } = location.state || { from: { pathname: '/dashboard' } };
@@ -122,22 +124,14 @@ export default function SignInForm() {
               Forgot your password?
             </Link>
           </Box>
-          <TextField
-            name="password"
-            placeholder="••••••"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            autoFocus
-            required
-            fullWidth
-            variant="outlined"
-            error={!!errors.password}
-            helperText={errors.password}
-            color={errors.password ? 'error' : 'primary'}
-            value={formData.password}
-            onChange={handleInputChange}
-          />
+         <PasswordField
+          errors={errors}
+          name={'password'}
+          formData={formData}
+          required={true}
+          handleInputChange={handleInputChange}
+         />
+
         </FormControl>
         <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}

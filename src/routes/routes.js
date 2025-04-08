@@ -29,6 +29,7 @@ const CreateRole = lazy(() =>
 );
 const AssignRole = lazy(() => import("../components/role/assign-role"));
 const MapResources = lazy(() => import("../components/map_resources_to_roles/MapResources"));
+const DepartmentManager = lazy(() => import("../components/map_dept_managers/DepartmentManager"));
 
 const coreRoutes = [
   {
@@ -77,6 +78,12 @@ const coreRoutes = [
     path: "/departments",
     title: "Departments",
     component: Departments,
+  },
+
+  {
+    path: "/department-managers",
+    title: "Department Managers",
+    component: DepartmentManager,
   },
 
   {
