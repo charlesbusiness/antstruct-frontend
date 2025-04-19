@@ -35,7 +35,9 @@ export const ApiRoutes = {
     getDepartments: 'config/business/department',
     businessProfile: 'config/business/profile',
     apiResources:{
-      publicApis: 'config/business/public/resources'
+      publicApis: 'config/business/public/resources',
+      moduleResources: 'config/business/public/module-resources',
+      appModules: 'config/business/public/modules'
     }
   },
 
@@ -52,7 +54,7 @@ export const ApiRoutes = {
     getMapped: 'config/business/role/resources/map',
     unmapResource: 'config/business/role/resources/map/unmap',
   },
-  
+
   employeeDeptMap: {
     map: 'config/business/employees/department/map',
     getMapped: 'config/business/employees/department/map',

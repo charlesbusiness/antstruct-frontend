@@ -12,7 +12,6 @@ export default function DepartmentManager() {
   const { submitData, isLoading } = useSubmitData()
 
   const [formData, setFormData] = React.useState({
-    employee: '',
     department_id: '',
     email: '',
     phone: '',

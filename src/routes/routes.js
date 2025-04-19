@@ -43,7 +43,7 @@ const coreRoutes = [
     component: Employees,
   },
   {
-    path: "/create-department",
+    path: "/create/business/department",
     title: "Create Department",
     component: CreateDepartment,
   },
@@ -53,23 +53,23 @@ const coreRoutes = [
     component: CreateBusiness,
   },
   {
-    path: "/create-employee",
+    path: "/create/business/employees",
     title: "Create Employee",
     component: CreateEmployee,
   },
   {
-    path: "/create-role",
+    path: "/create/business/role",
     title: "Create Role",
     component: CreateRole,
   },
   {
-    path: "/assign-role",
+    path: "/assign/role/to/employee",
     title: "Assign Role",
     component: AssignRole,
   },
 
   {
-    path: "/map-resources",
+    path: "/role/resource/mapping",
     title: "Map Resource To Role",
     component: MapResources,
   },
@@ -81,7 +81,7 @@ const coreRoutes = [
   },
 
   {
-    path: "/department-managers",
+    path: "/map/department/to/employee/managers",
     title: "Department Managers",
     component: DepartmentManager,
   },

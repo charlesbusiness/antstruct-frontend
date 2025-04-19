@@ -18,9 +18,9 @@ export const CreateEmployeeSchema =  Joi.object( {
         .label('Department'),
     dob: Joi.date()
         .required()
-        .less(new Date(new Date().setFullYear(new Date().getFullYear() - 10)))
+        .less(new Date(new Date().setFullYear(new Date().getFullYear() - 15)))
         .messages({
-            'date.less': 'Date of Birth must be at least 10 years ago.',
+            'date.less': 'Date of Birth must be at least 15 years ago.',
             'any.required': 'Date of Birth is required.',
             'date.base': 'Date of Birth must be a valid date.',
         })

@@ -1,25 +1,26 @@
 import * as React from "react";
-import { Container, Box, Typography, Button, FormControl, InputLabel, Select, MenuItem, Autocomplete, TextField } from "@mui/material";
+import { Container, Box, Typography, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { Card } from "../../common/Card";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import { validate } from "../../services/validation/validate";
 
 import { MapRoleAndResourceSchema } from "../../validations/business/mapp-resource-to-roles";
-import { MultipleSelectFiled } from "../../common/MultipleSelect";
 import { MultipleSelectWithFilter } from "../../common/MultipleSelectWithFilter";
 
 export default function ResourceToRoleMapping() {
   const [errors, setErrors] = React.useState({});
   const [roles, setRoles] = React.useState(null);
   const [resources, setResource] = React.useState(null);
+  const [modules, setModules] = React.useState(null);
   const [mappedResource, setMappedResource] = React.useState(null);
 
   const { submitData, isLoading } = useSubmitData()
 
   const [formData, setFormData] = React.useState({
     api_resource: [],
-    business_role_id: ''
+    business_role_id: '',
+    moduleName: '',
   })
 
   const handleInputChange = (e) => {
@@ -32,12 +33,17 @@ export default function ResourceToRoleMapping() {
     if (name == 'business_role_id') {
       getMappedResource(value)
     }
+
+    if (name == 'moduleName') {
+      getApiResource(value)
+    }
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = validate(formData, MapRoleAndResourceSchema)
     if (validationErrors) {
+    console.log(validationErrors)
       setErrors(validationErrors)
       return;
     }
@@ -49,14 +55,25 @@ export default function ResourceToRoleMapping() {
   }
 
 
-  const getApiResource = async () => {
+  const getApiResource = async (moduleName) => {
     const response = await submitData({
       data: {},
-      endpoint: ApiRoutes.business.apiResources.publicApis,
+      endpoint: `${ApiRoutes.business.apiResources.moduleResources}?moduleName=${moduleName}`,
       method: 'get'
     })
     if (response?.error == false) {
       setResource(response?.data)
+    }
+  }
+
+  const getApiModule = async () => {
+    const response = await submitData({
+      data: {},
+      endpoint: ApiRoutes.business.apiResources.appModules,
+      method: 'get'
+    })
+    if (response?.error == false) {
+      setModules(response?.data)
     }
   }
 
@@ -99,17 +116,18 @@ export default function ResourceToRoleMapping() {
 
   React.useEffect(() => {
     getRoles()
-    getApiResource()
+    getApiModule()
   }, [])
 
   return (
     <Container maxWidth="sm">
       <Card variant="outlined">
         <Box sx={{ mt: 1 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-           Mapp API Resources
+          <Typography variant="h4" component="h4" gutterBottom>
+            Resources & Roles
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
+
             <FormControl fullWidth margin="normal" required>
               <InputLabel>Business Roles</InputLabel>
               <Select
@@ -128,7 +146,23 @@ export default function ResourceToRoleMapping() {
                 ))}
               </Select>
             </FormControl>
-            
+
+            <FormControl fullWidth margin="normal" required>
+              <InputLabel> Module Name</InputLabel>
+              <Select
+                value={formData.moduleName}
+                onChange={handleInputChange}
+                label="Module Name"
+                name="moduleName"
+              >
+                {modules?.map((module) => (
+                  <MenuItem key={module} value={module}>
+                    {module}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <MultipleSelectWithFilter
               fieldName={'api_resource'}
               errors={errors}
@@ -136,7 +170,7 @@ export default function ResourceToRoleMapping() {
               setFormData={setFormData}
               inputs={resources}
               required={true}
-              dbField={'description'}
+              dbField={'name'}
               comparedResult={mappedResource}
             />
 
@@ -144,7 +178,7 @@ export default function ResourceToRoleMapping() {
               <ul>
                 {mappedResource.map((mapped) => (
                   <li key={mapped.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    {mapped.description}
+                    {mapped.name}
                     <button
                       type="button"
                       onClick={() => {
@@ -167,7 +201,7 @@ export default function ResourceToRoleMapping() {
             )}
 
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-              Map Resource
+              Link
             </Button>
           </Box>
         </Box>

@@ -1,26 +1,30 @@
-import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Stack from '@mui/material/Stack';
+import React, { useEffect, useState } from 'react';
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  Collapse,
+} from '@mui/material';
+
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
-import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
-import { useNavigate } from 'react-router-dom'; 
-import { PeopleAltTwoTone } from '@mui/icons-material';
+import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
+import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded';
+import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
+import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
+
+import { useNavigate } from 'react-router-dom';
+import useSubmitData from '../../../hooks/useSubmitData';
+import { ApiRoutes } from '../../../utils/ApiRoutes';
+import { formatRoute } from '../../../utils/general';
 
 const mainListItems = [
-  { text: 'Home', icon: <HomeRoundedIcon />, path: '/dashboard' },
-  { text: 'Employees', icon: <PeopleAltTwoTone />, path: '/employees' },
-  { text: 'Departments', icon: <AnalyticsRoundedIcon />, path: '/departments' },
-  { text: 'Business', icon: <AssignmentRoundedIcon />, path: '/business' },
-  { text: 'Roles', icon: <PeopleRoundedIcon />, path: '/roles' },
+  { text: 'Dashboard', icon: <HomeRoundedIcon />, path: '/dashboard' },
 ];
 
 const secondaryListItems = [
@@ -29,28 +33,103 @@ const secondaryListItems = [
   { text: 'Feedback', icon: <HelpRoundedIcon />, path: '/feedback' },
 ];
 
+// Optional: Map specific icons to known module names
+const moduleIcons = {
+  Configuration: <SettingsRoundedIcon />,
+  Users: <PeopleRoundedIcon />,
+  Business: <BusinessCenterRoundedIcon />,
+  Category: <CategoryRoundedIcon />,
+  default: <FolderRoundedIcon />,
+};
+
 export default function MenuContent() {
+  const [profile, setProfile] = useState(null);
+  const [expandedModules, setExpandedModules] = useState({});
   const navigate = useNavigate();
+  const { submitData } = useSubmitData();
+
+  const toggleModule = (moduleName) => {
+    setExpandedModules((prev) => ({
+      ...prev,
+      [moduleName]: !prev[moduleName],
+    }));
+  };
+
+  const getProfile = async () => {
+    const response = await submitData({
+      data: {},
+      endpoint: ApiRoutes.business.businessProfile,
+      method: 'get',
+    });
+
+    if (!response?.error) {
+      const filteredData = response?.data?.resources?.filter((r) => r.isActionBase) || [];
+
+      const groupedRoutes = filteredData.reduce((acc, curr) => {
+        if (!acc[curr.module]) acc[curr.module] = [];
+        acc[curr.module].push(curr);
+        return acc;
+      }, {});
+
+      setProfile(groupedRoutes);
+    }
+  };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
 
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
+      {/* Top Menu */}
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              selected={index === 0}
-              onClick={() => navigate(item.path)} 
-            >
+            <ListItemButton onClick={() => navigate(item.path)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
+
+      {/* Dynamic Modules */}
+      {profile && (
+        <List dense subheader={<li />}>
+          {Object.entries(profile).map(([moduleName, routes]) => (
+            <React.Fragment key={moduleName}>
+              <ListItem disablePadding sx={{ display: 'block' }}>
+                <ListItemButton onClick={() => toggleModule(moduleName)}>
+                  <ListItemIcon>
+                    {moduleIcons[moduleName] || moduleIcons.default}
+                  </ListItemIcon>
+                  <ListItemText primary={moduleName} />
+                </ListItemButton>
+              </ListItem>
+
+              <Collapse in={expandedModules[moduleName]} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {routes.map((route, idx) => (
+                    <ListItem key={idx} disablePadding sx={{ pl: 4 }}>
+                      <ListItemButton
+                        onClick={() => navigate(formatRoute(route.endpoint))}
+                      >
+                        <ListItemText primary={route.description || route.description || 'Unnamed'} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            </React.Fragment>
+          ))}
+        </List>
+      )}
+
+      {/* Bottom Menu */}
       <List dense>
         {secondaryListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton onClick={() => navigate(item.path)}> {/* Add onClick handler */}
+            <ListItemButton onClick={() => navigate(item.path)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
