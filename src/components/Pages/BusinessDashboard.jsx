@@ -40,15 +40,6 @@ export default function BusinessDashboard() {
         </Typography>
 
         <Stack spacing={2}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<AddBusinessRoundedIcon />}
-            onClick={() => navigate('/create-department')}
-            fullWidth
-          >
-            Create Department
-          </Button>
           {
             businessUserprofile == null &&
             <Button
@@ -61,53 +52,6 @@ export default function BusinessDashboard() {
               Create Business
             </Button>
           }
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<GroupAddRoundedIcon />}
-            onClick={() => navigate('/create-employee')}
-            fullWidth
-          >
-            Create Employee
-          </Button>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<VerifiedUserTwoTone />}
-            onClick={() => navigate('/create-role')}
-            fullWidth
-          >
-            Create Role
-          </Button>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<VerifiedUserTwoTone />}
-            onClick={() => navigate('/map-resources')}
-            fullWidth
-          >
-            Map Resources to Role
-          </Button>
-
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<VerifiedUser />}
-            onClick={() => navigate('/assign-role')}
-            fullWidth
-          >
-            Assign Employee Role
-          </Button>
-
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<VerifiedUser />}
-            onClick={() => navigate('/department-managers')}
-            fullWidth
-          >
-            Department Managers
-          </Button>
 
         </Stack>
       </Paper>
