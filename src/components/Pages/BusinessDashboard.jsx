@@ -8,17 +8,14 @@ import {
   Grid,
   Box,
 } from "@mui/material";
-import useSubmitData from "../../hooks/useSubmitData";
-import { ApiRoutes } from "../../utils/ApiRoutes";
 import HighlightedCard from "./BusinessDashboardComponents/HighlightedCard";
 import PageViewsBarChart from "./BusinessDashboardComponents/PageViewsBarChart";
 import SessionsChart from "./BusinessDashboardComponents/SessionsChart";
 import StatCard from "./BusinessDashboardComponents/StatCard";
-import useBusinessProfile from "../../hooks/useBusinessProfile";
+import { useBusinessProfileContext } from "../../contexts/profileContext";
 
 export default function BusinessDashboard() {
-  const { submitData, isLoading } = useSubmitData();
-    const { employees, resources, businessUserProfile,  departments} = useBusinessProfile();
+    const { employees, resources, businessUserProfile,  departments} = useBusinessProfileContext();
 
   const data = [
     {

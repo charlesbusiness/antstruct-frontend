@@ -7,22 +7,9 @@ const useBusinessProfile = () => {
     const [businessUserProfile, setBusinessUserProfile] = useState(null);
     const [employees, setEmployeesCount] = useState(null);
     const [departments, setDepartment] = useState(null);
-    const [resources, setResource] = useState(null);
-    const [error, setError] = React.useState({});
-
-    const getBusinessUserProfile = async () => {
-        const response = await submitData({
-            data: {},
-            endpoint: ApiRoutes.business.businessProfile,
-            method: 'get'
-        });
-
-        if (!response?.error) {
-            setBusinessUserProfile(response?.data);
-        } else {
-            setError(response?.error);
-        }
-    };
+    const [resources, setResource] = useState(null)
+    const [error, setError] = React.useState({})
+    const [expandedModules, setExpandedModules] = useState({});
 
     const getEmployees = async () => {
         const response = await submitData({
@@ -48,22 +35,52 @@ const useBusinessProfile = () => {
         }
     }
 
-     const getApiResource = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: `${ApiRoutes.business.apiResources.publicApis}`,
-      method: 'get'
-    })
-    if (response?.error == false) {
-      setResource(response?.data)
+    const getApiResource = async () => {
+        const response = await submitData({
+            data: {},
+            endpoint: `${ApiRoutes.business.apiResources.publicApis}`,
+            method: 'get'
+        })
+        if (response?.error == false) {
+            setResource(response?.data)
+        }
     }
-  }
+
+
+    const toggleModule = (moduleName) => {
+        setExpandedModules((prev) => ({
+            ...prev,
+            [moduleName]: !prev[moduleName],
+        }));
+    };
+
+    const getProfile = async () => {
+        const response = await submitData({
+            data: {},
+            endpoint: ApiRoutes.business.businessProfile,
+            method: 'get',
+        });
+
+        if (!response?.error) {
+            const { data } = response
+           
+            const filteredData = data?.resources?.filter((r) => r.isActionBase) || [];
+
+            const groupedRoutes = filteredData.reduce((acc, curr) => {
+                if (!acc[curr.module]) acc[curr.module] = [];
+                acc[curr.module].push(curr);
+                return acc;
+            }, {});
+
+            setBusinessUserProfile(groupedRoutes);
+        }
+    };
 
     useEffect(() => {
-        getBusinessUserProfile();
         getEmployees()
         getDepartments()
         getApiResource()
+        getProfile()
     }, []);
 
     return {
@@ -71,7 +88,9 @@ const useBusinessProfile = () => {
         employees,
         departments,
         resources,
-        error
+        error,
+        expandedModules,
+        toggleModule
     };
 };
 export default useBusinessProfile;

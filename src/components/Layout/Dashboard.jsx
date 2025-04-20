@@ -7,10 +7,13 @@ import AppNavbar from "./sub_components/AppNavbar";
 import Header from "./sub_components/Header";
 import SideMenu from "./sub_components/SideMenu";
 import Copyright from "./sub_components/Copyright";
+import { BusinessProfileProvider } from "../../contexts/profileContext";
 
-export default function Dashboard(props) {
+export default function Dashboard() {
   return (
+  <BusinessProfileProvider>
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+
       <SideMenu />
       <AppNavbar />
       {/* Main content */}
@@ -38,11 +41,13 @@ export default function Dashboard(props) {
         >
           <Header />
           <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
+             
             <Outlet />
           </Box>
         </Stack>
         <Copyright sx={{ mt: "auto", py: 2 }} />
       </Box>
     </Box>
+  </BusinessProfileProvider>
   );
 }

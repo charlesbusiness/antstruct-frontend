@@ -9,11 +9,11 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuContent from './MenuContent';
-import useBusinessProfile from '../../../hooks/useBusinessProfile';
+import { useBusinessProfileContext } from '../../../contexts/profileContext';
 
 function SideMenuMobile({ open, toggleDrawer }) {
   const navigate = useNavigate();
-  const { businessUserProfile } = useBusinessProfile();
+  const { businessUserProfile } = useBusinessProfileContext();
 
   const handleLogout = () => {
     navigate('/logout');

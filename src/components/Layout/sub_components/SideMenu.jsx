@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
 import { SitemarkIcon } from '../../authentication/sub_components/CustomIcons';
-import useBusinessProfile from '../../../hooks/useBusinessProfile';
+import { useBusinessProfileContext } from '../../../contexts/profileContext';
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer)({
@@ -24,7 +24,7 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
-  const { businessUserProfile } = useBusinessProfile();
+  const { businessUserProfile } = useBusinessProfileContext();
   return (
     <Drawer
       variant="permanent"
