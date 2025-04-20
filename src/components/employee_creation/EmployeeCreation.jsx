@@ -12,7 +12,6 @@ export default function DepartmentManager() {
   const { submitData, isLoading } = useSubmitData()
 
   const [formData, setFormData] = React.useState({
-    department_id: '',
     email: '',
     phone: '',
     dob: '',
@@ -76,6 +75,7 @@ export default function DepartmentManager() {
               fullWidth
               margin="normal"
               label="First Name"
+              placeholder="Enter First Name"
               name="firstname"
               required
               error={!!errors.firstname}
@@ -88,6 +88,7 @@ export default function DepartmentManager() {
               fullWidth
               margin="normal"
               label="Last Name"
+              placeholder="Enter Last Name"
               name="lastname"
               required
               error={!!errors.lastname}
@@ -100,6 +101,7 @@ export default function DepartmentManager() {
               fullWidth
               margin="normal"
               label="Email"
+              placeholder="Enter Email"
               name="email"
               type="email"
               required
@@ -113,6 +115,7 @@ export default function DepartmentManager() {
               fullWidth
               margin="normal"
               label="Phone"
+              placeholder="Enter Phone Number"
               name="phone"
               type="tel"
               required
@@ -141,6 +144,7 @@ export default function DepartmentManager() {
               fullWidth
               margin="normal"
               label="Address"
+              placeholder="Enter Address"
               name="address"
               multiline
               rows={2}

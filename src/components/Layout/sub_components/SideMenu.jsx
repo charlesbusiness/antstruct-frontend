@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
 import { SitemarkIcon } from '../../authentication/sub_components/CustomIcons';
-
+import useBusinessProfile from '../../../hooks/useBusinessProfile';
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer)({
@@ -24,6 +24,8 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+  const { businessUserProfile } = useBusinessProfile();
+  console.log('Business User Profile: ', businessUserProfile);
   return (
     <Drawer
       variant="permanent"
@@ -67,16 +69,16 @@ export default function SideMenu() {
       >
         <Avatar
           sizes="small"
-          alt="john doe"
-          src="/static/images/avatar/7.jpg"
+          alt={ businessUserProfile?.business_name || ' '} 
+          src="/static/images/avatar/9.jpg"
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            John Doe
+            { businessUserProfile?.business_name || ' '} 
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            john.doe@email.com
+            { businessUserProfile?.email || ' '}
           </Typography>
         </Box>
         <OptionsMenu />

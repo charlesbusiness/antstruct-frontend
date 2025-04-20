@@ -67,6 +67,7 @@ export default function DepartmentCreation() {
           <TextField
             name="department_name"
             placeholder="Enter Department Name"
+            label="Department Name"
             type="text"
             id="department_name"
             autoComplete="department_name"
@@ -83,7 +84,8 @@ export default function DepartmentCreation() {
 
           <TextField
             name="department_detail"
-            placeholder="xyz"
+            placeholder="Enter Department Detail"
+            label="Department Detail"
             type="text"
             id="department_detail"
             autoComplete="department_detail"

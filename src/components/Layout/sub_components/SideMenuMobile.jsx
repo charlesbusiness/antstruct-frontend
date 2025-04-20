@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -8,9 +9,12 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuContent from './MenuContent';
-import { Link } from 'react-router-dom';
 
 function SideMenuMobile({ open, toggleDrawer }) {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate('/logout');
+  }
   return (
     <Drawer
       anchor="right"
@@ -52,8 +56,8 @@ function SideMenuMobile({ open, toggleDrawer }) {
           <Divider />
         </Stack>
         <Stack sx={{ p: 2 }}>
-          <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
-            <Link to={'/logout'}>Logout</Link>
+          <Button onClick={handleLogout} variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
+            Logout
           </Button>
         </Stack>
       </Stack>

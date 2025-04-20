@@ -91,9 +91,7 @@ export default function MenuContent() {
             </ListItemButton>
           </ListItem>
         ))}
-      </List>
-
-      {/* Dynamic Modules */}
+              {/* Dynamic Modules */}
       {profile && (
         <List dense subheader={<li />}>
           {Object.entries(profile).map(([moduleName, routes]) => (
@@ -124,6 +122,7 @@ export default function MenuContent() {
           ))}
         </List>
       )}
+      </List>
 
       {/* Bottom Menu */}
       <List dense>

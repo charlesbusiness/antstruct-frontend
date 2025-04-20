@@ -50,7 +50,7 @@ export default function BusinessCreation() {
     submitData({
       data: formData,
       endpoint: ApiRoutes.business.create,
-      navigationPath: '/dashboard'
+      reload: true,
     })
   }
 

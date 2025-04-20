@@ -6,10 +6,11 @@ import Stack from "@mui/material/Stack";
 import AppNavbar from "./sub_components/AppNavbar";
 import Header from "./sub_components/Header";
 import SideMenu from "./sub_components/SideMenu";
+import Copyright from "./sub_components/Copyright";
 
 export default function Dashboard(props) {
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <SideMenu />
       <AppNavbar />
       {/* Main content */}
@@ -21,6 +22,8 @@ export default function Dashboard(props) {
             ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
             : alpha(theme.palette.background.default, 1),
           overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
         })}
       >
         <Stack
@@ -30,6 +33,7 @@ export default function Dashboard(props) {
             mx: 3,
             pb: 5,
             mt: { xs: 8, md: 0 },
+            flexGrow: 1,
           }}
         >
           <Header />
@@ -37,6 +41,7 @@ export default function Dashboard(props) {
             <Outlet />
           </Box>
         </Stack>
+        <Copyright sx={{ mt: "auto", py: 2 }} />
       </Box>
     </Box>
   );

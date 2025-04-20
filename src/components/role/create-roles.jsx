@@ -66,7 +66,8 @@ export default function RoleCreation() {
         >
           <TextField
             name="name"
-            placeholder="xyz"
+            placeholder="Enter Role Name"
+            label="Role Name"
             type="text"
             id="name"
             autoComplete="name"
