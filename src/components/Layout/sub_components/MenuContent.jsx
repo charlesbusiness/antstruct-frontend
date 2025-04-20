@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import useSubmitData from '../../../hooks/useSubmitData';
 import { ApiRoutes } from '../../../utils/ApiRoutes';
 import { formatRoute } from '../../../utils/general';
+import useBusinessProfile from '../../../hooks/useBusinessProfile';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <HomeRoundedIcon />, path: '/dashboard' },
@@ -45,8 +46,10 @@ const moduleIcons = {
 export default function MenuContent() {
   const [profile, setProfile] = useState(null);
   const [expandedModules, setExpandedModules] = useState({});
+
+  const { businessUserProfile } = useBusinessProfile()
+  
   const navigate = useNavigate();
-  const { submitData } = useSubmitData();
 
   const toggleModule = (moduleName) => {
     setExpandedModules((prev) => ({
@@ -56,15 +59,8 @@ export default function MenuContent() {
   };
 
   const getProfile = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.businessProfile,
-      method: 'get',
-    });
-
-    if (!response?.error) {
-      const filteredData = response?.data?.resources?.filter((r) => r.isActionBase) || [];
-
+    if (businessUserProfile) {
+      const filteredData = businessUserProfile.resources?.filter((r) => r.isActionBase) || [];
       const groupedRoutes = filteredData.reduce((acc, curr) => {
         if (!acc[curr.module]) acc[curr.module] = [];
         acc[curr.module].push(curr);
@@ -91,37 +87,37 @@ export default function MenuContent() {
             </ListItemButton>
           </ListItem>
         ))}
-              {/* Dynamic Modules */}
-      {profile && (
-        <List dense subheader={<li />}>
-          {Object.entries(profile).map(([moduleName, routes]) => (
-            <React.Fragment key={moduleName}>
-              <ListItem disablePadding sx={{ display: 'block' }}>
-                <ListItemButton onClick={() => toggleModule(moduleName)}>
-                  <ListItemIcon>
-                    {moduleIcons[moduleName] || moduleIcons.default}
-                  </ListItemIcon>
-                  <ListItemText primary={moduleName} />
-                </ListItemButton>
-              </ListItem>
+        {/* Dynamic Modules */}
+        {profile && (
+          <List dense subheader={<li />}>
+            {Object.entries(profile).map(([moduleName, routes]) => (
+              <React.Fragment key={moduleName}>
+                <ListItem disablePadding sx={{ display: 'block' }}>
+                  <ListItemButton onClick={() => toggleModule(moduleName)}>
+                    <ListItemIcon>
+                      {moduleIcons[moduleName] || moduleIcons.default}
+                    </ListItemIcon>
+                    <ListItemText primary={moduleName} />
+                  </ListItemButton>
+                </ListItem>
 
-              <Collapse in={expandedModules[moduleName]} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {routes.map((route, idx) => (
-                    <ListItem key={idx} disablePadding sx={{ pl: 4 }}>
-                      <ListItemButton
-                        onClick={() => navigate(formatRoute(route.endpoint))}
-                      >
-                        <ListItemText primary={route.description || route.description || 'Unnamed'} />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              </Collapse>
-            </React.Fragment>
-          ))}
-        </List>
-      )}
+                <Collapse in={expandedModules[moduleName]} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {routes.map((route, idx) => (
+                      <ListItem key={idx} disablePadding sx={{ pl: 4 }}>
+                        <ListItemButton
+                          onClick={() => navigate(formatRoute(route.endpoint))}
+                        >
+                          <ListItemText primary={route.description || route.description || 'Unnamed'} />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Collapse>
+              </React.Fragment>
+            ))}
+          </List>
+        )}
       </List>
 
       {/* Bottom Menu */}

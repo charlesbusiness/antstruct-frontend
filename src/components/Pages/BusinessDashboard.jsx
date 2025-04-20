@@ -1,28 +1,29 @@
 import * as React from "react";
 import {
-  Button,
+ 
   Container,
   Typography,
-  Stack,
+  
   Paper,
   Grid,
   Box,
 } from "@mui/material";
-import AddHomeWorkRoundedIcon from "@mui/icons-material/AddHomeWorkRounded";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import HighlightedCard from "./BusinessDashboardComponents/HighlightedCard";
 import PageViewsBarChart from "./BusinessDashboardComponents/PageViewsBarChart";
 import SessionsChart from "./BusinessDashboardComponents/SessionsChart";
 import StatCard from "./BusinessDashboardComponents/StatCard";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function BusinessDashboard() {
   const { submitData, isLoading } = useSubmitData();
-  const [businessUserprofile, setBusinessUserProfile] = React.useState(null);
-  const mockData = [
+    const { employees, resources, businessUserProfile,  departments} = useBusinessProfile();
+
+  const data = [
     {
       title: "Employees",
-      value: "1,200",
+      value: employees?.length,
       interval: "Last 30 days",
       trend: "up",
       data: [
@@ -33,7 +34,7 @@ export default function BusinessDashboard() {
     },
     {
       title: "Departments",
-      value: "15",
+      value: departments?.length,
       interval: "Last 30 days",
       trend: "down",
       data: [
@@ -44,7 +45,7 @@ export default function BusinessDashboard() {
     },
     {
       title: "Resources",
-      value: "15",
+      value: resources?.length,
       interval: "Last 30 days",
       trend: "neutral",
       data: [
@@ -55,32 +56,11 @@ export default function BusinessDashboard() {
     },
   ];
 
-  const getBusinessUserProfile = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.businessProfile,
-      method: "get",
-    });
+  
 
-    if (!response?.error) {
-      setBusinessUserProfile(response?.data);
-    }
-  };
-
-  React.useEffect(() => {
-    getBusinessUserProfile();
-  }, []);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 2 }}>
-      <Paper elevation={3} sx={{ p: 2, borderRadius: 2, mb: 2 }}>
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
-          Welcome to the Admin Portal
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom>
-          Manage your departments, roles, and business operations efficiently.
-        </Typography>
-      </Paper>
 
       {/* Overview Section */}
       <Box>
@@ -88,13 +68,13 @@ export default function BusinessDashboard() {
           Overview
         </Typography>
         <Grid container spacing={3}>
-          {mockData.map((card, index) => (
+          {data.map((card, index) => (
             <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
               <StatCard {...card} />
             </Grid>
           ))}
           <Grid item xs={12} sm={6} md={4} lg={3}>
-            <HighlightedCard businessUserprofile={businessUserprofile}/>
+            <HighlightedCard businessUserprofile={businessUserProfile}/>
           </Grid>
         </Grid>
       </Box>

@@ -9,9 +9,12 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuContent from './MenuContent';
+import useBusinessProfile from '../../../hooks/useBusinessProfile';
 
 function SideMenuMobile({ open, toggleDrawer }) {
   const navigate = useNavigate();
+  const { businessUserProfile } = useBusinessProfile();
+
   const handleLogout = () => {
     navigate('/logout');
   }
@@ -41,12 +44,12 @@ function SideMenuMobile({ open, toggleDrawer }) {
           >
             <Avatar
               sizes="small"
-              alt="John Doe"
+              alt={businessUserProfile?.business_name || ' '}
               src="/static/images/avatar/7.jpg"
               sx={{ width: 24, height: 24 }}
             />
             <Typography component="p" variant="h6">
-              John Doe
+              {businessUserProfile?.business_name || ' '}
             </Typography>
           </Stack>
         </Stack>

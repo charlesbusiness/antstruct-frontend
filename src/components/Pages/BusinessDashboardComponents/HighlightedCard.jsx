@@ -10,40 +10,43 @@ import AddHomeWorkRoundedIcon from "@mui/icons-material/AddHomeWorkRounded";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
-export default function HighlightedCard({businessUserprofile}) {
+export default function HighlightedCard({ businessUserprofile }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Card sx={{ height: "100%" }}>
-      <CardContent>
-        <InsightsRoundedIcon />
-        <Typography
-          component="h2"
-          variant="subtitle2"
-          gutterBottom
-          sx={{ fontWeight: "600" }}
-        >
-          Create Business to Start
-        </Typography>
-        <Typography sx={{ color: "text.secondary", mb: "8px" }}>
-          Ensure to enter the right Business Credentials.
-        </Typography>
-        {businessUserprofile != null && (
-          <Button
-            variant="contained"
-            size="small"
-            color="primary"
-            startIcon={<AddHomeWorkRoundedIcon />}
-            endIcon={<ChevronRightRoundedIcon />}
-            fullWidth={isSmallScreen}
-            onClick={() => navigate("/create-business")}
-          >
-            Create Business
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+    <>
+      {businessUserprofile == null && (
+        <Card sx={{ height: "100%" }}>
+          <CardContent>
+            <InsightsRoundedIcon />
+            <Typography
+              component="h2"
+              variant="subtitle2"
+              gutterBottom
+              sx={{ fontWeight: "600" }}
+            >
+              Create Business to Start
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mb: "8px" }}>
+              Ensure to enter the right Business Credentials.
+            </Typography>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              startIcon={<AddHomeWorkRoundedIcon />}
+              endIcon={<ChevronRightRoundedIcon />}
+              fullWidth={isSmallScreen}
+              onClick={() => navigate("/create-business")}
+            >
+              Create Business
+            </Button>
+          </CardContent>
+
+        </Card>
+      )}
+    </>
   );
 }
