@@ -6,7 +6,7 @@ import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { GoogleIcon, SitemarkIcon } from './CustomIcons';
@@ -16,12 +16,15 @@ import { RegisterSchema } from '../../../validations/authentication/register';
 import useSubmitData from '../../../hooks/useSubmitData';
 import { ApiRoutes } from '../../../utils/ApiRoutes';
 import ButtonLoader from '../../../common/Loader/button-loader';
-import auth from '../../../services/authentication/authService';
+import { PasswordField } from '../../../common/PasswordFiled';
+import { useAuth } from '../../../contexts/authContext';
 
 
 export default function SignUpForm() {
   const [errors, setErrors] = React.useState({});
   const { submitData, isLoading } = useSubmitData()
+  const { setSignupData } = useAuth();
+
   const [formData, setFormData] = React.useState({
     email: '',
     password: '',
@@ -37,18 +40,22 @@ export default function SignUpForm() {
     }))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const validationErrors = validate(formData, RegisterSchema);
     if (validationErrors) {
       setErrors(validationErrors);
       return;
     }
-    submitData({
+    const response = await submitData({
       data: { ...formData, isBusinessOwner: true },
       endpoint: ApiRoutes.authentication.register,
       navigationPath: '/verify'
     })
+
+    if (response && response.error == false) {
+      setSignupData({ email: formData.email, phone: formData.phone })
+    }
   }
 
 
@@ -111,32 +118,25 @@ export default function SignUpForm() {
         </FormControl>
         <FormControl>
           <FormLabel htmlFor="password">Password</FormLabel>
-          <TextField
-
-            name="password"
-            placeholder="••••••"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            autoFocus
-            required
-            fullWidth
-            variant="outlined"
-            value={formData.password}
-            error={!!errors.password}
-            helperText={errors.password}
-            color={errors.password ? 'error' : 'primary'}
-            onChange={handleInputChange}
+          <PasswordField
+            errors={errors}
+            name={'password'}
+            formData={formData}
+            required={true}
+            handleInputChange={handleInputChange}
           />
         </FormControl>
         <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
+          control={<Checkbox
+            value="remember"
+            color="primary"
+          />}
           label="I Agree to Our Terms & Conditions"
         />
-                <Button type="submit"
+        <Button type="submit"
           disabled={isLoading ?? false}
-         fullWidth variant="contained">
-          {isLoading?<ButtonLoader/>:'Sign Up'}
+          fullWidth variant="contained">
+          {isLoading ? <ButtonLoader /> : 'Sign Up'}
         </Button>
         <Typography sx={{ textAlign: 'center' }}>
           Already have an account?{' '}

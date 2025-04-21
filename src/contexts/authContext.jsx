@@ -12,6 +12,8 @@ export const useAuth = () => useContext(AuthContext);
 const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState(null);
     const [user, setUser] = useState(null);
+      const [signupData, setSignupData] = useState({});
+
 
     useEffect(() => {
         const isAuth = async () => {
@@ -26,7 +28,7 @@ const AuthProvider = ({ children }) => {
     }, [auth]);
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, user }}>
+        <AuthContext.Provider value={{ auth, setAuth, user , signupData, setSignupData}}>
             {children}
         </AuthContext.Provider>
     );

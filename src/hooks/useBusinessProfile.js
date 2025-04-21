@@ -63,7 +63,7 @@ const useBusinessProfile = () => {
 
         if (!response?.error) {
             const { data } = response
-           
+
             const filteredData = data?.resources?.filter((r) => r.isActionBase) || [];
 
             const groupedRoutes = filteredData.reduce((acc, curr) => {
@@ -77,11 +77,17 @@ const useBusinessProfile = () => {
     };
 
     useEffect(() => {
-        getEmployees()
-        getDepartments()
-        getApiResource()
         getProfile()
     }, []);
+
+    useEffect(() => {
+        if (businessUserProfile) {
+
+            getEmployees()
+            getDepartments()
+            getApiResource()
+        }
+    }, [businessUserProfile]);
 
     return {
         businessUserProfile,

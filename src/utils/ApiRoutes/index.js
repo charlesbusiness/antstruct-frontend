@@ -5,6 +5,7 @@ export const ApiRoutes = {
     register: 'user/register',
     login: 'user/login',
     verifyAccount: 'user/verify',
+    resendVeirificationCode: 'user/resend/code',
     resendVerificationCode: 'user/resend/code',
     sendForgotPassword: 'account/recovery/email',
     resetPassword: 'account/recovery/reset/password',

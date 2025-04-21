@@ -14,10 +14,12 @@ import useSubmitData from '../../../hooks/useSubmitData';
 import { ApiRoutes } from '../../../utils/ApiRoutes';
 import { VerifyAcccountSchema } from '../../../validations/authentication/verify-account-schema';
 import ButtonLoader from '../../../common/Loader/button-loader';
+import { useAuth } from '../../../contexts/authContext';
 
 export default function VerifyEmailAddressForm() {
   const [errors, setErrors] = React.useState({});
   const { submitData,  isLoading } = useSubmitData()
+  const {signupData} = useAuth()
   const [formData, setFormData] = React.useState({
     code: '',
   })
@@ -34,18 +36,28 @@ export default function VerifyEmailAddressForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = validate(formData, VerifyAcccountSchema);
+   
     if (validationErrors) {
-
       setErrors(validationErrors);
       return;
     }
-    submitData({
+
+   const response = submitData({
       data: formData,
       endpoint: ApiRoutes.authentication.verifyAccount,
       navigationPath: '/'
     })
   }
 
+  const handleRsend = (event) => {
+   const {email, phone} = signupData
+    submitData({
+      data: {phone:phone, email:email},
+      endpoint: ApiRoutes.authentication.resendVeirificationCode,
+      navigationPath: '/verify'
+    })
+  }
+console.log(signupData)
   return (
     <Card variant="outlined">
       <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
@@ -89,6 +101,14 @@ export default function VerifyEmailAddressForm() {
           disabled={isLoading ?? false}
           fullWidth variant="contained">
           {isLoading ? <ButtonLoader /> : 'Verify Account'}
+        </Button>
+
+        <Button type="button"
+          disabled={isLoading ?? false}
+          fullWidth variant="contained"
+          onClick={handleRsend}
+          >
+          {isLoading ? <ButtonLoader /> : 'Resend Code'}
         </Button>
         <Typography sx={{ textAlign: 'center' }}>
           <Link
