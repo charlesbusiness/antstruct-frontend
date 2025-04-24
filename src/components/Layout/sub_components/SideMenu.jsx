@@ -24,7 +24,7 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
-  const { businessUserProfile } = useBusinessProfileContext();
+  const { businessInfo } = useBusinessProfileContext();
   return (
     <Drawer
       variant="permanent"
@@ -68,16 +68,16 @@ export default function SideMenu() {
       >
         <Avatar
           sizes="small"
-          alt={businessUserProfile?.business_name || ' '}
+          alt={businessInfo?.business_name || ' '}
           src="/static/images/avatar/9.jpg"
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            {businessUserProfile?.business_name || ' '}
+            {businessInfo?.business_name || ' '}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {businessUserProfile?.email || ' '}
+            {businessInfo?.email || ' '}
           </Typography>
         </Box>
         <OptionsMenu />

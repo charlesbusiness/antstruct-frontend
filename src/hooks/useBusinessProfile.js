@@ -6,6 +6,7 @@ const useBusinessProfile = () => {
     const { submitData } = useSubmitData();
     const [businessUserProfile, setBusinessUserProfile] = useState(null);
     const [employees, setEmployeesCount] = useState(null);
+    const [businessInfo, setBusinessInfo] = useState(null); 
     const [departments, setDepartment] = useState(null);
     const [resources, setResource] = useState(null)
     const [error, setError] = React.useState({})
@@ -20,7 +21,6 @@ const useBusinessProfile = () => {
 
         if (!response?.error) {
             setEmployeesCount(response?.data)
-            console.log(employees?.length)
         }
     }
 
@@ -63,7 +63,6 @@ const useBusinessProfile = () => {
 
         if (!response?.error) {
             const { data } = response
-
             const filteredData = data?.resources?.filter((r) => r.isActionBase) || [];
 
             const groupedRoutes = filteredData.reduce((acc, curr) => {
@@ -73,6 +72,7 @@ const useBusinessProfile = () => {
             }, {});
 
             setBusinessUserProfile(groupedRoutes);
+            setBusinessInfo(data)
         }
     };
 
@@ -91,6 +91,7 @@ const useBusinessProfile = () => {
 
     return {
         businessUserProfile,
+        businessInfo,
         employees,
         departments,
         resources,

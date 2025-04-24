@@ -13,7 +13,7 @@ import { useBusinessProfileContext } from '../../../contexts/profileContext';
 
 function SideMenuMobile({ open, toggleDrawer }) {
   const navigate = useNavigate();
-  const { businessUserProfile } = useBusinessProfileContext();
+  const { businessInfo } = useBusinessProfileContext();
 
   const handleLogout = () => {
     navigate('/logout');
@@ -44,12 +44,12 @@ function SideMenuMobile({ open, toggleDrawer }) {
           >
             <Avatar
               sizes="small"
-              alt={businessUserProfile?.business_name || ' '}
+              alt={businessInfo?.business_name || ' '}
               src="/static/images/avatar/7.jpg"
               sx={{ width: 24, height: 24 }}
             />
             <Typography component="p" variant="h6">
-              {businessUserProfile?.business_name || ' '}
+              {businessInfo?.business_name || ' '}
             </Typography>
           </Stack>
         </Stack>

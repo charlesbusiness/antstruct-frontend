@@ -28,8 +28,11 @@ const CreateRole = lazy(() =>
   import("../components/role/create-roles")
 );
 const AssignRole = lazy(() => import("../components/role/assign-role"));
+const UnassignRole = lazy(() => import("../components/role/unassign-role"));
 const MapResources = lazy(() => import("../components/map_resources_to_roles/MapResources"));
+const UnMapResources = lazy(() => import("../components/map_resources_to_roles/UnMapResources"));
 const DepartmentManager = lazy(() => import("../components/map_dept_managers/DepartmentManager"));
+const UnAssignDepartmentManager = lazy(() => import("../components/map_dept_managers/UnassignDepartmentManager"));
 
 const coreRoutes = [
   {
@@ -67,11 +70,22 @@ const coreRoutes = [
     title: "Assign Role",
     component: AssignRole,
   },
+  {
+    path: "/unassign/role/to/employee",
+    title: "Unassign Role",
+    component: UnassignRole,
+  },
 
   {
     path: "/role/resource/mapping",
     title: "Map Resource To Role",
     component: MapResources,
+  },
+
+  {
+    path: "/unmap/api/resource",
+    title: "Un Map Resource To Role",
+    component: UnMapResources,
   },
 
   {
@@ -84,6 +98,11 @@ const coreRoutes = [
     path: "/map/department/to/employee/managers",
     title: "Department Managers",
     component: DepartmentManager,
+  },
+  {
+    path: "/unmapped/dept",
+    title: "UnAssign Department Managers",
+    component: UnAssignDepartmentManager,
   },
 
   {

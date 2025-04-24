@@ -50,7 +50,7 @@ export default function ResourceToRoleMapping() {
     submitData({
       data: formData,
       endpoint: ApiRoutes.employeeResourceMap.map,
-      navigationPath: '/dashboard'
+      reload: true,
     })
   }
 

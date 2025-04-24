@@ -18,7 +18,6 @@ export default function BusinessCreation() {
   const [businessSize, setBusinessSize] = React.useState(null);
   const [businessCategory, setBusinessCategory] = React.useState(null);
   const { submitData, isLoading } = useSubmitData()
-
   const [formData, setFormData] = React.useState({
     business_name: '',
     business_category_id: '',
@@ -50,7 +49,7 @@ export default function BusinessCreation() {
     submitData({
       data: formData,
       endpoint: ApiRoutes.business.create,
-      reload: true,
+      navigationPath: '/dashboard',
     })
   }
 

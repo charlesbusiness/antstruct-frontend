@@ -5,11 +5,13 @@ import { ApiRoutes } from "../../utils/ApiRoutes";
 import useSubmitData from "../../hooks/useSubmitData";
 import { CreateEmployeeSchema } from "../../validations/business/create-employees-schema";
 import { validate } from "../../services/validation/validate";
+import { useNavigate } from "react-router-dom";
 
 export default function DepartmentManager() {
   const [errors, setErrors] = React.useState({});
   const [departments, setDepartment] = React.useState(null);
   const { submitData, isLoading } = useSubmitData()
+  const navigate = useNavigate()
 
   const [formData, setFormData] = React.useState({
     email: '',
@@ -17,8 +19,10 @@ export default function DepartmentManager() {
     dob: '',
     address: '',
     department_id: '',
-    gender: ''
-  })
+    gender: '',
+    firstname: '',
+    lastname: ''  
+  });
 
   const gender = ['male', 'female', 'others']
 
@@ -70,7 +74,13 @@ export default function DepartmentManager() {
           <Typography variant="h4" component="h1" gutterBottom>
             Create Employee
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <Button
+            variant="outlined"
+            onClick={() => navigate('/employees')}
+          >
+            View All Employees
+          </Button>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               fullWidth
               margin="normal"
