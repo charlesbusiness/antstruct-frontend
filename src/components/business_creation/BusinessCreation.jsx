@@ -106,7 +106,8 @@ export default function BusinessCreation() {
         >
           <TextField
             name="business_name"
-            placeholder="xyz"
+            placeholder="business name"
+            label="Business Name"
             type="text"
             id="business_name"
             autoComplete="business_name"
@@ -123,6 +124,7 @@ export default function BusinessCreation() {
           <TextField
             name="email"
             placeholder="Business Email"
+            label="Business Email"
             type="email"
             required
             fullWidth
@@ -152,6 +154,8 @@ export default function BusinessCreation() {
             value={formData?.business_size_id}
             name="business_size_id"
             placeholder="Business Size"
+            label="Business Size"
+            variant="outlined"
             required
             fullWidth
             onChange={handleInputChange}
@@ -171,6 +175,8 @@ export default function BusinessCreation() {
             value={formData.business_category_id}
             onChange={handleInputChange}
             placeholder="Category"
+            label="Category"
+            variant="outlined"
             required
             fullWidth
             name="business_category_id"
@@ -217,6 +223,7 @@ export default function BusinessCreation() {
           <TextField
             name="business_number"
             placeholder="Business Number"
+            label="Business Number"
             multiline
             rows={2}
             fullWidth
