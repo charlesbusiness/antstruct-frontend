@@ -16,6 +16,7 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 import { useNavigate } from 'react-router-dom';
 import { formatRoute } from '../../../utils/general';
@@ -23,6 +24,7 @@ import { useBusinessProfileContext } from '../../../contexts/profileContext';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <HomeRoundedIcon />, path: '/dashboard' },
+  { text: 'Tasks Dashboard', icon: <AssignmentIcon />, path: '/task/dashboard' },
 ];
 
 const secondaryListItems = [

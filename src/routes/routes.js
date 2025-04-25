@@ -21,6 +21,12 @@ const CreateDepartment = lazy(() =>
   import("../components/dept_creation/DepartmentCreation")
 );
 const Dashboard = lazy(() => import("../components/Pages/BusinessDashboard"));
+const AdminCreateDeliverable = lazy(() => import("../components/Task_Management/AdminCreateDeliverable")); 
+const AdminCreateTask = lazy(() => import("../components/Task_Management/AdminCreateTask")); 
+const ChangeTaskStatus = lazy(() => import("../components/Task_Management/ChangeTaskStatus"));
+const UserUpdateDeliverable = lazy(() => import("../components/Task_Management/UserUpdateDeliverable")); 
+const UserUpdateTask = lazy(() => import("../components/Task_Management/UserUpdateTask"));
+const TaskDashboard = lazy(() => import("../components/Task_Management/TaskDashboard"));
 const CreateEmployee = lazy(() =>
   import("../components/employee_creation/EmployeeCreation")
 );
@@ -39,6 +45,36 @@ const coreRoutes = [
     path: "/dashboard",
     title: "Dashboard",
     component: Dashboard,
+  },
+  {
+    path: "/task/dashboard",
+    title: "Task Dashboard",
+    component: TaskDashboard,
+  },
+  {
+    path: "/user/update/task/deliverable",
+    title: "Update Task Deliverable",
+    component: UserUpdateDeliverable,
+  },
+  {
+    path: "/user/update/task",
+    title: "Update Task",
+    component: UserUpdateTask,
+  },
+  {
+    path: "/admin/create/task",
+    title: "Create Task",
+    component: AdminCreateTask,
+  },
+  {
+    path: "/admin/create/task/deliverable",
+    title: "Create Deliverable",
+    component: AdminCreateDeliverable,
+  },
+  {
+    path: "/change/task/status",
+    title: "Change Task Status",
+    component: ChangeTaskStatus,
   },
   {
     path: "/employees",
