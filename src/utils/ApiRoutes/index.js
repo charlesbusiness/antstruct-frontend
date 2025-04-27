@@ -1,6 +1,5 @@
 export const ApiRoutes = {
 
-
   authentication: {
     register: 'user/register',
     login: 'user/login',
@@ -18,7 +17,6 @@ export const ApiRoutes = {
       get: 'admin/endpoints',
     },
 
-
     authentication: {
       register: 'admin/register',
       register: 'admin/login',
@@ -35,7 +33,7 @@ export const ApiRoutes = {
     createDepartment: 'config/business/department',
     getDepartments: 'config/business/department',
     businessProfile: 'config/business/profile',
-    apiResources:{
+    apiResources: {
       publicApis: 'config/business/public/resources',
       moduleResources: 'config/business/public/module-resources',
       appModules: 'config/business/public/modules'
@@ -60,5 +58,16 @@ export const ApiRoutes = {
     map: 'config/business/employees/department/map',
     getMapped: 'config/business/employees/department/map',
     unmapDept: 'config/business/employees/department/map',
+  },
+
+  tasks: {
+    create: 'tasks/admin',
+    tasks: (query) => `tasks/admin/tasks?${query}`,
+    task: (id) => `tasks/admin/task/${id}`
+  },
+  deliverables: {
+    create: 'tasks/admin/deliverables',
+    // tasks: (query) => `tasks/admin/tasks?${query}`,
+    // task: (id) => `tasks/admin/task/${id}`
   }
 }

@@ -1,12 +1,12 @@
 import * as React from "react";
-import { 
-  Container, 
-  Grid, 
-  Typography, 
-  Box, 
-  Paper, 
-  Button, 
-  Tabs, 
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Paper,
+  Button,
+  Tabs,
   Tab,
   Chip,
   Avatar,
@@ -28,6 +28,8 @@ import {
   CalendarToday as DueDateIcon
 } from "@mui/icons-material";
 import dummyTasks from "./DummyData";
+import useSubmitData from "../../hooks/useSubmitData";
+import { ApiRoutes } from "../../utils/ApiRoutes";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -88,13 +90,30 @@ const quickActions = [
 export default function TaskDashboard() {
   const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
-
+  const [tasks, setTasks] = React.useState(0);
+  const { submitData } = useSubmitData()
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
+  }
+
+  const getTasks = async (query) => {
+    const response = await submitData({
+      endpoint: ApiRoutes.tasks.task(id),
+      method: "get"
+    });
+
+    if (response?.success) {
+      const { data } = response;
+      setTask(data);
+    }
+  }
+
+  React.useEffect(() => {
+    getTasks();
+  }, []);
 
   const getPriorityIcon = (priority) => {
-    switch(priority) {
+    switch (priority) {
       case "High": return <HighPriorityIcon color="error" />;
       case "Moderate": return <ModeratePriorityIcon color="warning" />;
       case "Normal": return <NormalPriorityIcon color="info" />;
@@ -104,7 +123,7 @@ export default function TaskDashboard() {
   };
 
   const getStatusIcon = (status) => {
-    switch(status) {
+    switch (status) {
       case "Pending": return <PendingIcon color="action" />;
       case "In Progress": return <InProgressIcon color="info" />;
       case "Done": return <DoneIcon color="success" />;
@@ -196,9 +215,9 @@ export default function TaskDashboard() {
                     </Box>
                     {task.progress > 0 && (
                       <Box sx={{ mt: 1 }}>
-                        <LinearProgress 
-                          variant="determinate" 
-                          value={task.progress} 
+                        <LinearProgress
+                          variant="determinate"
+                          value={task.progress}
                           color={task.progress === 100 ? 'success' : 'primary'}
                         />
                         <Typography variant="caption" color="text.secondary">
@@ -256,22 +275,22 @@ export default function TaskDashboard() {
                   <Chip avatar={<Avatar><UserIcon fontSize="small" /></Avatar>} label={task.assignee} size="small" />
                 </Grid>
                 <Grid item xs={2}>
-                  <Chip 
+                  <Chip
                     icon={getStatusIcon(task.progress === 100 ? 'Done' : task.progress > 0 ? 'In Progress' : 'Pending')}
-                    label={task.progress === 100 ? 'Done' : task.progress > 0 ? 'In Progress' : 'Pending'} 
+                    label={task.progress === 100 ? 'Done' : task.progress > 0 ? 'In Progress' : 'Pending'}
                     size="small"
                     color={task.progress === 100 ? 'success' : task.progress > 0 ? 'info' : 'default'}
                   />
                 </Grid>
                 <Grid item xs={2}>
-                  <Chip 
+                  <Chip
                     icon={getPriorityIcon(task.priority)}
                     label={task.priority}
                     size="small"
                     color={
-                      task.priority === 'High' ? 'error' : 
-                      task.priority === 'Moderate' ? 'warning' : 
-                      task.priority === 'Low' ? 'success' : 'info'
+                      task.priority === 'High' ? 'error' :
+                        task.priority === 'Moderate' ? 'warning' :
+                          task.priority === 'Low' ? 'success' : 'info'
                     }
                   />
                 </Grid>
@@ -296,10 +315,10 @@ export default function TaskDashboard() {
                 Status Distribution
               </Typography>
               {/* Placeholder for chart */}
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 height: '200px',
                 bgcolor: 'grey.100',
                 borderRadius: 1
@@ -314,10 +333,10 @@ export default function TaskDashboard() {
                 Completion Rate
               </Typography>
               {/* Placeholder for chart */}
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 height: '200px',
                 bgcolor: 'grey.100',
                 borderRadius: 1
@@ -332,10 +351,10 @@ export default function TaskDashboard() {
                 Team Performance
               </Typography>
               {/* Placeholder for chart */}
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 height: '300px',
                 bgcolor: 'grey.100',
                 borderRadius: 1

@@ -21,10 +21,10 @@ const CreateDepartment = lazy(() =>
   import("../components/dept_creation/DepartmentCreation")
 );
 const Dashboard = lazy(() => import("../components/Pages/BusinessDashboard"));
-const AdminCreateDeliverable = lazy(() => import("../components/Task_Management/AdminCreateDeliverable")); 
-const AdminCreateTask = lazy(() => import("../components/Task_Management/AdminCreateTask")); 
+const AdminCreateDeliverable = lazy(() => import("../components/Task_Management/AdminCreateDeliverable"));
+const AdminCreateTask = lazy(() => import("../components/Task_Management/AdminCreateTask"));
 const ChangeTaskStatus = lazy(() => import("../components/Task_Management/ChangeTaskStatus"));
-const UserUpdateDeliverable = lazy(() => import("../components/Task_Management/UserUpdateDeliverable")); 
+const UserUpdateDeliverable = lazy(() => import("../components/Task_Management/UserUpdateDeliverable"));
 const UserUpdateTask = lazy(() => import("../components/Task_Management/UserUpdateTask"));
 const TaskDashboard = lazy(() => import("../components/Task_Management/TaskDashboard"));
 const CreateEmployee = lazy(() =>
@@ -53,7 +53,7 @@ const coreRoutes = [
   },
   {
     path: "/user/update/task/deliverable",
-    title: "Update Task Deliverable",
+    title: "Task Deliverable Updates",
     component: UserUpdateDeliverable,
   },
   {

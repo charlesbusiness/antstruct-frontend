@@ -26,7 +26,7 @@ export default function SignInForm() {
   const [errors, setErrors] = React.useState({});
   const [open, setOpen] = React.useState(false);
   const { submitData, error, isLoading } = useSubmitData()
-  const { setSignupData } = useAuth()
+  const { setContextData } = useAuth()
   const [formData, setFormData] = React.useState({
     email: '',
     password: '',
@@ -77,8 +77,8 @@ export default function SignInForm() {
     } catch (e) {
       const data = e?.response?.data
       if (data?.data && data.data?.email_isVerified == false) {
-      alert("Here")
-        setSignupData({ email: formData.email })
+        alert("Here")
+        setContextData({ email: formData.email })
         navigate('/verify')
       }
     }
@@ -106,7 +106,6 @@ export default function SignInForm() {
         <FormControl>
           <FormLabel htmlFor="email">Email</FormLabel>
           <TextField
-
             id="email"
             type="email"
             name="email"

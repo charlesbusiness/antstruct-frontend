@@ -23,7 +23,7 @@ import { useAuth } from '../../../contexts/authContext';
 export default function SignUpForm() {
   const [errors, setErrors] = React.useState({});
   const { submitData, isLoading } = useSubmitData()
-  const { setSignupData } = useAuth();
+  const { setContextData } = useAuth();
 
   const [formData, setFormData] = React.useState({
     email: '',
@@ -54,7 +54,7 @@ export default function SignUpForm() {
     })
 
     if (response && response.error == false) {
-      setSignupData({ email: formData.email, phone: formData.phone })
+      setContextData({ email: formData.email, phone: formData.phone })
     }
   }
 

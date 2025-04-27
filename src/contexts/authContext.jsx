@@ -12,7 +12,7 @@ export const useAuth = () => useContext(AuthContext);
 const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState(null);
     const [user, setUser] = useState(null);
-      const [signupData, setSignupData] = useState({});
+    const [contextData, setContextData] = useState({});
 
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const AuthProvider = ({ children }) => {
     }, [auth]);
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, user , signupData, setSignupData}}>
+        <AuthContext.Provider value={{ auth, setAuth, user, contextData, setContextData }}>
             {children}
         </AuthContext.Provider>
     );
