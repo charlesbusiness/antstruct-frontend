@@ -66,26 +66,6 @@ const priorityCounts = {
   High: 6
 };
 
-const quickActions = [
-  {
-    title: "Create Task",
-    description: "Create a new task and assign it to team members.",
-    route: "/admin/create/task",
-    icon: <TaskIcon color="primary" />
-  },
-  {
-    title: "Create Deliverable",
-    description: "Attach deliverables to a task.",
-    route: "/admin/create/task/deliverable",
-    icon: <TaskIcon color="secondary" />
-  },
-  {
-    title: "Change Task Status",
-    description: "Move tasks between Pending, In Progress, and Done.",
-    route: "/change/task/status",
-    icon: <PendingIcon color="action" />
-  }
-];
 
 export default function TaskDashboard() {
   const navigate = useNavigate();
@@ -109,7 +89,7 @@ export default function TaskDashboard() {
   }
 
   React.useEffect(() => {
-    getTasks();
+    getTasks()
   }, []);
 
   const getPriorityIcon = (priority) => {
@@ -137,7 +117,18 @@ export default function TaskDashboard() {
         <Typography variant="h4" component="h1" fontWeight="bold">
           Agile Task Management
         </Typography>
-        <Chip label="Active Sprint: Sprint 12" color="primary" variant="outlined" />
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => navigate('/admin/create/task')}
+            sx={{ mt: 'auto' }}
+          >
+            Create Task
+          </Button>
+
+          <Chip label="Active Sprint: Sprint 12" color="primary" variant="outlined" />
+        </Box>
       </Box>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -148,39 +139,8 @@ export default function TaskDashboard() {
         </Tabs>
       </Box>
 
+      {/* Task overview */}
       <TabPanel value={value} index={0}>
-        <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
-          Quick Actions
-        </Typography>
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          {quickActions.map((action) => (
-            <Grid item xs={12} sm={6} md={4} key={action.title}>
-              <Paper elevation={2} sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar sx={{ mr: 2, bgcolor: 'transparent' }}>
-                    {action.icon}
-                  </Avatar>
-                  <Typography variant="h6">{action.title}</Typography>
-                </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, flexGrow: 1 }}>
-                  {action.description}
-                </Typography>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  onClick={() => navigate(action.route)}
-                  sx={{ mt: 'auto' }}
-                >
-                  {action.title}
-                </Button>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-
-        <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
-          Task Status Overview
-        </Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {Object.entries(dummyTasks).map(([status, tasks]) => (
             <Grid item xs={12} md={4} key={status}>
@@ -252,23 +212,22 @@ export default function TaskDashboard() {
         </Grid>
       </TabPanel>
 
+      {/* Task Panel */}
       <TabPanel value={value} index={1}>
-        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-          All Tasks
-        </Typography>
         <Paper elevation={2} sx={{ p: 2 }}>
-          <Grid container spacing={2} sx={{ mb: 2, fontWeight: 'bold' }}>
-            <Grid item xs={4}>Task</Grid>
+          <Grid container spacing={1} sx={{ mb: 2, fontWeight: 'bold' }}>
+            <Grid item xs={3}>Task</Grid>
             <Grid item xs={2}>Assignee</Grid>
             <Grid item xs={2}>Status</Grid>
             <Grid item xs={2}>Priority</Grid>
             <Grid item xs={2}>Due Date</Grid>
+            <Grid item xs={1}>Action</Grid>
           </Grid>
           <Divider sx={{ mb: 2 }} />
           {Object.values(dummyTasks).flat().map(task => (
             <React.Fragment key={task.id}>
-              <Grid container spacing={2} alignItems="center" sx={{ py: 1 }}>
-                <Grid item xs={4}>
+              <Grid container spacing={1} alignItems="center" sx={{ py: 1 }}>
+                <Grid item xs={3}>
                   <Typography>{task.title}</Typography>
                 </Grid>
                 <Grid item xs={2}>
@@ -297,6 +256,9 @@ export default function TaskDashboard() {
                 <Grid item xs={2}>
                   <Typography variant="body2">{task.dueDate}</Typography>
                 </Grid>
+                <Grid item xs={1}>
+                  <Button variant="contained">view</Button>
+                </Grid>
               </Grid>
               <Divider sx={{ my: 1 }} />
             </React.Fragment>
@@ -304,10 +266,8 @@ export default function TaskDashboard() {
         </Paper>
       </TabPanel>
 
+      {/* Analytics */}
       <TabPanel value={value} index={2}>
-        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-          Task Analytics
-        </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Paper elevation={2} sx={{ p: 3, height: '300px' }}>

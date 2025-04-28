@@ -111,7 +111,8 @@ export default function AdminCreateDeliverable() {
                 </Grid>
                 <Grid item xs={2}>
                   <Button type="submit" variant="contained" fullWidth>
-                    Save
+                    {deliverable.submitted ? "Edit" : "Save"}
+
                   </Button>
                 </Grid>
               </Grid>
@@ -123,7 +124,7 @@ export default function AdminCreateDeliverable() {
       <Box>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={6}>
-            <Button onClick={() => navigation('/task/dashboard')}>Done</Button>
+            <Button onClick={() => navigation('/task/dashboard')}>Go to dashboard</Button>
           </Grid>
         </Grid>
       </Box>
