@@ -7,12 +7,12 @@ import { validate } from "../../services/validation/validate";
 
 import { MapRoleAndResourceSchema } from "../../validations/business/mapp-resource-to-roles";
 import { MultipleSelectWithFilter } from "../../common/MultipleSelectWithFilter";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function ResourceToRoleMapping() {
   const [errors, setErrors] = React.useState({});
-  const [roles, setRoles] = React.useState(null);
+  const { roles, error: roleError, modules } = useBusinessProfile();
   const [resources, setResource] = React.useState(null);
-  const [modules, setModules] = React.useState(null);
   const [mappedResource, setMappedResource] = React.useState(null);
 
   const { submitData, isLoading } = useSubmitData()
@@ -43,7 +43,7 @@ export default function ResourceToRoleMapping() {
     event.preventDefault();
     const validationErrors = validate(formData, MapRoleAndResourceSchema)
     if (validationErrors) {
-    console.log(validationErrors)
+      console.log(validationErrors)
       setErrors(validationErrors)
       return;
     }
@@ -66,18 +66,6 @@ export default function ResourceToRoleMapping() {
     }
   }
 
-  const getApiModule = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.apiResources.appModules,
-      method: 'get'
-    })
-    if (response?.error == false) {
-      setModules(response?.data)
-    }
-  }
-
-
   const getMappedResource = async (business_role_id) => {
     const response = await submitData({
       data: {},
@@ -91,18 +79,6 @@ export default function ResourceToRoleMapping() {
     }
   }
 
-
-  const getRoles = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.roles,
-      method: 'get'
-    })
-    if (response?.error == false) {
-      setRoles(response?.data)
-    }
-  }
-
   const unmapResource = async (businessRoleId, resourceId) => {
     const response = await submitData({
       data: {},
@@ -113,11 +89,6 @@ export default function ResourceToRoleMapping() {
       getMappedResource(businessRoleId)
     }
   }
-
-  React.useEffect(() => {
-    getRoles()
-    getApiModule()
-  }, [])
 
   return (
     <Container maxWidth="sm">

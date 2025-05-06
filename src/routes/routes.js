@@ -27,6 +27,7 @@ const ChangeTaskStatus = lazy(() => import("../components/Task_Management/Change
 const UserUpdateDeliverable = lazy(() => import("../components/Task_Management/UserUpdateDeliverable"));
 const UserUpdateTask = lazy(() => import("../components/Task_Management/UserUpdateTask"));
 const TaskDashboard = lazy(() => import("../components/Task_Management/TaskDashboard"));
+const TaskDetails = lazy(() => import("../components/Task_Management/TaskDetails"));
 const CreateEmployee = lazy(() =>
   import("../components/employee_creation/EmployeeCreation")
 );
@@ -46,11 +47,19 @@ const coreRoutes = [
     title: "Dashboard",
     component: Dashboard,
   },
+
   {
     path: "/task/dashboard",
     title: "Task Dashboard",
     component: TaskDashboard,
   },
+
+  {
+    path: "/task/:id",
+    title: "Task Details",
+    component: TaskDetails,
+  },
+
   {
     path: "/user/update/task/deliverable",
     title: "Task Deliverable Updates",

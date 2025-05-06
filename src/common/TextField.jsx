@@ -12,7 +12,6 @@ export const TextField = ({ type = 'text', name, formData, handleInputChange, re
             required={required}
             fullWidth
             row={rows}
-            multiline={lines ? multiline : ''}
             variant="outlined"
             error={!!errors[name]}
             helperText={errors[name]}

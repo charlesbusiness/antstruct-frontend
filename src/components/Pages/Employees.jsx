@@ -19,27 +19,14 @@ import {
 } from "@mui/material";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import useSubmitData from "../../hooks/useSubmitData";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function Employees() {
-  const [employees, setEmployees] = React.useState([]);
+  const { employees } = useBusinessProfile();
   const [selectedEmployee, setSelectedEmployee] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const { submitData } = useSubmitData();
 
-  const getEmployees = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.employees.getEmployees,
-      method: 'get'
-    });
-    if (!response?.error) {
-      setEmployees(response?.data);
-    }
-  };
-
-  React.useEffect(() => {
-    getEmployees();
-  }, []);
 
   const handleViewDetails = (employee) => {
     setSelectedEmployee(employee);

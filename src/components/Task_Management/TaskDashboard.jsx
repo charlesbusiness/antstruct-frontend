@@ -12,65 +12,30 @@ import {
   Avatar,
   LinearProgress,
   Badge,
-  Divider
+  Divider,
+  FormControl,
+  MenuItem,
+  Select
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
-  Assignment as TaskIcon,
-  CheckCircle as DoneIcon,
-  PendingActions as PendingIcon,
-  Build as InProgressIcon,
-  LowPriority as LowPriorityIcon,
-  PriorityHigh as HighPriorityIcon,
-  TrendingUp as ModeratePriorityIcon,
-  Star as NormalPriorityIcon,
   Person as UserIcon,
   CalendarToday as DueDateIcon
 } from "@mui/icons-material";
-import dummyTasks from "./DummyData";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-
-const priorityCounts = {
-  Low: 4,
-  Normal: 12,
-  Moderate: 8,
-  High: 6
-};
+import { formatDate } from "../../utils/general";
+import { TabPanel, a11yProps, getPriorityIcon, getStatusIcon, priorityCounts } from "../../common/tasks-utils";
 
 
 export default function TaskDashboard() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [value, setValue] = React.useState(0);
-  const [tasks, setTasks] = React.useState(0);
+  const [tasks, setTasks] = React.useState(null);
+  const [pending, setPending] = React.useState(null)
+  const [inProgress, setInProgress] = React.useState(null)
+  const [done, setDone] = React.useState(null)
+  const [taskOverview, setOverview] = React.useState(null);
   const { submitData } = useSubmitData()
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -78,13 +43,25 @@ export default function TaskDashboard() {
 
   const getTasks = async (query) => {
     const response = await submitData({
-      endpoint: ApiRoutes.tasks.task(id),
+      endpoint: ApiRoutes.tasks.tasks(query),
       method: "get"
     });
 
     if (response?.success) {
       const { data } = response;
-      setTask(data);
+      setTasks(data);
+      const pending = data.filter(t => t.status === 'pending')
+      const inProgress = data.filter(t => t.status === 'in-progress')
+      const done = data.filter(t => t.status === 'approved')
+      const taskOverview = {
+        pending: pending,
+        inProgress: inProgress,
+        done: done,
+      };
+      setOverview(taskOverview)
+      setDone(done)
+      setInProgress(inProgress)
+      setPending(pending)
     }
   }
 
@@ -92,24 +69,7 @@ export default function TaskDashboard() {
     getTasks()
   }, []);
 
-  const getPriorityIcon = (priority) => {
-    switch (priority) {
-      case "High": return <HighPriorityIcon color="error" />;
-      case "Moderate": return <ModeratePriorityIcon color="warning" />;
-      case "Normal": return <NormalPriorityIcon color="info" />;
-      case "Low": return <LowPriorityIcon color="success" />;
-      default: return <NormalPriorityIcon />;
-    }
-  };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Pending": return <PendingIcon color="action" />;
-      case "In Progress": return <InProgressIcon color="info" />;
-      case "Done": return <DoneIcon color="success" />;
-      default: return <TaskIcon />;
-    }
-  };
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -142,7 +102,7 @@ export default function TaskDashboard() {
       {/* Task overview */}
       <TabPanel value={value} index={0}>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          {Object.entries(dummyTasks).map(([status, tasks]) => (
+          {Object.entries(taskOverview ?? {}).map(([status, tasks]) => (
             <Grid item xs={12} md={4} key={status}>
               <Paper elevation={2} sx={{ p: 2, height: '100%' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -152,7 +112,7 @@ export default function TaskDashboard() {
                   </Typography>
                 </Box>
                 <Divider sx={{ my: 1 }} />
-                {tasks.map(task => (
+                {tasks.slice(0, 5).map(task => (
                   <Box key={task.id} sx={{ mb: 2, p: 1, '&:hover': { bgcolor: 'action.hover' } }}>
                     <Typography variant="body1" fontWeight="medium">
                       {task.title}
@@ -160,11 +120,11 @@ export default function TaskDashboard() {
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <UserIcon fontSize="small" color="action" sx={{ mr: 1 }} />
                       <Typography variant="caption" color="text.secondary" sx={{ mr: 2 }}>
-                        {task.assignee}
+                        {task.assignees[0].assignee.firstname}
                       </Typography>
                       <DueDateIcon fontSize="small" color="action" sx={{ mr: 1 }} />
                       <Typography variant="caption" color="text.secondary">
-                        {task.dueDate}
+                        {formatDate(task.expected_date_of_delivery)}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
@@ -224,19 +184,36 @@ export default function TaskDashboard() {
             <Grid item xs={1}>Action</Grid>
           </Grid>
           <Divider sx={{ mb: 2 }} />
-          {Object.values(dummyTasks).flat().map(task => (
+          {tasks?.map(task => (
             <React.Fragment key={task.id}>
               <Grid container spacing={1} alignItems="center" sx={{ py: 1 }}>
                 <Grid item xs={3}>
                   <Typography>{task.title}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Chip avatar={<Avatar><UserIcon fontSize="small" /></Avatar>} label={task.assignee} size="small" />
+                  <FormControl variant="standard" size="small" sx={{ '& .MuiInput-underline:before': { borderBottom: 'none' }, '& .MuiInput-underline:after': { borderBottom: 'none' } }}>
+                    {/* <InputLabel>Assignee</InputLabel> */}
+                    <Select
+                      value={task.assignees[0]?.assignee?.id || ''}
+                    >
+                      {task.assignees.map(user => (
+                        <MenuItem key={user.assignee.id} value={user.assignee.id}>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar sx={{ width: 24, height: 24, mr: 1 }}>
+                              <UserIcon fontSize="small" />
+                            </Avatar>
+                            {user.assignee.firstname}
+                          </Box>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Grid>
+
                 <Grid item xs={2}>
                   <Chip
                     icon={getStatusIcon(task.progress === 100 ? 'Done' : task.progress > 0 ? 'In Progress' : 'Pending')}
-                    label={task.progress === 100 ? 'Done' : task.progress > 0 ? 'In Progress' : 'Pending'}
+                    label={task.status}
                     size="small"
                     color={task.progress === 100 ? 'success' : task.progress > 0 ? 'info' : 'default'}
                   />
@@ -247,17 +224,19 @@ export default function TaskDashboard() {
                     label={task.priority}
                     size="small"
                     color={
-                      task.priority === 'High' ? 'error' :
-                        task.priority === 'Moderate' ? 'warning' :
-                          task.priority === 'Low' ? 'success' : 'info'
+                      task.priority === 'high' ? 'error' :
+                        task.priority === 'moderate' ? 'warning' :
+                          task.priority === 'low' ? 'success' : 'info'
                     }
                   />
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="body2">{task.dueDate}</Typography>
+                  <Typography variant="body2">{formatDate(task.expected_date_of_delivery)}</Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <Button variant="contained">view</Button>
+                  <Button variant="contained"
+                    onClick={() => navigate(`/task/${task.id}`)}
+                  >view</Button>
                 </Grid>
               </Grid>
               <Divider sx={{ my: 1 }} />

@@ -13,23 +13,13 @@ import {
 import { Card } from "../../common/Card";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function UnassignRole() {
-  const [employees, setEmployees] = React.useState([]);
+  const { employees, error } = useBusinessProfile();
   const [selectedEmployeeId, setSelectedEmployeeId] = React.useState("");
   const [assignedRoles, setAssignedRoles] = React.useState([]);
   const { submitData } = useSubmitData();
-
-  const getEmployees = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.employees.getEmployees,
-      method: "get"
-    });
-    if (!response?.error) {
-      setEmployees(response?.data);
-    }
-  };
 
   const getAssignedRoles = async (employeeId) => {
     const response = await submitData({
@@ -54,10 +44,6 @@ export default function UnassignRole() {
       getAssignedRoles(employeeId);
     }
   };
-
-  React.useEffect(() => {
-    getEmployees();
-  }, []);
 
   const handleEmployeeChange = (e) => {
     const empId = e.target.value;

@@ -12,23 +12,14 @@ import {
 import { Card } from "../../common/Card";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function UnmapDepartment() {
-  const [employees, setEmployees] = React.useState([]);
+  const { employees } = useBusinessProfile();
   const [selectedEmployeeId, setSelectedEmployeeId] = React.useState("");
   const [assignedDepartments, setAssignedDepartments] = React.useState([]);
   const { submitData } = useSubmitData();
 
-  const getEmployees = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.employees.getEmployees,
-      method: "get"
-    });
-    if (!response?.error) {
-      setEmployees(response?.data);
-    }
-  };
 
   const getAssignedDepartments = async (employeeId) => {
     const response = await submitData({
@@ -52,11 +43,7 @@ export default function UnmapDepartment() {
     if (!response?.error) {
       getAssignedDepartments(employeeId);
     }
-  };
-
-  React.useEffect(() => {
-    getEmployees();
-  }, []);
+  }
 
   const handleEmployeeChange = (e) => {
     const empId = e.target.value;

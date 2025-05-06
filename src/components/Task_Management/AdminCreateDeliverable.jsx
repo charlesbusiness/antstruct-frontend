@@ -5,14 +5,22 @@ import {
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+
+const getTask = async (submitData, id) => {
+  const response = await submitData({
+    endpoint: ApiRoutes.tasks.task(id),
+    method: "get"
+  })
+  return response
+}
 
 export default function AdminCreateDeliverable() {
-  const [task, setTask] = React.useState(null);
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
   const navigation = useNavigate()
   const [deliverables, setDeliverables] = React.useState([
-    { deliverable_title: "", deliverable_description: "", submitted: false }
+    { deliverable_title: "", deliverable_description: "", submitted: false, id: '' }
   ]);
 
   const { submitData } = useSubmitData();
@@ -27,8 +35,17 @@ export default function AdminCreateDeliverable() {
   const handleSubmit = async (e, index) => {
     e.preventDefault();
     const currentDeliverable = deliverables[index];
+    const payload = {
+      ...currentDeliverable,
+      task_id: task?.id,
+    };
+
+    if (currentDeliverable.id) {
+      payload.id = currentDeliverable.id;
+    }
+
     const response = await submitData({
-      data: { ...currentDeliverable, task_id: task?.id },
+      data: payload,
       endpoint: ApiRoutes.deliverables.create,
       method: "post",
       navigationPath: ''
@@ -41,24 +58,24 @@ export default function AdminCreateDeliverable() {
         ...updated,
         { deliverable_title: "", deliverable_description: "", submitted: false }
       ]);
+      getTask(submitData, id)
     }
-  };
+  }
 
-  const getTask = async () => {
-    const response = await submitData({
-      endpoint: ApiRoutes.tasks.task(id),
-      method: "get"
-    });
 
-    if (response?.success) {
-      const { data } = response;
-      setTask(data);
+  const { data: task, isLoading, error } = useQuery({
+    queryKey: ['task'],
+    queryFn: async () => {
+      const response = await getTask(submitData, id);
+      if (response?.error) throw new Error('Failed to fetch API resources');
+      const { data } = response
 
       if (data?.deliverables?.length) {
         const existingDeliverables = data.deliverables.map(d => ({
           deliverable_title: d.deliverable_title,
           deliverable_description: d.deliverable_description,
           submitted: true,
+          id: d.id
         }));
         setDeliverables([
           ...existingDeliverables,
@@ -67,12 +84,17 @@ export default function AdminCreateDeliverable() {
       } else {
         setDeliverables([{ deliverable_title: "", deliverable_description: "", submitted: false }]);
       }
-    }
-  }
+      return data;
+    },
+  })
 
-  React.useEffect(() => {
-    getTask();
-  }, []);
+
+  const enableInput = (index) => {
+    const updated = [...deliverables];
+    updated[index] = { ...updated[index], submitted: false };
+    setDeliverables(updated);
+  };
+
 
   return (
     <Container maxWidth="md">
@@ -83,7 +105,7 @@ export default function AdminCreateDeliverable() {
         <hr />
         {deliverables.map((deliverable, index) => (
           <>
-            <Box key={index} component="form" onSubmit={(e) => handleSubmit(e, index)} sx={{ mt: 2, p: 1, borderRadius: 2 }}>
+            <Box key={index + 1} component="form" onSubmit={(e) => handleSubmit(e, index)} sx={{ mt: 2, p: 1, borderRadius: 2 }}>
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={5}>
                   <TextField
@@ -95,6 +117,7 @@ export default function AdminCreateDeliverable() {
                     disabled={deliverable.submitted}
                     required
                   />
+
                 </Grid>
                 <Grid item xs={5}>
                   <TextField
@@ -110,10 +133,22 @@ export default function AdminCreateDeliverable() {
                   />
                 </Grid>
                 <Grid item xs={2}>
-                  <Button type="submit" variant="contained" fullWidth>
-                    {deliverable.submitted ? "Edit" : "Save"}
-
-                  </Button>
+                  {deliverable.submitted ? (
+                    <div>
+                      <Button
+                        type="button"
+                        variant="contained"
+                        fullWidth
+                        onClick={() => enableInput(index)}
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button type="submit" variant="contained" fullWidth>
+                      Save
+                    </Button>
+                  )}
                 </Grid>
               </Grid>
             </Box>

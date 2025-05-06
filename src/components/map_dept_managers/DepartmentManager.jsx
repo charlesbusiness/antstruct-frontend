@@ -15,11 +15,11 @@ import { ApiRoutes } from "../../utils/ApiRoutes";
 import { validate } from "../../services/validation/validate";
 import { MultipleSelectWithFilter } from "../../common/MultipleSelectWithFilter";
 import { EmployeeDepartmentManager } from "../../validations/business/employee-department-managers";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function DepartmentManager() {
   const [errors, setErrors] = React.useState({});
-  const [employees, setEmployees] = React.useState([]);
-  const [dept, setDept] = React.useState([]);
+  const { departments: dept, employees } = useBusinessProfile();
   const [mappedDept, setMappedDept] = React.useState([]);
   const [employeeDeptMap, setEmployeeDeptMap] = React.useState([]);
 
@@ -59,16 +59,7 @@ export default function DepartmentManager() {
     });
   };
 
-  const getDepartment = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.getDepartments,
-      method: "get",
-    });
-    if (!response?.error) {
-      setDept(response?.data);
-    }
-  };
+
 
   const getMapped = async (employee) => {
     const response = await submitData({
@@ -80,17 +71,6 @@ export default function DepartmentManager() {
       setMappedDept(response?.data);
     } else {
       setMappedDept([]);
-    }
-  };
-
-  const getEmployees = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.employees.getEmployees,
-      method: "get",
-    });
-    if (!response?.error) {
-      setEmployees(response?.data);
     }
   };
 
@@ -124,10 +104,6 @@ export default function DepartmentManager() {
     }
   };
 
-  React.useEffect(() => {
-    getEmployees();
-    getDepartment();
-  }, []);
 
   React.useEffect(() => {
     if (employees.length) buildEmployeeDeptMap();
@@ -234,7 +210,7 @@ export default function DepartmentManager() {
                   <th style={{ textAlign: "left", padding: "8px" }}>
                     Departments
                   </th>
-                <th style={{ textAlign: "left", padding: "8px" }}>Departments Description</th>
+                  <th style={{ textAlign: "left", padding: "8px" }}>Departments Description</th>
                 </tr>
               </thead>
               <tbody>

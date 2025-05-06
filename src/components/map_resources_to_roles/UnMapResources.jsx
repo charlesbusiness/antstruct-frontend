@@ -1,4 +1,4 @@
-// unmap-resources.jsx
+
 import * as React from "react";
 import {
   Container,
@@ -13,23 +13,13 @@ import {
 import { Card } from "../../common/Card";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function UnmapResources() {
-  const [roles, setRoles] = React.useState([]);
+  const { roles } = useBusinessProfile();
   const [selectedRoleId, setSelectedRoleId] = React.useState("");
   const [mappedResources, setMappedResources] = React.useState([]);
   const { submitData } = useSubmitData();
-
-  const getRoles = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.roles,
-      method: "get"
-    });
-    if (!response?.error) {
-      setRoles(response?.data);
-    }
-  };
 
   const getMappedResources = async (roleId) => {
     const response = await submitData({
@@ -55,9 +45,6 @@ export default function UnmapResources() {
     }
   };
 
-  React.useEffect(() => {
-    getRoles();
-  }, []);
 
   const handleRoleChange = (e) => {
     const roleId = e.target.value;
