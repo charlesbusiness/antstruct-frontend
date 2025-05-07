@@ -8,8 +8,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Autocomplete,
-  TextField,
 } from "@mui/material";
 import { Card } from "../../common/Card";
 import useSubmitData from "../../hooks/useSubmitData";
@@ -17,27 +15,30 @@ import { ApiRoutes } from "../../utils/ApiRoutes";
 import { validate } from "../../services/validation/validate";
 import { AssignRoleSchema } from "../../validations/business/assign-role-schema";
 import { MultipleSelectWithFilter } from "../../common/MultipleSelectWithFilter";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function AssignRole() {
-  const [errors, setErrors] = React.useState({});
-  const [roles, setRoles] = React.useState(null);
-  const [employees, setEmployees] = React.useState(null);
-  const [assignedRoles, setAssignedRoles] = React.useState(null);
   const { submitData, isLoading } = useSubmitData();
+
+  // Get shared data from business context
+  const { employees, roles } = useBusinessProfile();
+
   const [formData, setFormData] = React.useState({
     employee: "",
     business_role_id: [],
   });
+  const [errors, setErrors] = React.useState({});
+  const [assignedRoles, setAssignedRoles] = React.useState([]);
   const [employeeRoleMap, setEmployeeRoleMap] = React.useState([]);
 
   const handleInputChange = (e) => {
-    setErrors("");
+    setErrors({});
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    if (name == "employee") {
+    if (name === "employee") {
       getAssignedRole(value);
     }
   };
@@ -49,6 +50,7 @@ export default function AssignRole() {
       setErrors(validationErrors);
       return;
     }
+
     submitData({
       data: formData,
       endpoint: ApiRoutes.employees.assignRole,
@@ -56,88 +58,52 @@ export default function AssignRole() {
     });
   };
 
-  const buildEmployeeRoleMap = async () => {
-    if (!employees || employees.length === 0) return;
-
-    const promises = employees.map(async (emp) => {
-      const response = await submitData({
-        data: {},
-        endpoint: `${ApiRoutes.employees.getAssignedRole}/${emp.id}`,
-        method: "get",
-      });
-
-      const roles = response?.error ? [] : response?.data || [];
-
-      return {
-        ...emp,
-        roles,
-      };
-    });
-
-    const result = await Promise.all(promises);
-    setEmployeeRoleMap(result);
-  };
-
-  const getEmployees = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.employees.getEmployees,
-      method: "get",
-    });
-    if (response?.error == false) {
-      setEmployees(response?.data);
-    }
-  };
   const getAssignedRole = async (employeeId) => {
     const response = await submitData({
       data: {},
-      endpoint: ApiRoutes.employees.getAssignedRole + `/${employeeId}`,
+      endpoint: `${ApiRoutes.employees.getAssignedRole}/${employeeId}`,
       method: "get",
     });
-    if (response?.error == false) {
-      setAssignedRoles(response?.data);
-    } else {
-      setAssignedRoles([]);
-    }
-  };
-
-  const getRoles = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.roles,
-      method: "get",
-    });
-    if (response?.error == false) {
-      setRoles(response?.data);
-    }
+    setAssignedRoles(response?.error ? [] : response?.data);
   };
 
   const removeAssignedRole = async (employeeId, roleId) => {
     const response = await submitData({
       data: {},
-      endpoint:
-        ApiRoutes.employees.removeAssignRole + `/${employeeId}/${roleId}`,
+      endpoint: `${ApiRoutes.employees.removeAssignRole}/${employeeId}/${roleId}`,
       method: "delete",
     });
-    if (response?.error == false) {
+    if (!response?.error) {
       getAssignedRole(employeeId);
+      buildEmployeeRoleMap();
     }
   };
 
-  // React.useEffect(() => {
-  //   getRoles()
-  //   getEmployees()
-  // }, [])
-  React.useEffect(() => {
-    const init = async () => {
-      await getRoles();
-      await getEmployees();
-    };
-    init();
-  }, []);
+  const buildEmployeeRoleMap = async () => {
+    if (!employees || employees.length === 0) return;
+
+    const mapped = await Promise.all(
+      employees.map(async (emp) => {
+        const response = await submitData({
+          data: {},
+          endpoint: `${ApiRoutes.employees.getAssignedRole}/${emp.id}`,
+          method: "get",
+        });
+
+        const roles = response?.error ? [] : response?.data || [];
+
+        return {
+          ...emp,
+          roles,
+        };
+      })
+    );
+
+    setEmployeeRoleMap(mapped);
+  };
 
   React.useEffect(() => {
-    if (employees) {
+    if (employees && employees.length > 0) {
       buildEmployeeRoleMap();
     }
   }, [employees]);

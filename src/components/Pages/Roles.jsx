@@ -1,27 +1,10 @@
 import * as React from "react";
 import { Container, Typography, Grid, Card, CardContent } from "@mui/material";
-import useSubmitData from "../../hooks/useSubmitData";
-import { ApiRoutes } from "../../utils/ApiRoutes";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function Roles() {
-  const { submitData, isLoading } = useSubmitData()
-  const [roles, setRoles] = React.useState(null)
+  const { roles } = useBusinessProfile()
 
-  const getroles = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.roles,
-      method: 'get'
-    })
-
-    if (!response?.error) {
-      setRoles(response?.data)
-    }
-  }
-
-  React.useEffect(() => {
-    getroles()
-  }, [])
 
   return (
     <Container>

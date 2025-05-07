@@ -7,7 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import { Link } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import {  SitemarkIcon } from './CustomIcons';
+import { SitemarkIcon } from './CustomIcons';
 import { Card } from '../../../common/Card';
 import { validate } from '../../../services/validation/validate';
 import useSubmitData from '../../../hooks/useSubmitData';
@@ -18,8 +18,8 @@ import { useAuth } from '../../../contexts/authContext';
 
 export default function VerifyEmailAddressForm() {
   const [errors, setErrors] = React.useState({});
-  const { submitData,  isLoading } = useSubmitData()
-  const {signupData} = useAuth()
+  const { submitData, isLoading } = useSubmitData()
+  const { contextData } = useAuth()
   const [formData, setFormData] = React.useState({
     code: '',
   })
@@ -36,13 +36,13 @@ export default function VerifyEmailAddressForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = validate(formData, VerifyAcccountSchema);
-   
+
     if (validationErrors) {
       setErrors(validationErrors);
       return;
     }
 
-   const response = submitData({
+    const response = submitData({
       data: formData,
       endpoint: ApiRoutes.authentication.verifyAccount,
       navigationPath: '/'
@@ -50,14 +50,13 @@ export default function VerifyEmailAddressForm() {
   }
 
   const handleRsend = (event) => {
-   const {email, phone} = signupData
+    const { email, phone } = contextData
     submitData({
-      data: {phone:phone, email:email},
+      data: { phone: phone, email: email },
       endpoint: ApiRoutes.authentication.resendVeirificationCode,
       navigationPath: '/verify'
     })
   }
-console.log(signupData)
   return (
     <Card variant="outlined">
       <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
@@ -107,7 +106,7 @@ console.log(signupData)
           disabled={isLoading ?? false}
           fullWidth variant="contained"
           onClick={handleRsend}
-          >
+        >
           {isLoading ? <ButtonLoader /> : 'Resend Code'}
         </Button>
         <Typography sx={{ textAlign: 'center' }}>

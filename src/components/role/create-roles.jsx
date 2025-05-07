@@ -14,6 +14,7 @@ import { ApiRoutes } from "../../utils/ApiRoutes";
 import ButtonLoader from "../../common/Loader/button-loader";
 import { validate } from "../../services/validation/validate";
 import { CreateRoleSchema } from "../../validations/business/create-role-schema";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function RoleCreation() {
   const [errors, setErrors] = React.useState({});
@@ -21,7 +22,7 @@ export default function RoleCreation() {
   const [formData, setFormData] = React.useState({
     name: "",
   });
-  const [roles, setRoles] = React.useState(null);
+  const { roles, error: rolesError } = useBusinessProfile();
 
   const handleInputChange = (e) => {
     setErrors("");
@@ -45,27 +46,13 @@ export default function RoleCreation() {
       reload: true,
     });
   };
-  const getroles = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.roles,
-      method: "get",
-    });
 
-    if (!response?.error) {
-      setRoles(response?.data);
-    }
-  };
-
-  React.useEffect(() => {
-    getroles();
-  }, []);
 
   return (
     <>
       <Container maxWidth="sm">
         <Card variant="outlined">
-          <Box sx={{ mt:1 }}>
+          <Box sx={{ mt: 1 }}>
             <Typography
               component="h1"
               variant="h4"
@@ -133,6 +120,6 @@ export default function RoleCreation() {
           ))}
         </Grid>
       </Box>
-      </>
+    </>
   );
 }
