@@ -14,7 +14,7 @@ export default function HighlightedCard({ businessUserprofile }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+  console.log('ok', businessUserprofile)
   return (
     <>
       {businessUserprofile == null && (

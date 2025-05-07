@@ -18,12 +18,13 @@ const useBusinessProfile = () => {
             if (response?.error) throw new Error('Failed to fetch business profile');
             return response.data;
         },
+        keepPreviousData: true,
     });
 
 
 
     const appModules = useQuery({
-        queryKey: ['businessProfile'],
+        queryKey: ['appModules'],
         queryFn: async () => {
             const response = await submitData({
                 data: {},
@@ -47,6 +48,7 @@ const useBusinessProfile = () => {
             if (response?.error) throw new Error('Failed to fetch employees');
             return response.data;
         },
+        keepPreviousData: true,
         enabled: !!businessProfileQuery.data, // runs only after profile is loaded
     });
 
@@ -61,6 +63,7 @@ const useBusinessProfile = () => {
             if (response?.error) throw new Error('Failed to fetch departments');
             return response.data;
         },
+        keepPreviousData: true,
         enabled: !!businessProfileQuery.data,
     });
 
@@ -77,6 +80,7 @@ const useBusinessProfile = () => {
             if (response?.error) throw new Error('Failed to fetch API resources');
             return response.data;
         },
+        keepPreviousData: true,
         enabled: !!businessProfileQuery.data,
     });
 
@@ -92,6 +96,7 @@ const useBusinessProfile = () => {
             if (response?.error) throw new Error('Failed to fetch API resources');
             return response.data;
         },
+        keepPreviousData: true,
         enabled: !!businessProfileQuery.data,
     });
 

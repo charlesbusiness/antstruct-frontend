@@ -17,15 +17,12 @@ import {
   DialogActions,
   Grid
 } from "@mui/material";
-import { ApiRoutes } from "../../utils/ApiRoutes";
-import useSubmitData from "../../hooks/useSubmitData";
 import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function Employees() {
   const { employees } = useBusinessProfile();
   const [selectedEmployee, setSelectedEmployee] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const { submitData } = useSubmitData();
 
 
   const handleViewDetails = (employee) => {
@@ -56,7 +53,7 @@ export default function Employees() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {employees.map((employee) => (
+            {employees?.map((employee) => (
               <TableRow key={employee.id}>
                 <TableCell>{employee.firstname} {employee.lastname}</TableCell>
                 <TableCell>{employee.email}</TableCell>
