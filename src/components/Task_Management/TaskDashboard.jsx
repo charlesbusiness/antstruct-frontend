@@ -116,7 +116,7 @@ export default function TaskDashboard() {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4" component="h1" fontWeight="bold">
-          Agile Task Management
+          Task Management
         </Typography>
         <Chip label="Active Sprint: Sprint 12" color="primary" variant="outlined" />
       </Box>
