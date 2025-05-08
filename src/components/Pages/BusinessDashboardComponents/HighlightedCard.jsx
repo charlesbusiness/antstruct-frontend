@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AddHomeWorkRoundedIcon from "@mui/icons-material/AddHomeWorkRounded";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
@@ -17,7 +18,6 @@ export default function HighlightedCard({ businessUserprofile }) {
   console.log('ok', businessUserprofile)
   return (
     <>
-      {businessUserprofile == null && (
         <Card sx={{ height: "100%" }}>
           <CardContent>
             <InsightsRoundedIcon />
@@ -27,15 +27,17 @@ export default function HighlightedCard({ businessUserprofile }) {
               gutterBottom
               sx={{ fontWeight: "600" }}
             >
-              Create Business to Start
+              Quick Links
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: "8px" }}>
               Ensure to enter the right Business Credentials.
             </Typography>
+            {businessUserprofile == null && (
             <Button
               variant="contained"
               size="small"
               color="primary"
+              sx={{ mb: "4px" }}
               startIcon={<AddHomeWorkRoundedIcon />}
               endIcon={<ChevronRightRoundedIcon />}
               fullWidth={isSmallScreen}
@@ -43,10 +45,21 @@ export default function HighlightedCard({ businessUserprofile }) {
             >
               Create Business
             </Button>
+      )}
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              startIcon={<ShoppingCartIcon />}
+              endIcon={<ChevronRightRoundedIcon />}
+              fullWidth={isSmallScreen}
+              onClick={() => navigate("/make/requisition")}
+            >
+              Make Requisition
+            </Button>
           </CardContent>
 
         </Card>
-      )}
     </>
   );
 }

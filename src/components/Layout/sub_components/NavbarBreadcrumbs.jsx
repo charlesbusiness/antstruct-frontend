@@ -5,6 +5,7 @@ import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import { useLocation } from 'react-router-dom';
 import routes from '../../../routes/routes'
+import { useTitle } from '../../../hooks/TitleContext';
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   margin: theme.spacing(1, 0),
@@ -18,10 +19,11 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
 }));
 
 export default function NavbarBreadcrumbs() {
+  const { title } = useTitle();
   const location = useLocation(); 
-
   const currentRoute = routes.find((route) => route.path === location.pathname);
-  const pageTitle = currentRoute ? currentRoute.title : 'Current Page';
+  
+  const pageTitle = title || (currentRoute ? currentRoute.title : 'Current Page');
 
   return (
     <StyledBreadcrumbs

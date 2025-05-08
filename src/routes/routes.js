@@ -40,6 +40,7 @@ const MapResources = lazy(() => import("../components/map_resources_to_roles/Map
 const UnMapResources = lazy(() => import("../components/map_resources_to_roles/UnMapResources"));
 const DepartmentManager = lazy(() => import("../components/map_dept_managers/DepartmentManager"));
 const UnAssignDepartmentManager = lazy(() => import("../components/map_dept_managers/UnassignDepartmentManager"));
+const Requisition = lazy(() => import("../components/Pages/Requisition"));
 
 const coreRoutes = [
   {
@@ -58,6 +59,12 @@ const coreRoutes = [
     path: "/task/:id",
     title: "Task Details",
     component: TaskDetails,
+  },
+
+  {
+    path: "/make/requisition",
+    title: "Requisition",
+    component: Requisition,
   },
 
   {

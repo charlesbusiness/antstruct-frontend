@@ -51,7 +51,7 @@ export default function TaskDashboard() {
       const { data } = response;
       setTasks(data);
       const pending = data.filter(t => t.status === 'pending')
-      const inProgress = data.filter(t => t.status === 'in-progress')
+      const inProgress = data.filter(t => t.status === 'in-progress' || 'reviewd' || 'testing' || 'completed')
       const done = data.filter(t => t.status === 'approved')
       const taskOverview = {
         pending: pending,
@@ -131,6 +131,9 @@ export default function TaskDashboard() {
                       {getPriorityIcon(task.priority)}
                       <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
                         {task.priority} Priority
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                        | Status: {task.status} 
                       </Typography>
                     </Box>
                     {task.progress > 0 && (
