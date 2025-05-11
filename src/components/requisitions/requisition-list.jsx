@@ -10,7 +10,7 @@ const STATUS_OPTIONS = ["Pending", "Approved", "Rejected"];
 
 
 
-export const RequisitionList = ({ handleApprove, handleCancel, handleDelete }) => {
+export const RequisitionList = () => {
     const { submitData, isLoading } = useSubmitData()
     // const [requisitions, setRequisitions] = useState(dummyRequisitions);
     const [selected, setSelected] = useState(null);
@@ -59,9 +59,6 @@ export const RequisitionList = ({ handleApprove, handleCancel, handleDelete }) =
 
             <RequisitionTabs
                 requisitions={requisitions?.data || []}
-                onApprove={handleApprove}
-                onCancel={handleCancel}
-                onDelete={handleDelete}
             />
         </>
 

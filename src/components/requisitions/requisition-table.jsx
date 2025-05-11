@@ -17,21 +17,22 @@ import {
   KeyboardArrowUp,
   Check,
   Close,
-  Delete,
   MoreHoriz,
-  MoreVert
+  MoreVert,
+  Feedback
 } from '@mui/icons-material';
 import React, { useState } from 'react';
-import { REQUISITION_TYPES } from '../../utils/general';
+import { REQUISITION_TYPES, formatDate } from '../../utils/general';
+import { RequisitionDetailCollapsable } from './requisition-detail';
+import useSubmitData from '../../hooks/useSubmitData';
+import { ApiRoutes } from '../../utils/ApiRoutes';
 
-export const RequisitionTable = ({ requisitions, onApprove, onCancel, onDelete }) => {
+export const RequisitionTable = ({ requisitions }) => {
   const [openRow, setOpenRow] = useState(null);
-  const [expandedRowId, setExpandedRowId] = useState(null);
-
+  const { submitData, isLoading } = useSubmitData()
 
   const toggleRow = (id) => {
     setOpenRow((prev) => (prev === id ? null : id));
-    setExpandedRowId((prev) => (prev === id ? null : id));
   }
   const statusColor = (status) => {
     switch (status) {
@@ -44,6 +45,25 @@ export const RequisitionTable = ({ requisitions, onApprove, onCancel, onDelete }
     }
   };
 
+  // Handle actions
+  const handleApprove = async (id, status) => {
+    await submitData({
+      data: { comment: 'Good to go', status },
+      endpoint: ApiRoutes.requisitions.approve(id)
+    })
+  };
+
+  const handleCancel = (id) => {
+    setRequisitions(requisitions.map(req =>
+      req.id === id ? { ...req, status: 'Cancelled' } : req
+    ));
+    showNotification('Requisition cancelled');
+  };
+
+  const handleDelete = (id) => {
+    setRequisitions(requisitions.filter(req => req.id !== id));
+    showNotification('Requisition deleted');
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -51,10 +71,9 @@ export const RequisitionTable = ({ requisitions, onApprove, onCancel, onDelete }
         <TableHead>
           <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
             <TableCell />
-            <TableCell>ID</TableCell>
             <TableCell>Type</TableCell>
             <TableCell>Department</TableCell>
-            <TableCell>Date</TableCell>
+            <TableCell>Date Requested</TableCell>
             <TableCell>Status</TableCell>
             <TableCell align="center">Actions</TableCell>
           </TableRow>
@@ -68,10 +87,10 @@ export const RequisitionTable = ({ requisitions, onApprove, onCancel, onDelete }
                     {openRow === req.id ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                   </IconButton>
                 </TableCell>
-                <TableCell>{req.id}</TableCell>
+
                 <TableCell>{req.type}</TableCell>
-                <TableCell>{req.department || '—'}</TableCell>
-                <TableCell>{req.date || '—'}</TableCell>
+                <TableCell>{req.department_name || '—'}</TableCell>
+                <TableCell>{formatDate(req.created_at) || '—'}</TableCell>
                 <TableCell>
                   <Box
                     sx={{
@@ -87,64 +106,31 @@ export const RequisitionTable = ({ requisitions, onApprove, onCancel, onDelete }
                   </Box>
                 </TableCell>
                 <TableCell align="center">
-                  {req.status === 'Pending' && (
+                  {req.status === 'pending' && (
                     <>
-                      <IconButton color="success" onClick={() => onApprove(req.id)} title="Approve">
+                      <IconButton color="success" onClick={() => handleApprove(req.id, 'approved')} title="Approve">
                         <Check />
                       </IconButton>
-                      <IconButton color="error" onClick={() => onCancel(req.id)} title="Cancel">
+                      <IconButton color="error" onClick={() => handleCancel(req.id)} title="Reject">
                         <Close />
                       </IconButton>
                     </>
                   )}
-                  <IconButton color="error" onClick={() => onDelete(req.id)} title="Delete">
-                    <Delete />
+                  <IconButton color="error" onClick={() => handleDelete(req.id)} title="Review">
+                    <Feedback />
                   </IconButton>
                   <IconButton
                     color="primary"
                     onClick={() => toggleRow(req.id)}
                     title="View Details"
                   >
-                    {expandedRowId === req.id ? <MoreVert /> : <MoreHoriz />}
+                    {openRow === req.id ? <MoreVert /> : <MoreHoriz />}
                   </IconButton>
                 </TableCell>
               </TableRow>
 
               {/* Collapsible row */}
-              <TableRow>
-                <TableCell colSpan={7} sx={{ p: 0, backgroundColor: '#fafafa' }}>
-                  <Collapse in={openRow === req.id} timeout="auto" unmountOnExit>
-                    <Box sx={{ margin: 2 }}>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Details
-                      </Typography>
-                      {req.type === REQUISITION_TYPES.MONEY && (
-                        <>
-                          <div><strong>Budget:</strong> {req.budget}</div>
-                          <div><strong>Expected Disbursement Date:</strong> {req.expected_disbursement_date}</div>
-                          <div><strong>Purpose:</strong> {req.purpose}</div>
-                        </>
-                      )}
-                      {req.type === REQUISITION_TYPES.EQUIPMENT && (
-                        <>
-                          <div><strong>Item:</strong> {req.item}</div>
-                          <div><strong>Specs:</strong> {req.specs}</div>
-                          <div><strong>Quantity:</strong> {req.quantity}</div>
-                          <div><strong>Purpose:</strong> {req.purpose}</div>
-                        </>
-                      )}
-                      {req.type === REQUISITION_TYPES.HR && (
-                        <>
-                          <div><strong>Requested Role:</strong> {req.requested_role}</div>
-                          <div><strong>Employment Type:</strong> {req.employment_type}</div>
-                          <div><strong>Start Date:</strong> {req.desired_start_date}</div>
-                          <div><strong>Justification:</strong> {req.justification}</div>
-                        </>
-                      )}
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
+              <RequisitionDetailCollapsable requisition={req} openRow={openRow} />
             </React.Fragment>
           ))}
 

@@ -14,7 +14,7 @@ const TABS = [
     { label: 'Human Resources', type: REQUISITION_TYPES.HR },
 ];
 
-export const RequisitionTabs = ({ requisitions, onApprove, onCancel, onDelete }) => {
+export const RequisitionTabs = ({ requisitions }) => {
     const [currentTab, setCurrentTab] = useState(0);
 
     const handleTabChange = (_, newValue) => {
@@ -36,9 +36,6 @@ export const RequisitionTabs = ({ requisitions, onApprove, onCancel, onDelete })
 
             <RequisitionTable
                 requisitions={filteredRequisitions}
-                onApprove={onApprove}
-                onCancel={onCancel}
-                onDelete={onDelete}
             />
         </Box>
     )

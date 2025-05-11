@@ -79,7 +79,7 @@ export const ApiRoutes = {
 
   requisitions: {
     make: 'requisitions/make',
-    approve: 'requisitions/approve',
+    approve: (id) => `requisitions/approve/${id}`,
     review: 'requisitions/review',
     cancel: 'requisitions/cancel',
     requisitions: 'requisitions',

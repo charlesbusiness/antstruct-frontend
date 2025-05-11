@@ -25,11 +25,7 @@ import { RequisitionList } from '../components/requisitions/requisition-list';
 
 const RequisitionPage = () => {
   // Sample initial data
-  const [requisitions, setRequisitions] = useState([
-    { id: 1, item: 'Laptop', quantity: 5, department: 'IT', status: 'Pending', date: '2023-05-15' },
-    { id: 2, item: 'Office Chair', quantity: 10, department: 'HR', status: 'Pending', date: '2023-05-16' },
-    { id: 3, item: 'Printer', quantity: 2, department: 'Finance', status: 'Approved', date: '2023-05-10' },
-  ]);
+
 
   // State for new requisition dialog
   const [openDialog, setOpenDialog] = useState(false);
@@ -51,25 +47,7 @@ const RequisitionPage = () => {
     severity: 'success'
   });
 
-  // Handle actions
-  const handleApprove = (id) => {
-    setRequisitions(requisitions.map(req =>
-      req.id === id ? { ...req, status: 'Approved' } : req
-    ));
-    showNotification('Requisition approved successfully');
-  };
 
-  const handleCancel = (id) => {
-    setRequisitions(requisitions.map(req =>
-      req.id === id ? { ...req, status: 'Cancelled' } : req
-    ));
-    showNotification('Requisition cancelled');
-  };
-
-  const handleDelete = (id) => {
-    setRequisitions(requisitions.filter(req => req.id !== id));
-    showNotification('Requisition deleted');
-  };
 
   // New requisition handlers
   const handleInputChange = (e) => {
@@ -77,26 +55,6 @@ const RequisitionPage = () => {
     setNewRequisition({ ...newRequisition, [name]: value });
   };
 
-  const handleSubmit = () => {
-    const newId = Math.max(...requisitions.map(req => req.id), 0) + 1;
-    setRequisitions([
-      ...requisitions,
-      {
-        id: newId,
-        ...newRequisition,
-        status: 'Pending',
-        date: new Date().toISOString().split('T')[0]
-      }
-    ]);
-    setOpenDialog(false);
-    setNewRequisition({
-      item: '',
-      quantity: 1,
-      department: '',
-      date: new Date().toISOString().split('T')[0]
-    });
-    showNotification('New requisition created');
-  };
 
   // Notification handler
   const showNotification = (message, severity = 'success') => {
@@ -120,11 +78,7 @@ const RequisitionPage = () => {
         </Button>
       </Box>
 
-      <RequisitionList
-        handleApprove={handleApprove}
-        handleCancel={handleCancel}
-        handleDelete={handleDelete}
-      />
+      <RequisitionList />
 
       {/* New Requisition Dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>

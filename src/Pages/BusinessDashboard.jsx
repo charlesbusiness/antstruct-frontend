@@ -12,7 +12,7 @@ import HighlightedCard from "./BusinessDashboardComponents/HighlightedCard";
 import PageViewsBarChart from "./BusinessDashboardComponents/PageViewsBarChart";
 import SessionsChart from "./BusinessDashboardComponents/SessionsChart";
 import StatCard from "./BusinessDashboardComponents/StatCard";
-import useBusinessProfile from "../../hooks/useBusinessProfile";
+import useBusinessProfile from "../hooks/useBusinessProfile";
 
 export default function BusinessDashboard() {
   const { employees, resources, businessUserProfile, departments } = useBusinessProfile();

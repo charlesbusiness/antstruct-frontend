@@ -17,7 +17,7 @@ import {
   DialogActions,
   Grid
 } from "@mui/material";
-import useBusinessProfile from "../../hooks/useBusinessProfile";
+import useBusinessProfile from "../hooks/useBusinessProfile";
 
 export default function Employees() {
   const { employees } = useBusinessProfile();

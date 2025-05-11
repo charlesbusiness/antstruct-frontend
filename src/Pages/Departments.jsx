@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Container, Typography, Grid, Card, CardContent } from "@mui/material";
-import useSubmitData from "../../hooks/useSubmitData";
+import useSubmitData from "../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 
 export default function Departments() {
   const { submitData, isLoading } = useSubmitData()
   const [departments, setDepartments] = React.useState(null)
-  
+
   const getDepartments = async () => {
     const response = await submitData({
       data: {},
@@ -33,7 +33,7 @@ export default function Departments() {
           <Grid item xs={12} sm={6} md={4} key={department.id}>
             <Card variant="outlined" sx={{ p: 2 }}>
               <CardContent>
-                
+
                 <Typography variant="h6" color="textSecondary"> Name: {department.department_name}</Typography>
                 <Typography variant="body2">Details: {department.department_detail}</Typography>
               </CardContent>
