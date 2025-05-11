@@ -12,12 +12,13 @@ import { ApiRoutes } from "../../utils/ApiRoutes";
 import ButtonLoader from "../../common/Loader/button-loader";
 import { CreateBusinessSchema } from "../../validations/business/create-business-schema";
 import { validate } from "../../services/validation/validate";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
+import { Navigate } from "react-router-dom";
 
 export default function BusinessCreation() {
   const [errors, setErrors] = React.useState({});
-  const [businessSize, setBusinessSize] = React.useState(null);
-  const [businessCategory, setBusinessCategory] = React.useState(null);
   const { submitData, isLoading } = useSubmitData()
+  const { businessUserProfile, businessCategories, businessSizes, isLoading: fetchLoader } = useBusinessProfile();
   const [formData, setFormData] = React.useState({
     business_name: '',
     business_category_id: '',
@@ -38,7 +39,6 @@ export default function BusinessCreation() {
     }))
   }
 
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = validate(formData, CreateBusinessSchema)
@@ -52,36 +52,9 @@ export default function BusinessCreation() {
       navigationPath: '/dashboard',
     })
   }
+  if (fetchLoader) return null; // or loading spinner
 
-  const getBusinessCategories = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.getCategory,
-      method: 'get'
-    })
-    if (response?.error == false) {
-      setBusinessCategory(response?.data)
-    }
-  }
-
-
-  const getBusinessSize = async () => {
-    const response = await submitData({
-      data: {},
-      endpoint: ApiRoutes.business.size,
-      method: 'get'
-    })
-    if (response?.error == false) {
-      setBusinessSize(response?.data)
-    }
-  }
-
-
-  React.useEffect(() => {
-    getBusinessCategories()
-    getBusinessSize()
-  }, [])
- 
+  if (businessUserProfile) return <Navigate to={'/dashboard'} replace />
   return (
     <Container maxWidth="sm" sx={{ mt: 1 }}>
       <Card variant="outlined">
@@ -164,7 +137,7 @@ export default function BusinessCreation() {
           >
             <MenuItem value="">Select</MenuItem>
             {
-              businessSize?.map(size => (
+              businessSizes?.map(size => (
                 <MenuItem key={size.id} value={size.id}>{size.size_range}</MenuItem>
               ))
             }
@@ -185,7 +158,7 @@ export default function BusinessCreation() {
           >
             <MenuItem value="">Select</MenuItem>
             {
-              businessCategory?.map(cat => (
+              businessCategories?.map(cat => (
                 <MenuItem key={cat.key} value={cat.id}>{cat.category_name}</MenuItem>
               ))
             }

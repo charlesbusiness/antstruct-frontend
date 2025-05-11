@@ -98,6 +98,34 @@ const useBusinessProfile = () => {
         },
         keepPreviousData: true,
         enabled: !!businessProfileQuery.data,
+    })
+
+    const businessCategories = useQuery({
+        queryKey: ['businessCategories'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.business.getCategory,
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch API resources');
+            return response.data;
+        },
+        keepPreviousData: true,
+    });
+
+    const businessSizes = useQuery({
+        queryKey: ['businessSizes'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.business.size,
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch API resources');
+            return response.data;
+        },
+        keepPreviousData: true,
     });
 
     // === Computed values ===
@@ -127,14 +155,16 @@ const useBusinessProfile = () => {
         businessUserProfile: groupedResources,
         businessInfo: businessProfileQuery.data,
         employees: employeesQuery.data,
+        businessCategories: businessCategories.data,
+        businessSizes: businessSizes.data,
         roles: roles.data,
         departments: departmentsQuery.data,
         resources: resourcesQuery.data,
         modules: appModules.data,
-        error: businessProfileQuery.error || employeesQuery.error || departmentsQuery.error || resourcesQuery.error || roles.error || appModules.error,
+        error: businessProfileQuery.error || employeesQuery.error || departmentsQuery.error || resourcesQuery.error || roles.error || appModules.error || businessCategories.error || businessSizes.error,
         expandedModules,
         toggleModule,
-        isLoading: businessProfileQuery.isLoading || employeesQuery.isLoading || departmentsQuery.isLoading || resourcesQuery.isLoading || roles.isLoading || appModules.isLoading,
+        isLoading: businessProfileQuery.isLoading || employeesQuery.isLoading || departmentsQuery.isLoading || resourcesQuery.isLoading || roles.isLoading || appModules.isLoading || businessCategories.isLoading || businessSizes.isLoading,
     };
 };
 

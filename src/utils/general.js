@@ -12,3 +12,10 @@ export const formatDate = (rawDate) => {
 }
 
 export const TaskStatus = ['in-progress', 'reviewd', 'completed', 'approved', 'testing', 'pending',];
+
+export const REQUISITION_TYPES = {
+  MONEY: 'monetary',
+  EQUIPMENT: 'equipment',
+  HR: 'internal'
+};
+

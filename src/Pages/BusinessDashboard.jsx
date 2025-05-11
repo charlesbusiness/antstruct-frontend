@@ -1,9 +1,9 @@
 import * as React from "react";
 import {
- 
+
   Container,
   Typography,
-  
+
   Paper,
   Grid,
   Box,
@@ -12,10 +12,10 @@ import HighlightedCard from "./BusinessDashboardComponents/HighlightedCard";
 import PageViewsBarChart from "./BusinessDashboardComponents/PageViewsBarChart";
 import SessionsChart from "./BusinessDashboardComponents/SessionsChart";
 import StatCard from "./BusinessDashboardComponents/StatCard";
-import { useBusinessProfileContext } from "../../contexts/profileContext";
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function BusinessDashboard() {
-    const { employees, resources, businessUserProfile,  departments} = useBusinessProfileContext();
+  const { employees, resources, businessUserProfile, departments } = useBusinessProfile();
 
   const data = [
     {
@@ -53,7 +53,7 @@ export default function BusinessDashboard() {
     },
   ];
 
-  
+
 
 
   return (
@@ -71,7 +71,7 @@ export default function BusinessDashboard() {
             </Grid>
           ))}
           <Grid item xs={12} sm={6} md={4} lg={3}>
-            <HighlightedCard businessUserprofile={businessUserProfile}/>
+            <HighlightedCard businessUserprofile={businessUserProfile} />
           </Grid>
         </Grid>
       </Box>

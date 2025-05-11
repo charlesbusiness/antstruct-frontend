@@ -28,6 +28,7 @@ import CustomModal from "../../common/CustomModal";
 import { DeliverableRemark } from "./Deliverable-Remark";
 import { Remark } from "./Remarks";
 import { useTitle } from "../../hooks/TitleContext";
+import DataModal from "../../common/DataModal";
 
 export default function TaskDetails() {
   const { id } = useParams();
@@ -280,12 +281,12 @@ export default function TaskDetails() {
       )}
 
       {/* Modals */}
-      <CustomModal 
-        open={open} 
-        onClose={handleClose} 
+      <DataModal
+        open={open}
+        onClose={handleClose}
         title={type === 'task' ? "Task Remark" : "Deliverable Remark"}
-        description={type === 'task' ? 
-          "Add a remark for the entire task" : 
+        description={type === 'task' ?
+          "Add a remark for the entire task" :
           `Add a remark for deliverable ${deliverableId}`}
       >
         <DeliverableRemark
@@ -294,15 +295,16 @@ export default function TaskDetails() {
           closeModal={handleClose}
           type={type}
         />
-      </CustomModal>
+      </DataModal>
 
-      <CustomModal 
-        open={viewRemark} 
-        onClose={handleCloseRemark} 
+      <DataModal
+        size='lg'
+        open={viewRemark}
+        onClose={handleCloseRemark}
         title="Remarks" description={`Viewing all remarks (${remarks?.length || 0})`}
       >
         <Remark remarks={remarks} />
-      </CustomModal>
+      </DataModal>
     </Container>
   );
 }

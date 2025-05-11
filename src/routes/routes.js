@@ -7,20 +7,20 @@ const CreateBusiness = lazy(() =>
 
 
 const Departments = lazy(() =>
-  import("../components/Pages/Departments")
+  import("@src/Pages/Departments")
 );
 
 const Roles = lazy(() =>
-  import("../components/Pages/Roles")
+  import("@src/Pages/Roles")
 );
 
 const Employees = lazy(() =>
-  import("../components/Pages/Employees")
+  import("@src/Pages/Employees")
 );
 const CreateDepartment = lazy(() =>
   import("../components/dept_creation/DepartmentCreation")
 );
-const Dashboard = lazy(() => import("../components/Pages/BusinessDashboard"));
+const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
 const AdminCreateDeliverable = lazy(() => import("../components/Task_Management/AdminCreateDeliverable"));
 const AdminCreateTask = lazy(() => import("../components/Task_Management/AdminCreateTask"));
 const ChangeTaskStatus = lazy(() => import("../components/Task_Management/ChangeTaskStatus"));
@@ -40,7 +40,7 @@ const MapResources = lazy(() => import("../components/map_resources_to_roles/Map
 const UnMapResources = lazy(() => import("../components/map_resources_to_roles/UnMapResources"));
 const DepartmentManager = lazy(() => import("../components/map_dept_managers/DepartmentManager"));
 const UnAssignDepartmentManager = lazy(() => import("../components/map_dept_managers/UnassignDepartmentManager"));
-const Requisition = lazy(() => import("../components/Pages/Requisition"));
+const Requisition = lazy(() => import("@src/Pages/Requisition"));
 
 const coreRoutes = [
   {

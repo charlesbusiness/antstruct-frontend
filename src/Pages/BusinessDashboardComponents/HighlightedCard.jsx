@@ -15,24 +15,23 @@ export default function HighlightedCard({ businessUserprofile }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log('ok', businessUserprofile)
   return (
     <>
-        <Card sx={{ height: "100%" }}>
-          <CardContent>
-            <InsightsRoundedIcon />
-            <Typography
-              component="h2"
-              variant="subtitle2"
-              gutterBottom
-              sx={{ fontWeight: "600" }}
-            >
-              Quick Links
-            </Typography>
-            <Typography sx={{ color: "text.secondary", mb: "8px" }}>
-              Ensure to enter the right Business Credentials.
-            </Typography>
-            {businessUserprofile == null && (
+      <Card sx={{ height: "100%" }}>
+        <CardContent>
+          <InsightsRoundedIcon />
+          <Typography
+            component="h2"
+            variant="subtitle2"
+            gutterBottom
+            sx={{ fontWeight: "600" }}
+          >
+            Quick Links
+          </Typography>
+          <Typography sx={{ color: "text.secondary", mb: "8px" }}>
+            Ensure to enter the right Business Credentials.
+          </Typography>
+          {businessUserprofile == null && (
             <Button
               variant="contained"
               size="small"
@@ -45,21 +44,21 @@ export default function HighlightedCard({ businessUserprofile }) {
             >
               Create Business
             </Button>
-      )}
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              startIcon={<ShoppingCartIcon />}
-              endIcon={<ChevronRightRoundedIcon />}
-              fullWidth={isSmallScreen}
-              onClick={() => navigate("/make/requisition")}
-            >
-              Make Requisition
-            </Button>
-          </CardContent>
+          )}
+          <Button
+            variant="contained"
+            size="small"
+            color="primary"
+            startIcon={<ShoppingCartIcon />}
+            endIcon={<ChevronRightRoundedIcon />}
+            fullWidth={isSmallScreen}
+            onClick={() => navigate("/make/requisition")}
+          >
+            Make Requisition
+          </Button>
+        </CardContent>
 
-        </Card>
+      </Card>
     </>
   );
 }

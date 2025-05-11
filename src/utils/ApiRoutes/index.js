@@ -75,5 +75,14 @@ export const ApiRoutes = {
   },
   deliverables: {
     create: 'tasks/admin/deliverables'
+  },
+
+  requisitions: {
+    make: 'requisitions/make',
+    approve: 'requisitions/approve',
+    review: 'requisitions/review',
+    cancel: 'requisitions/cancel',
+    requisitions: 'requisitions',
+    requisition: (id) => `requisitions/${id}`,
   }
 }
