@@ -14,23 +14,25 @@ import {
   CircularProgress,
   Alert,
   FormHelperText,
-} from "@mui/material";
+} from "@mui/material"
+
 import {
   getPriorityIcon,
-  getStatusIcon,
-} from "../../common/tasks-utils";
-import useSubmitData from "../../hooks/useSubmitData";
-import { ApiRoutes } from "../../utils/ApiRoutes";
-import { TaskStatus, formatDate } from "../../utils/general";
-import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import CustomModal from "../../common/CustomModal";
-import { DeliverableRemark } from "./Deliverable-Remark";
-import { Remark } from "./Remarks";
-import { useTitle } from "../../hooks/TitleContext";
-import DataModal from "../../common/DataModal";
+} from "../../common/tasks-utils"
+
+import useSubmitData from "../../hooks/useSubmitData"
+import { ApiRoutes } from "../../utils/ApiRoutes"
+import { TaskStatus, formatDate } from "../../utils/general"
+import { Link, useParams } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import { DeliverableRemark } from "./Deliverable-Remark"
+import { Remark } from "./Remarks"
+import { useTitle } from "../../hooks/TitleContext"
+import DataModal from "../../common/DataModal"
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function TaskDetails() {
+  const queryClient = useQueryClient()
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
   const [viewRemark, setViewRemark] = React.useState(false);
@@ -38,15 +40,15 @@ export default function TaskDetails() {
   const [deliverableId, setId] = React.useState(null);
   const [remarks, setRemarks] = React.useState(null);
   const [type, setType] = React.useState('');
-  const [status, setStatus] = React.useState("");
-  const [deliverableStatuses, setDeliverableStatuses] = React.useState({});
-  const { submitData } = useSubmitData();
+  const [status, setStatus] = React.useState('');
+  const [deliverableStatuses, setDeliverableStatuses] = React.useState({})
+  const { submitData } = useSubmitData()
 
-  const { setTitle } = useTitle();
+  const { setTitle } = useTitle()
 
   useEffect(() => {
     setTitle("Task Details");
-  }, [setTitle]);
+  }, [setTitle])
 
   const { data: task, isLoading, error } = useQuery({
     queryKey: ['task', id],
@@ -67,35 +69,38 @@ export default function TaskDetails() {
       setTaskData(data);
       return data;
     },
-  });
+  })
 
   const handleOpen = (id) => {
-    setId(id);
-    setOpen(true);
-    setType('deliverable');
-  };
+    setId(id)
+    setOpen(true)
+    setType('deliverable')
+  }
 
   const handleOpenTaskRemarkModal = () => {
-    setOpen(true);
-    setType('task');
-  };
+    setOpen(true)
+    setType('task')
+  }
 
   const handleOpenRemark = (remark) => {
-    setRemarks(remark);
-    setViewRemark(true);
-  };
+    setRemarks(remark)
+    setViewRemark(true)
+  }
 
   const handleClose = () => setOpen(false);
   const handleCloseRemark = () => setViewRemark(false);
 
   const changeStatus = async (event) => {
-    await submitData({
+    const response = await submitData({
       endpoint: ApiRoutes.tasks.taskUpdate(id),
       data: { status: event.target.value },
       method: "post",
-      reload: false
-    });
-  };
+    })
+
+    if (response?.success) {
+      queryClient.invalidateQueries({ queryKey: ['task', id] })
+    }
+  }
 
   const changeDeliverableStatus = async (event, id) => {
     await submitData({
@@ -104,14 +109,14 @@ export default function TaskDetails() {
       method: "post",
       reload: false
     });
-  };
+  }
 
   if (isLoading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error.message}</Alert>;
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      {/* Task Header Section */}
+
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
         <Box sx={{ display: "flex", alignItems: "top", gap: 2 }}>
           <Typography variant="h4" component="h1" fontWeight="bold">
@@ -283,6 +288,7 @@ export default function TaskDetails() {
       {/* Modals */}
       <DataModal
         open={open}
+        size='sm'
         onClose={handleClose}
         title={type === 'task' ? "Task Remark" : "Deliverable Remark"}
         description={type === 'task' ?
@@ -298,7 +304,7 @@ export default function TaskDetails() {
       </DataModal>
 
       <DataModal
-        size='lg'
+        size='sm'
         open={viewRemark}
         onClose={handleCloseRemark}
         title="Remarks" description={`Viewing all remarks (${remarks?.length || 0})`}
@@ -306,5 +312,5 @@ export default function TaskDetails() {
         <Remark remarks={remarks} />
       </DataModal>
     </Container>
-  );
+  )
 }

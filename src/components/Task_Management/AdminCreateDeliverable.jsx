@@ -7,6 +7,8 @@ import { ApiRoutes } from "../../utils/ApiRoutes";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
+
+
 const getTask = async (submitData, id) => {
   const response = await submitData({
     endpoint: ApiRoutes.tasks.task(id),
@@ -16,48 +18,52 @@ const getTask = async (submitData, id) => {
 }
 
 export default function AdminCreateDeliverable() {
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get('id');
+  const [searchParams] = useSearchParams()
+  const id = searchParams.get('id')
   const navigation = useNavigate()
+
   const [deliverables, setDeliverables] = React.useState([
     { deliverable_title: "", deliverable_description: "", submitted: false, id: '' }
   ]);
 
-  const { submitData } = useSubmitData();
+  const { submitData } = useSubmitData()
 
   const handleChange = (index, e) => {
-    const { name, value } = e.target;
-    const updated = [...deliverables];
-    updated[index][name] = value;
-    setDeliverables(updated);
-  };
+    const { name, value } = e.target
+    const updated = [...deliverables]
+    updated[index][name] = value
+    setDeliverables(updated)
+  }
 
   const handleSubmit = async (e, index) => {
     e.preventDefault();
-    const currentDeliverable = deliverables[index];
+    const currentDeliverable = deliverables[index]
     const payload = {
       ...currentDeliverable,
       task_id: task?.id,
-    };
+    }
 
     if (currentDeliverable.id) {
-      payload.id = currentDeliverable.id;
+      payload.id = currentDeliverable.id
     }
 
     const response = await submitData({
       data: payload,
       endpoint: ApiRoutes.deliverables.create,
-      method: "post",
-      navigationPath: ''
-    });
+    })
 
     if (response?.success) {
       const updated = [...deliverables];
       updated[index].submitted = true;
-      setDeliverables([
-        ...updated,
-        { deliverable_title: "", deliverable_description: "", submitted: false }
-      ]);
+      const lastObject = updated[deliverables.length - 1]
+      let lastIsEmpty = false
+      if (lastObject.deliverable_title == '' || lastObject.deliverable_description == '') { lastIsEmpty = true }
+
+      if (!lastIsEmpty) {
+        updated.push({ deliverable_title: "", deliverable_description: "", submitted: false })
+      }
+
+      setDeliverables(updated)
       getTask(submitData, id)
     }
   }
@@ -79,10 +85,10 @@ export default function AdminCreateDeliverable() {
         }));
         setDeliverables([
           ...existingDeliverables,
-          { deliverable_title: "", deliverable_description: "", submitted: false }
+          { deliverable_title: '', deliverable_description: '', submitted: false }
         ]);
       } else {
-        setDeliverables([{ deliverable_title: "", deliverable_description: "", submitted: false }]);
+        setDeliverables([{ deliverable_title: '', deliverable_description: '', submitted: false }]);
       }
       return data;
     },
@@ -90,11 +96,10 @@ export default function AdminCreateDeliverable() {
 
 
   const enableInput = (index) => {
-    const updated = [...deliverables];
-    updated[index] = { ...updated[index], submitted: false };
-    setDeliverables(updated);
-  };
-
+    const updated = [...deliverables]
+    updated[index] = { ...updated[index], submitted: false }
+    setDeliverables(updated)
+  }
 
   return (
     <Container maxWidth="md">
@@ -104,9 +109,11 @@ export default function AdminCreateDeliverable() {
         </Typography>
         <hr />
         {deliverables.map((deliverable, index) => (
-          <>
-            <Box key={index + 1} component="form" onSubmit={(e) => handleSubmit(e, index)} sx={{ mt: 2, p: 1, borderRadius: 2 }}>
+          <React.Fragment key={deliverable?.id ?? index + 1}>
+            <Box key={deliverable?.id ?? index + 1} component="form" onSubmit={(e) => handleSubmit(e, index)} sx={{ mt: 2, p: 1, borderRadius: 2 }}>
+
               <Grid container spacing={2} alignItems="center">
+
                 <Grid item xs={5}>
                   <TextField
                     fullWidth
@@ -117,8 +124,8 @@ export default function AdminCreateDeliverable() {
                     disabled={deliverable.submitted}
                     required
                   />
-
                 </Grid>
+
                 <Grid item xs={5}>
                   <TextField
                     fullWidth
@@ -132,6 +139,7 @@ export default function AdminCreateDeliverable() {
                     required
                   />
                 </Grid>
+
                 <Grid item xs={2}>
                   {deliverable.submitted ? (
                     <div>
@@ -150,10 +158,11 @@ export default function AdminCreateDeliverable() {
                     </Button>
                   )}
                 </Grid>
+
               </Grid>
             </Box>
             <hr />
-          </>
+          </React.Fragment>
         ))}
       </Box>
       <Box>

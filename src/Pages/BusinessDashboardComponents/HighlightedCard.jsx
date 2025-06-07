@@ -54,7 +54,7 @@ export default function HighlightedCard({ businessUserprofile }) {
             fullWidth={isSmallScreen}
             onClick={() => navigate("/make/requisition")}
           >
-            Make Requisition
+            Requisitions
           </Button>
         </CardContent>
 

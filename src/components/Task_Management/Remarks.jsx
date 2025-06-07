@@ -1,6 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material"
 import React from "react"
-import { TabPanel } from "../../common/tasks-utils";
 
 
 export const Remark = ({ remarks }) => {

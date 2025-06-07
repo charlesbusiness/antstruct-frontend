@@ -1,12 +1,20 @@
-import { Modal, Box, Typography, IconButton, Divider } from '@mui/material';
+import { Modal, Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+
+const sizeStyles = {
+  xs: '300px',
+  sm: '500px',
+  md: '700px',
+  lg: '900px',
+  xl: '1200px',
+  full: '100%',
+};
 
 const modalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: '100%', sm: '100%', md: '90%', lg: '90%' },
   maxHeight: '100vh',
   bgcolor: 'background.paper',
   borderRadius: 2,
@@ -27,7 +35,7 @@ const headerStyle = {
 };
 
 const contentStyle = {
-  p: 3,
+  p: 1,
   overflowY: 'auto',
   flexGrow: 1,
 };
@@ -47,6 +55,7 @@ export default function DataModal({
   description,
   children,
   footerActions,
+  size = 'lg'
 }) {
   return (
     <Modal
@@ -55,7 +64,7 @@ export default function DataModal({
       aria-labelledby="custom-modal-title"
       aria-describedby="custom-modal-description"
     >
-      <Box sx={modalStyle}>
+      <Box sx={{ ...modalStyle, width: sizeStyles[size] || sizeStyles.lg }}>
         {/* Header */}
         <Box sx={headerStyle}>
           <Typography id="custom-modal-title" variant="h6" component="h2">

@@ -3,8 +3,12 @@ import { TextArea } from "../../common/TextArea"
 import React from "react"
 import useSubmitData from "../../hooks/useSubmitData"
 import { ApiRoutes } from "../../utils/ApiRoutes"
+import { useQueryClient } from '@tanstack/react-query';
+
 
 export const DeliverableRemark = ({ taskId, deliverableId, closeModal, type }) => {
+    const queryClient = useQueryClient();
+
     const [formData, setFormData] = React.useState({
         remark: ''
     })
@@ -17,20 +21,18 @@ export const DeliverableRemark = ({ taskId, deliverableId, closeModal, type }) =
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const response = await submitData({
             data: { remarks: formData.remark, task_id: taskId, deliverable_id: deliverableId, type: type ?? 'deliverable' },
-            endpoint: ApiRoutes.remarks.create,
-            reload: true
-        });
+            endpoint: ApiRoutes.remarks.create
+        })
         if (response?.success) {
+            queryClient.invalidateQueries({ queryKey: ['task', taskId] })
             closeModal()
-            // getTask()
         }
-    };
+    }
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 1, borderRadius: 2 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ p: 1, borderRadius: 2 }}>
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={10}>
                     <TextArea
