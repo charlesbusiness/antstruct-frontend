@@ -1,9 +1,7 @@
 import {
-  Collapse,
   IconButton,
   TableCell,
   TableRow,
-  Typography,
   Box,
   TableContainer,
   Paper,
@@ -22,12 +20,14 @@ import {
   Feedback
 } from '@mui/icons-material';
 import React, { useState } from 'react';
-import { REQUISITION_TYPES, formatDate } from '../../utils/general';
+import { formatDate } from '../../utils/general';
 import { RequisitionDetailCollapsable } from './requisition-detail';
 import useSubmitData from '../../hooks/useSubmitData';
 import { ApiRoutes } from '../../utils/ApiRoutes';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const RequisitionTable = ({ requisitions }) => {
+  const queryClient = useQueryClient()
   const [openRow, setOpenRow] = useState(null);
   const { submitData, isLoading } = useSubmitData()
 
@@ -36,10 +36,12 @@ export const RequisitionTable = ({ requisitions }) => {
   }
   const statusColor = (status) => {
     switch (status) {
-      case 'Approved':
+      case 'approved':
         return 'success.light';
-      case 'Cancelled':
+      case 'declined':
         return 'error.light';
+      case 'reviewed':
+        return 'info.light';
       default:
         return 'warning.light';
     }
@@ -47,17 +49,24 @@ export const RequisitionTable = ({ requisitions }) => {
 
   // Handle actions
   const handleApprove = async (id, status) => {
-    await submitData({
+    const response = await submitData({
       data: { comment: 'Good to go', status },
       endpoint: ApiRoutes.requisitions.approve(id)
     })
-  };
+    if (response?.success) {
+      queryClient.invalidateQueries({ queryKey: ['requisitions'] })
 
-  const handleCancel = (id) => {
-    setRequisitions(requisitions.map(req =>
-      req.id === id ? { ...req, status: 'Cancelled' } : req
-    ));
-    showNotification('Requisition cancelled');
+    }
+  };
+  const handleReview = async (id, status) => {
+    const response = await submitData({
+      data: { comment: 'Good to go', status },
+      endpoint: ApiRoutes.requisitions.approve(id)
+    })
+    if (response?.success) {
+      queryClient.invalidateQueries({ queryKey: ['requisitions'] })
+
+    }
   };
 
   const handleDelete = (id) => {
@@ -111,7 +120,7 @@ export const RequisitionTable = ({ requisitions }) => {
                       <IconButton color="success" onClick={() => handleApprove(req.id, 'approved')} title="Approve">
                         <Check />
                       </IconButton>
-                      <IconButton color="error" onClick={() => handleCancel(req.id)} title="Reject">
+                      <IconButton color="error" onClick={() => handleApprove(req.id, 'declined')} title="Reject">
                         <Close />
                       </IconButton>
                     </>

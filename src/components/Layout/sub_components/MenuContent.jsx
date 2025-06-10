@@ -18,14 +18,38 @@ import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { formatRoute } from '../../../utils/general';
 import { useBusinessProfileContext } from '../../../contexts/profileContext';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <HomeRoundedIcon />, path: '/dashboard' },
-  { text: 'Tasks Dashboard', icon: <AssignmentIcon />, path: '/task/dashboard' },
+  { text: 'Hr Manager', icon: <HomeRoundedIcon />, path: '/dashboard' },
 ];
+const projectModules = {
+  Projects: [
+    {
+      description: "Tasks",
+      endpoint: "/projects"
+    },
+    {
+      description: "Project",
+      endpoint: "/projects"
+    },
+    {
+      description: "Back Logs",
+      endpoint: "/projects"
+    }
+  ],
+
+  Requisitions: [
+    {
+      description: 'Start',
+      endpoint: '/make/requisition'
+    }
+  ],
+};
+
 
 const secondaryListItems = [
   { text: 'Settings', icon: <SettingsRoundedIcon />, path: '/settings' },
@@ -39,12 +63,17 @@ const moduleIcons = {
   Users: <PeopleRoundedIcon />,
   Business: <BusinessCenterRoundedIcon />,
   Category: <CategoryRoundedIcon />,
+  Projects: <AssignmentIcon />,
   default: <FolderRoundedIcon />,
 };
+
+
+
 
 export default function MenuContent() {
   const { expandedModules, toggleModule, businessUserProfile: profile } = useBusinessProfileContext()
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
@@ -58,6 +87,50 @@ export default function MenuContent() {
             </ListItemButton>
           </ListItem>
         ))}
+
+        {/* Project Menus */}
+        {projectModules && (
+          <List dense subheader={<li />}>
+            {Object.entries(projectModules).map(([moduleName, routes]) => (
+              <React.Fragment key={moduleName}>
+                <ListItem disablePadding sx={{ display: 'block' }}>
+                  <ListItemButton onClick={() => toggleModule(moduleName)}>
+                    <ListItemIcon>
+                      {moduleIcons[moduleName] || moduleIcons.default}
+                    </ListItemIcon>
+                    <ListItemText primary={moduleName} />
+                  </ListItemButton>
+                </ListItem>
+
+                <Collapse in={expandedModules[moduleName]} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {routes.map((route, idx) => (
+                      <ListItem key={idx} disablePadding sx={{ pl: 5 }}>
+                        <ListItemButton
+                          onClick={() => navigate(route.endpoint)}
+                        >
+                          <ListItemText
+                            primary={
+                              <span style={{
+                                fontWeight: location.pathname === route.endpoint ? 'bold' : 'normal',
+                                color: location.pathname === route.endpoint ? '#1976d2' : 'inherit'
+                              }}>
+                                {route.description || 'Unnamed'}
+                              </span>
+                            }
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Collapse>
+              </React.Fragment>
+            ))}
+          </List>
+        )}
+
+
+
         {/* Dynamic Modules */}
         {profile && (
           <List dense subheader={<li />}>

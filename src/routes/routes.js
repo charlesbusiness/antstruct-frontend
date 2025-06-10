@@ -50,8 +50,8 @@ const coreRoutes = [
   },
 
   {
-    path: "/task/dashboard",
-    title: "Task Dashboard",
+    path: "/projects",
+    title: "Porject Management",
     component: TaskDashboard,
   },
 

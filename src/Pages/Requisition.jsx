@@ -24,10 +24,6 @@ import { CreateRequisition } from '../components/requisitions/requisition-form';
 import { RequisitionList } from '../components/requisitions/requisition-list';
 
 const RequisitionPage = () => {
-  // Sample initial data
-
-
-  // State for new requisition dialog
   const [openDialog, setOpenDialog] = useState(false);
   const [newRequisition, setNewRequisition] = useState({
     purpose: '',
@@ -48,22 +44,9 @@ const RequisitionPage = () => {
   });
 
 
-
-  // New requisition handlers
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewRequisition({ ...newRequisition, [name]: value });
-  };
-
-
-  // Notification handler
-  const showNotification = (message, severity = 'success') => {
-    setSnackbar({ open: true, message, severity });
-  };
-
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
-  };
+  }
 
   return (
     <Box sx={{ p: 3 }}>
@@ -84,7 +67,7 @@ const RequisitionPage = () => {
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Create New Requisition</DialogTitle>
         <DialogContent sx={{ minWidth: 400 }}>
-          <CreateRequisition />
+          <CreateRequisition setOpenDialog={() => setOpenDialog(false)} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>

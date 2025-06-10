@@ -77,7 +77,8 @@ export default function TaskDashboard() {
         <Typography variant="h4" component="h1" fontWeight="bold">
           Task Management
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Chip label="Create Project" color="primary" variant="outlined" style={{ cursor: 'pointer' }} />
+        <Box sx={{ display: 'flex', gap: 3 }}>
           <Button
             variant="contained"
             fullWidth
@@ -86,6 +87,7 @@ export default function TaskDashboard() {
           >
             Create Task
           </Button>
+
 
           <Chip label="Active Sprint: Sprint 12" color="primary" variant="outlined" />
         </Box>
@@ -133,7 +135,7 @@ export default function TaskDashboard() {
                         {task.priority} Priority
                       </Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
-                        | Status: {task.status} 
+                        | Status: {task.status}
                       </Typography>
                     </Box>
                     {task.progress > 0 && (

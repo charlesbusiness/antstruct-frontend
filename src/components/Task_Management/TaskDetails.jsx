@@ -151,7 +151,7 @@ export default function TaskDetails() {
         </Box>
         <Button
           component={Link}
-          to="/task/dashboard"
+          to="/projects"
           variant="outlined"
           color="primary"
         >

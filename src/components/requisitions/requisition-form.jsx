@@ -4,15 +4,16 @@ import {
     Button,
     MenuItem,
     TextField,
-    Typography,
 } from "@mui/material";
 import { REQUISITION_TYPES } from "../../utils/general";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import ButtonLoader from "../../common/Loader/button-loader";
 import useBusinessProfile from "../../hooks/useBusinessProfile";
+import { useQueryClient } from "@tanstack/react-query";
 
-export const CreateRequisition = () => {
+export const CreateRequisition = ({ setOpenDialog }) => {
+    const queryClient = useQueryClient()
     const { submitData, isLoading } = useSubmitData()
     const { employees, departments } = useBusinessProfile()
     const [formData, setFormData] = useState({
@@ -89,11 +90,15 @@ export const CreateRequisition = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = payloadData();
-        await submitData({
+        const response = await submitData({
             data: payload,
             endpoint: ApiRoutes.requisitions.make
         })
-    };
+        if (response?.success) {
+            queryClient.invalidateQueries({ queryKey: ['requisitions'] })
+            setOpenDialog()
+        }
+    }
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, maxWidth: 600, mx: "auto" }}>
             <ButtonLoader status={isLoading} />
