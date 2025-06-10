@@ -17,6 +17,7 @@ import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { formatRoute } from '../../../utils/general';
@@ -24,7 +25,7 @@ import { useBusinessProfileContext } from '../../../contexts/profileContext';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <HomeRoundedIcon />, path: '/dashboard' },
-  { text: 'Hr Manager', icon: <HomeRoundedIcon />, path: '/dashboard' },
+  { text: 'Hr Manager', icon: <PeopleAltIcon />, path: '/hrDashboard' },
 ];
 const projectModules = {
   Projects: [

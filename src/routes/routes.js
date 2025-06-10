@@ -5,41 +5,55 @@ const CreateBusiness = lazy(() =>
   import("../components/business_creation/BusinessCreation")
 );
 
+const Departments = lazy(() => import("@src/Pages/Departments"));
 
-const Departments = lazy(() =>
-  import("@src/Pages/Departments")
-);
+const Roles = lazy(() => import("@src/Pages/Roles"));
 
-const Roles = lazy(() =>
-  import("@src/Pages/Roles")
-);
-
-const Employees = lazy(() =>
-  import("@src/Pages/Employees")
-);
+const Employees = lazy(() => import("@src/Pages/Employees"));
 const CreateDepartment = lazy(() =>
   import("../components/dept_creation/DepartmentCreation")
 );
+const HrDashboard = lazy(() => import("@src/Pages/hrPages/HRDashBoard"));
 const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
-const AdminCreateDeliverable = lazy(() => import("../components/Task_Management/AdminCreateDeliverable"));
-const AdminCreateTask = lazy(() => import("../components/Task_Management/AdminCreateTask"));
-const ChangeTaskStatus = lazy(() => import("../components/Task_Management/ChangeTaskStatus"));
-const UserUpdateDeliverable = lazy(() => import("../components/Task_Management/UserUpdateDeliverable"));
-const UserUpdateTask = lazy(() => import("../components/Task_Management/UserUpdateTask"));
-const TaskDashboard = lazy(() => import("../components/Task_Management/TaskDashboard"));
-const TaskDetails = lazy(() => import("../components/Task_Management/TaskDetails"));
+const AdminCreateDeliverable = lazy(() =>
+  import("../components/Task_Management/AdminCreateDeliverable")
+);
+const AdminCreateTask = lazy(() =>
+  import("../components/Task_Management/AdminCreateTask")
+);
+const ChangeTaskStatus = lazy(() =>
+  import("../components/Task_Management/ChangeTaskStatus")
+);
+const UserUpdateDeliverable = lazy(() =>
+  import("../components/Task_Management/UserUpdateDeliverable")
+);
+const UserUpdateTask = lazy(() =>
+  import("../components/Task_Management/UserUpdateTask")
+);
+const TaskDashboard = lazy(() =>
+  import("../components/Task_Management/TaskDashboard")
+);
+const TaskDetails = lazy(() =>
+  import("../components/Task_Management/TaskDetails")
+);
 const CreateEmployee = lazy(() =>
   import("../components/employee_creation/EmployeeCreation")
 );
-const CreateRole = lazy(() =>
-  import("../components/role/create-roles")
-);
+const CreateRole = lazy(() => import("../components/role/create-roles"));
 const AssignRole = lazy(() => import("../components/role/assign-role"));
 const UnassignRole = lazy(() => import("../components/role/unassign-role"));
-const MapResources = lazy(() => import("../components/map_resources_to_roles/MapResources"));
-const UnMapResources = lazy(() => import("../components/map_resources_to_roles/UnMapResources"));
-const DepartmentManager = lazy(() => import("../components/map_dept_managers/DepartmentManager"));
-const UnAssignDepartmentManager = lazy(() => import("../components/map_dept_managers/UnassignDepartmentManager"));
+const MapResources = lazy(() =>
+  import("../components/map_resources_to_roles/MapResources")
+);
+const UnMapResources = lazy(() =>
+  import("../components/map_resources_to_roles/UnMapResources")
+);
+const DepartmentManager = lazy(() =>
+  import("../components/map_dept_managers/DepartmentManager")
+);
+const UnAssignDepartmentManager = lazy(() =>
+  import("../components/map_dept_managers/UnassignDepartmentManager")
+);
 const Requisition = lazy(() => import("@src/Pages/Requisition"));
 
 const coreRoutes = [
@@ -48,7 +62,11 @@ const coreRoutes = [
     title: "Dashboard",
     component: Dashboard,
   },
-
+  {
+    path: "/hrDashboard",
+    title: "HR Dashboard",
+    component: HrDashboard,
+  },
   {
     path: "/projects",
     title: "Porject Management",
@@ -168,7 +186,6 @@ const coreRoutes = [
     title: "Logout",
     component: Logout,
   },
-
 ];
 
 const routes = [...coreRoutes];
