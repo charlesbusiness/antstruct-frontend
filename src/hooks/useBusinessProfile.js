@@ -128,7 +128,34 @@ const useBusinessProfile = () => {
         keepPreviousData: true,
     });
 
-    // === Computed values ===
+    const projects = useQuery({
+        queryKey: ['projects'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.projects.projects,
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch API resources');
+            return response.data;
+        },
+        keepPreviousData: true,
+    });
+
+    // const sprints = useQuery({
+    //     queryKey: ['sprints'],
+    //     queryFn: async () => {
+    //         const response = await submitData({
+    //             data: {},
+    //             endpoint: ApiRoutes.projects.sprints(),
+    //             method: 'get',
+    //         });
+    //         if (response?.error) throw new Error('Failed to fetch API resources');
+    //         return response.data;
+    //     },
+    //     keepPreviousData: true,
+    // });
+
 
     const groupedResources = useMemo(() => {
         if (!businessProfileQuery.data) return null;
@@ -142,7 +169,6 @@ const useBusinessProfile = () => {
         }, {});
     }, [businessProfileQuery.data]);
 
-    // === UI State ===
 
     const toggleModule = (moduleName) => {
         setExpandedModules(prev => ({
@@ -161,10 +187,11 @@ const useBusinessProfile = () => {
         departments: departmentsQuery.data,
         resources: resourcesQuery.data,
         modules: appModules.data,
-        error: businessProfileQuery.error || employeesQuery.error || departmentsQuery.error || resourcesQuery.error || roles.error || appModules.error || businessCategories.error || businessSizes.error,
+        error: businessProfileQuery.error || employeesQuery.error || departmentsQuery.error || resourcesQuery.error || roles.error || appModules.error || businessCategories.error || businessSizes.error || projects.error,
         expandedModules,
         toggleModule,
-        isLoading: businessProfileQuery.isLoading || employeesQuery.isLoading || departmentsQuery.isLoading || resourcesQuery.isLoading || roles.isLoading || appModules.isLoading || businessCategories.isLoading || businessSizes.isLoading,
+        projects: projects.data,
+        isLoading: businessProfileQuery.isLoading || employeesQuery.isLoading || departmentsQuery.isLoading || resourcesQuery.isLoading || roles.isLoading || appModules.isLoading || businessCategories.isLoading || businessSizes.isLoading || projects.isLoading,
     };
 };
 

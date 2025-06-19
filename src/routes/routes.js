@@ -1,6 +1,10 @@
 import { lazy } from "react";
 import { Logout } from "../Logout";
 
+const ProjectDashboard = lazy(() => import("../components/Task_Management/ProjectDashboard"))
+
+const Sprint = lazy(() => import("../components/Task_Management/SprintDashboard"))
+
 const CreateBusiness = lazy(() =>
   import("../components/business_creation/BusinessCreation")
 );
@@ -15,6 +19,7 @@ const CreateDepartment = lazy(() =>
 );
 const HrDashboard = lazy(() => import("@src/Pages/hrPages/HRDashBoard"));
 const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
+
 const AdminCreateDeliverable = lazy(() =>
   import("../components/Task_Management/AdminCreateDeliverable")
 );
@@ -86,6 +91,18 @@ const coreRoutes = [
   },
 
   {
+    path: "/project/dashboard",
+    title: "projects-dashboard",
+    component: ProjectDashboard,
+  },
+
+  {
+    path: '/sprints/:id',
+    title: "Sprint-dashboard",
+    component: Sprint,
+  },
+
+  {
     path: "/user/update/task/deliverable",
     title: "Task Deliverable Updates",
     component: UserUpdateDeliverable,
@@ -96,7 +113,7 @@ const coreRoutes = [
     component: UserUpdateTask,
   },
   {
-    path: "/admin/create/task",
+    path: "/admin/create/task/:id",
     title: "Create Task",
     component: AdminCreateTask,
   },

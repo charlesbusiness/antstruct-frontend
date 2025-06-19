@@ -35,8 +35,9 @@ const projectModules = {
     },
     {
       description: "Project",
-      endpoint: "/projects"
+      endpoint: "/project/dashboard"
     },
+
     {
       description: "Back Logs",
       endpoint: "/projects"

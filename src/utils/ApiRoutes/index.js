@@ -68,6 +68,13 @@ export const ApiRoutes = {
     deliverableUpdate: `tasks/admin/deliverable/status`,
   },
 
+  projects: {
+    create: 'projects',
+    createSprint: 'projects/sprint',
+    projects: 'projects',
+    sprints: (projectId) => `projects/sprint/${projectId}`
+  },
+
   remarks: {
     create: 'tasks/admin/deliverable/remark',
     // tasks: (query) => `tasks/admin/tasks?${query}`,

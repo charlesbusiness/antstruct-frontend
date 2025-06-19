@@ -30,6 +30,11 @@ export const RequisitionTable = ({ requisitions }) => {
   const queryClient = useQueryClient()
   const [openRow, setOpenRow] = useState(null);
   const { submitData, isLoading } = useSubmitData()
+  const [reviewData, setReviewData] = useState({
+    reviewed_budget: '',
+    review: ''
+  })
+  const [showReviewDialog, setShowReviewDialog] = useState(false)
 
   const toggleRow = (id) => {
     setOpenRow((prev) => (prev === id ? null : id));
@@ -47,17 +52,18 @@ export const RequisitionTable = ({ requisitions }) => {
     }
   };
 
-  // Handle actions
   const handleApprove = async (id, status) => {
     const response = await submitData({
       data: { comment: 'Good to go', status },
       endpoint: ApiRoutes.requisitions.approve(id)
     })
+
     if (response?.success) {
       queryClient.invalidateQueries({ queryKey: ['requisitions'] })
 
     }
-  };
+  }
+
   const handleReview = async (id, status) => {
     const response = await submitData({
       data: { comment: 'Good to go', status },
@@ -67,7 +73,7 @@ export const RequisitionTable = ({ requisitions }) => {
       queryClient.invalidateQueries({ queryKey: ['requisitions'] })
 
     }
-  };
+  }
 
   const handleDelete = (id) => {
     setRequisitions(requisitions.filter(req => req.id !== id));
