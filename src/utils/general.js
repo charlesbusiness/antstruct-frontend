@@ -10,6 +10,15 @@ export const formatDate = (rawDate) => {
   }).format(new Date(rawDate.replace(' ', 'T')))
   return formatted
 }
+export const formatDateOnly = (rawDate) => {
+  if (!rawDate) return
+  const formatted = new Intl.DateTimeFormat('en-US', {
+    weekday: 'short', year: 'numeric', month: 'long',
+    day: 'numeric',
+    hour12: true
+  }).format(new Date(rawDate.replace(' ', 'T')))
+  return formatted
+}
 
 export const TaskStatus = ['in-progress', 'reviewd', 'completed', 'approved', 'testing', 'pending',];
 

@@ -51,8 +51,8 @@ export default function DeliverableDialog({ open, onClose, submitData }) {
         });
 
         if (response?.success) {
-            queryClient.invalidateQueries(['dailDeliverable']);
-            onClose(); // optional: close modal on success
+            queryClient.invalidateQueries(['dailyDeliverable']);
+            onClose();
         }
 
     }

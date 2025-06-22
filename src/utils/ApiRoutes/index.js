@@ -97,8 +97,8 @@ export const ApiRoutes = {
   hrManager: {
     deliverables: {
       create: 'hr/manager/deliverables/create',
-      update: 'hr/manager/deliverables/update',
-      get: 'hr/manager/deliverables',
+      update: (id) => `hr/manager/deliverables/update/${id}`,
+      get: (search) => `hr/manager/deliverables?${search}`,
     }
   }
 }
