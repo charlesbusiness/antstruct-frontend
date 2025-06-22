@@ -29,10 +29,7 @@ const mainListItems = [
 ];
 const projectModules = {
   Projects: [
-    {
-      description: "Tasks",
-      endpoint: "/projects"
-    },
+
     {
       description: "Project",
       endpoint: "/project/dashboard"

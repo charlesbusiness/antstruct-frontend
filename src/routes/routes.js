@@ -18,6 +18,7 @@ const CreateDepartment = lazy(() =>
   import("../components/dept_creation/DepartmentCreation")
 );
 const HrDashboard = lazy(() => import("@src/Pages/hrPages/HRDashBoard"));
+const DailyDeliverables = lazy(() => import("@src/Pages/hrPages/DailyDeliverables"));
 const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
 
 const AdminCreateDeliverable = lazy(() =>
@@ -73,7 +74,7 @@ const coreRoutes = [
     component: HrDashboard,
   },
   {
-    path: "/projects",
+    path: "/tasks/:id",
     title: "Porject Management",
     component: TaskDashboard,
   },
@@ -203,6 +204,14 @@ const coreRoutes = [
     title: "Logout",
     component: Logout,
   },
+
+  {
+    path: "/hr/daily/deliverables",
+    title: "Daily Deliverables",
+    component: DailyDeliverables,
+  },
+
+
 ];
 
 const routes = [...coreRoutes];

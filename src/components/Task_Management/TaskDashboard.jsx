@@ -41,7 +41,6 @@ export default function TaskDashboard() {
   const { id } = useParams()
   const [value, setValue] = React.useState(0)
   const [tasks, setTasks] = React.useState(null)
-  const [sprintModal, setSprintModal] = React.useState(false)
   const [pending, setPending] = React.useState(null)
   const [inProgress, setInProgress] = React.useState(null)
   const [done, setDone] = React.useState(null)
@@ -52,13 +51,11 @@ export default function TaskDashboard() {
   }
 
 
-  const showSprintModal = () => {
-    setSprintModal(!sprintModal)
-  }
+
 
   const getTasks = async (query) => {
     const response = await submitData({
-      endpoint: ApiRoutes.tasks.tasks(query),
+      endpoint: ApiRoutes.tasks.tasks(query, id),
       method: "get"
     });
 
@@ -66,7 +63,12 @@ export default function TaskDashboard() {
       const { data } = response;
       setTasks(data);
       const pending = data.filter(t => t.status === 'pending')
-      const inProgress = data.filter(t => t.status === 'in-progress' || 'reviewd' || 'testing' || 'completed')
+      const inProgress = data.filter(t =>
+        t.status === 'in-progress' ||
+        t.status === 'reviewd' ||
+        t.status === 'testing' ||
+        t.status === 'completed'
+      )
       const done = data.filter(t => t.status === 'approved')
       const taskOverview = {
         pending: pending,
@@ -85,7 +87,6 @@ export default function TaskDashboard() {
   }, []);
 
 
-
   return (
     <>
       <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -94,17 +95,8 @@ export default function TaskDashboard() {
             Task Management
           </Typography>
 
-          <Chip label="Make a sprint" color="primary" variant="outlined" style={{ cursor: 'pointer' }} onClick={showSprintModal} />
           <Box sx={{ display: 'flex', gap: 3 }}>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => navigate('/admin/create/task')}
-              sx={{ mt: 'auto' }}
-            >
-              Create Task
-            </Button>
-            <Chip label="Active Sprint: Sprint 12" color="primary" variant="outlined" />
+            <Chip label={`Active Sprint: ${tasks ? tasks[0]?.sprint?.sprint_name : ''}`} color="primary" variant="outlined" />
           </Box>
         </Box>
 
@@ -325,7 +317,6 @@ export default function TaskDashboard() {
           </Grid>
         </TabPanel>
       </Container>
-      <SprintDashboard showSprintModal={showSprintModal} sprintModal={sprintModal} />
 
     </>
   );

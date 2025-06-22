@@ -151,7 +151,7 @@ export default function TaskDetails() {
         </Box>
         <Button
           component={Link}
-          to="/projects"
+          to={`/tasks/${task?.sprint?.id}`}
           variant="outlined"
           color="primary"
         >

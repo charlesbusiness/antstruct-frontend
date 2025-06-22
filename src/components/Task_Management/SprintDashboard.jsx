@@ -11,17 +11,20 @@ import {
   Grid,
   Card,
   CardContent,
-  Chip
+  Chip,
+  Stack,
+  Badge,
+  Divider
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import useSubmitData from "../../hooks/useSubmitData";
-import useBusinessProfile from "../../hooks/useBusinessProfile";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "../../utils/general";
+import { MoreHoriz } from "@mui/icons-material";
 
-export default function SprintDashboard({ showSprintModal, sprintModal, project_id }) {
+export default function SprintDashboard({ showSprintModal, sprintModal = false, project_id }) {
   const client = useQueryClient()
   const navigate = useNavigate()
   const { id } = useParams()
@@ -32,7 +35,7 @@ export default function SprintDashboard({ showSprintModal, sprintModal, project_
     end_date: '',
   })
   const { submitData } = useSubmitData()
-  const { projects } = useBusinessProfile()
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prevData) => ({
@@ -71,8 +74,12 @@ export default function SprintDashboard({ showSprintModal, sprintModal, project_
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-
+        <Stack>
+          <Typography variant="h5">Project : {sprints?.data?.[0]?.project?.project_name}</Typography>
+          <Typography variant="body2">Details : {sprints?.data?.[0]?.project?.project_description}</Typography>
+        </Stack>
       </Box>
+
       <Grid container spacing={2} sx={{ mb: 4 }}>
         {sprints?.data?.map((sprint) => (
           <Grid item xs={12} sm={6} md={4} key={sprint.id}>
@@ -83,6 +90,21 @@ export default function SprintDashboard({ showSprintModal, sprintModal, project_
                     {sprint.sprint_name}
                   </Typography>
                 </Box>
+
+                <Box sx={{ my: 1, pb: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                  <Badge
+                    badgeContent={sprint.tasks?.length || 0}
+                    color="primary"
+                    sx={{ mr: 2 }}
+                  >
+                    <Typography variant="caption">Tasks</Typography>
+                  </Badge>
+                  {
+                    sprint.tasks?.length > 0 &&
+                    <MoreHoriz sx={{ cursor: 'pointer' }} onClick={() => navigate(`/tasks/${sprint.id}`)} />
+                  }
+                </Box>
+                <Divider />
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                   <Typography variant="caption" color="text.secondary">
@@ -103,7 +125,9 @@ export default function SprintDashboard({ showSprintModal, sprintModal, project_
                   </Typography>
                 </Box>
 
-                <Link fullWidth variant="contained" to={`/admin/create/task/${sprint.id}`}>Add Task</Link>
+
+
+                <Link variant="contained" to={`/admin/create/task/${sprint.id}?project=${id}`}>Add Task</Link>
               </CardContent>
             </Card>
           </Grid>

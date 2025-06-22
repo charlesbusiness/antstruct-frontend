@@ -62,7 +62,7 @@ export const ApiRoutes = {
 
   tasks: {
     create: 'tasks/admin',
-    tasks: (query) => `tasks/admin/tasks?${query}`,
+    tasks: (query, sprint) => `tasks/admin/tasks?sprint=${sprint}`,
     task: (id) => `tasks/admin/task/${id}`,
     taskUpdate: (id) => `tasks/admin/task/status/${id}`,
     deliverableUpdate: `tasks/admin/deliverable/status`,
@@ -80,6 +80,7 @@ export const ApiRoutes = {
     // tasks: (query) => `tasks/admin/tasks?${query}`,
     // task: (id) => `tasks/admin/task/${id}`
   },
+
   deliverables: {
     create: 'tasks/admin/deliverables'
   },
@@ -91,5 +92,13 @@ export const ApiRoutes = {
     cancel: 'requisitions/cancel',
     requisitions: 'requisitions',
     requisition: (id) => `requisitions/${id}`,
+  },
+
+  hrManager: {
+    deliverables: {
+      create: 'hr/manager/deliverables/create',
+      update: 'hr/manager/deliverables/update',
+      get: 'hr/manager/deliverables',
+    }
   }
 }

@@ -13,7 +13,7 @@ import {
 
 const QuickLinks = () => {
   const quickLinks = [
-    { name: 'Add New Employee', icon: '👤', url: '/employees/add' },
+    { name: 'Add New Employee', icon: '👤', url: '/create/business/employees' },
     { name: 'Process Payroll', icon: '💰', url: '/payroll' },
     { name: 'Performance Reviews', icon: '📊', url: '/reviews' },
     { name: 'Time Off Requests', icon: '⏱️', url: '/time-off' },
@@ -21,6 +21,7 @@ const QuickLinks = () => {
     { name: 'Company Policies', icon: '📜', url: '/policies' },
     { name: 'Org Chart', icon: '🏢', url: '/org-chart' },
     { name: 'Reports', icon: '📈', url: '/reports' },
+    { name: 'Create Daily Deliverables', icon: '📈', url: '/hr/daily/deliverables' },
   ];
 
   return (
@@ -34,7 +35,7 @@ const QuickLinks = () => {
             <Button
               fullWidth
               variant="outlined"
-              sx={{ 
+              sx={{
                 p: 2,
                 display: 'flex',
                 flexDirection: 'column',
@@ -52,7 +53,7 @@ const QuickLinks = () => {
           </Grid>
         ))}
       </Grid>
-      
+
       {/* Upcoming Events Section */}
       <Divider sx={{ my: 3 }} />
       <Typography variant="h6" component="h3" gutterBottom>

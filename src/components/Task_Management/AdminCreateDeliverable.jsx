@@ -20,6 +20,7 @@ const getTask = async (submitData, id) => {
 export default function AdminCreateDeliverable() {
   const [searchParams] = useSearchParams()
   const id = searchParams.get('id')
+  const projectId = searchParams.get('project')
   const navigation = useNavigate()
 
   const [deliverables, setDeliverables] = React.useState([
@@ -168,7 +169,7 @@ export default function AdminCreateDeliverable() {
       <Box>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={6}>
-            <Button onClick={() => navigation('/projects')}>Go to dashboard</Button>
+            <Button onClick={() => navigation(`/sprints/${projectId}`)}>Go to dashboard</Button>
           </Grid>
         </Grid>
       </Box>

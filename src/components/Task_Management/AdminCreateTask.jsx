@@ -18,7 +18,7 @@ import { TextField } from "../../common/TextField";
 import { TextArea } from "../../common/TextArea";
 import AdminCreateDeliverable from "./AdminCreateDeliverable";
 import CustomModal from "../../common/CustomModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 export default function AdminCreateTask() {
   const [formData, setFormData] = React.useState({
@@ -40,17 +40,18 @@ export default function AdminCreateTask() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const { id } = useParams()
+  const [searchParams] = useSearchParams();
 
-
+  const projectId = searchParams.get('project');
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await submitData({
-      data: formData,
+      data: { ...formData, sprint_id: id },
       endpoint: ApiRoutes.tasks.create,
       method: "post",
       reload: false
@@ -58,7 +59,7 @@ export default function AdminCreateTask() {
 
     if (!response?.error) {
       const { data } = response
-      navigation(`/admin/create/task/deliverable?id=${data.id}`)
+      navigation(`/admin/create/task/deliverable?id=${data.id}&project=${projectId}`)
     }
   }
 
