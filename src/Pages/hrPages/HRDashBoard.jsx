@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import {  
-  Container, 
-  Typography, 
+import {
+  Container,
+  Typography,
   Grid,
   Paper,
   CssBaseline
@@ -77,28 +77,28 @@ const HRDashboard = () => {
         <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
           HR Dashboard
         </Typography>
-        
+
         {/* Stats Overview */}
         <StatsOverview employees={employees} />
-        
+
         <Grid container spacing={3} mt={2}>
-          <Grid item xs={12} md={8}>
-            {/* Employee Table */}
+
+          <Grid item xs={12} md={12}>
+            {/* Quick Links */}
+            <QuickLinks />
+          </Grid>
+          {/* <Grid item xs={12} md={12}>
+
             <Paper elevation={3} sx={{ p: 3 }}>
               <Typography variant="h6" component="h2" gutterBottom>
                 Employee Records
               </Typography>
               <EmployeeTable employees={employees} onViewMore={handleViewMore} />
             </Paper>
-          </Grid>
-          
-          <Grid item xs={12} md={4}>
-            {/* Quick Links */}
-            <QuickLinks />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
-      
+
       {/* Employee Detail Modal */}
       {isModalOpen && selectedEmployee ? (
         <EmployeeDetailModal employee={selectedEmployee} onClose={closeModal} />

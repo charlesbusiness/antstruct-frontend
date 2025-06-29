@@ -8,10 +8,10 @@ import {
   Grid,
   Box,
 } from "@mui/material";
-import HighlightedCard from "./BusinessDashboardComponents/HighlightedCard";
-import PageViewsBarChart from "./BusinessDashboardComponents/PageViewsBarChart";
-import SessionsChart from "./BusinessDashboardComponents/SessionsChart";
-import StatCard from "./BusinessDashboardComponents/StatCard";
+import HighlightedCard from "./BusinessDashboard/HighlightedCard";
+import PageViewsBarChart from "./BusinessDashboard/PageViewsBarChart";
+import SessionsChart from "./BusinessDashboard/SessionsChart";
+import StatCard from "./BusinessDashboard/StatCard";
 import useBusinessProfile from "../hooks/useBusinessProfile";
 
 export default function BusinessDashboard() {

@@ -1,66 +1,62 @@
 import { lazy } from "react";
 import { Logout } from "../Logout";
+import BusinessCreation from "../Pages/Configuration/BusinessCreation";
 
-const ProjectDashboard = lazy(() => import("../components/Task_Management/ProjectDashboard"))
+const ProjectDashboard = lazy(() => import("../Pages/TaskManagement/ProjectDashboard"))
 
-const Sprint = lazy(() => import("../components/Task_Management/SprintDashboard"))
+const Sprint = lazy(() => import("../Pages/TaskManagement/SprintDashboard"))
 
-const CreateBusiness = lazy(() =>
-  import("../components/business_creation/BusinessCreation")
-);
 
-const Departments = lazy(() => import("@src/Pages/Departments"));
+const Departments = lazy(() => import("@src/Pages/Configuration/Departments"));
 
-const Roles = lazy(() => import("@src/Pages/Roles"));
+const Roles = lazy(() => import("@src/Pages/RolesPermissions/Roles"));
 
-const Employees = lazy(() => import("@src/Pages/Employees"));
-const CreateDepartment = lazy(() =>
-  import("../components/dept_creation/DepartmentCreation")
-);
+const Employees = lazy(() => import("@src/Pages/HrPages/Employee/Employees"));
+
 const HrDashboard = lazy(() => import("@src/Pages/hrPages/HRDashBoard"));
 const DailyDeliverables = lazy(() => import("@src/Pages/hrPages/DailyDeliverables"));
 const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
 
 const AdminCreateDeliverable = lazy(() =>
-  import("../components/Task_Management/AdminCreateDeliverable")
+  import("@src/Pages/TaskManagement/AdminCreateDeliverable")
 );
 const AdminCreateTask = lazy(() =>
-  import("../components/Task_Management/AdminCreateTask")
+  import("@src/Pages/TaskManagement/AdminCreateTask")
 );
 const ChangeTaskStatus = lazy(() =>
-  import("../components/Task_Management/ChangeTaskStatus")
+  import("@src/Pages/TaskManagement/ChangeTaskStatus")
 );
 const UserUpdateDeliverable = lazy(() =>
-  import("../components/Task_Management/UserUpdateDeliverable")
+  import("@src/Pages/TaskManagement/UserUpdateDeliverable")
 );
 const UserUpdateTask = lazy(() =>
-  import("../components/Task_Management/UserUpdateTask")
+  import("@src/Pages/TaskManagement/UserUpdateTask")
 );
 const TaskDashboard = lazy(() =>
-  import("../components/Task_Management/TaskDashboard")
+  import("@src/Pages/TaskManagement/TaskDashboard")
 );
 const TaskDetails = lazy(() =>
-  import("../components/Task_Management/TaskDetails")
+  import("@src/Pages/TaskManagement/TaskDetails")
 );
 const CreateEmployee = lazy(() =>
-  import("../components/employee_creation/EmployeeCreation")
+  import("@src/Pages/HrPages/Employee/EmployeeCreation")
 );
-const CreateRole = lazy(() => import("../components/role/create-roles"));
-const AssignRole = lazy(() => import("../components/role/assign-role"));
-const UnassignRole = lazy(() => import("../components/role/unassign-role"));
+const CreateRole = lazy(() => import("../Pages/RolesPermissions/create-roles"));
+const AssignRole = lazy(() => import("../Pages/RolesPermissions/assign-role"));
+const UnassignRole = lazy(() => import("../Pages/RolesPermissions/unassign-role"));
 const MapResources = lazy(() =>
-  import("../components/map_resources_to_roles/MapResources")
+  import("@src/Pages/Configuration/Resources/MapResources")
 );
 const UnMapResources = lazy(() =>
-  import("../components/map_resources_to_roles/UnMapResources")
+  import("@src/Pages/Configuration/Resources/UnMapResources")
 );
 const DepartmentManager = lazy(() =>
-  import("../components/map_dept_managers/DepartmentManager")
+  import("@src/Pages/Configuration/DepartmentManagers/DepartmentManager")
 );
 const UnAssignDepartmentManager = lazy(() =>
-  import("../components/map_dept_managers/UnassignDepartmentManager")
+  import("@src/Pages/Configuration/DepartmentManagers/UnassignDepartmentManager")
 );
-const Requisition = lazy(() => import("@src/Pages/Requisition"));
+const Requisition = lazy(() => import("@src/Pages/HrPages/Requisitions/Requisition"));
 
 const coreRoutes = [
   {
@@ -128,23 +124,19 @@ const coreRoutes = [
     title: "Change Task Status",
     component: ChangeTaskStatus,
   },
+
   {
-    path: "/employees",
+    path: "/create-business",
+    title: "Create Business",
+    component: BusinessCreation,
+  },
+  {
+    path: "/hr/employees",
     title: "Employees",
     component: Employees,
   },
   {
-    path: "/create/business/department",
-    title: "Create Department",
-    component: CreateDepartment,
-  },
-  {
-    path: "/create-business",
-    title: "Create Business",
-    component: CreateBusiness,
-  },
-  {
-    path: "/create/business/employees",
+    path: "hr/create/employees",
     title: "Create Employee",
     component: CreateEmployee,
   },
@@ -154,19 +146,19 @@ const coreRoutes = [
     component: CreateRole,
   },
   {
-    path: "/assign/role/to/employee",
+    path: "/config/assign/role",
     title: "Assign Role",
     component: AssignRole,
   },
   {
-    path: "/unassign/role/to/employee",
+    path: "/config/unassign/role",
     title: "Unassign Role",
     component: UnassignRole,
   },
 
   {
-    path: "/role/resource/mapping",
-    title: "Map Resource To Role",
+    path: "/config/api/resources",
+    title: "Map API Resource With Role",
     component: MapResources,
   },
 
@@ -177,16 +169,19 @@ const coreRoutes = [
   },
 
   {
-    path: "/departments",
+    path: "/config/departments",
     title: "Departments",
     component: Departments,
   },
 
+
+
   {
-    path: "/map/department/to/employee/managers",
+    path: "/config/departments/managers",
     title: "Department Managers",
     component: DepartmentManager,
   },
+
   {
     path: "/unmapped/dept",
     title: "UnAssign Department Managers",
@@ -194,7 +189,7 @@ const coreRoutes = [
   },
 
   {
-    path: "/roles",
+    path: "/config/roles",
     title: "Roles",
     component: Roles,
   },

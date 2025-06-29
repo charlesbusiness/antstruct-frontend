@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
-import { SitemarkIcon } from '../../authentication/sub_components/CustomIcons';
+import { SitemarkIcon } from '@src/components/CustomIcons';
 import { useBusinessProfileContext } from '../../../contexts/profileContext';
 const drawerWidth = 240;
 

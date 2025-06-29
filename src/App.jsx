@@ -1,27 +1,27 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-  import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import Loader from './common/Loader';
 import './App.css'
 import routes from './routes/routes'
-import BusinessSignUp from './components/authentication/BusinessSignUp'
-import BusinessSignIn from './components/authentication/BusinessSignIn'
+import BusinessSignUp from './Pages/Authentication/BusinessSignUp'
+import BusinessSignIn from './Pages/Authentication/BusinessSignIn'
 import { ProtectedRoute } from './components/Layout/ProtectedRoute'
-import VerifyEmailAddress from './components/authentication/VerifyEmailAddress';
+import VerifyEmailAddress from './Pages/Authentication/VerifyEmailAddress';
 import { TitleProvider } from './hooks/TitleContext';
 const Layout = lazy(() => import('./components/Layout/Dashboard'));
 
 function App() {
-  
+
   return (
     <TitleProvider>
       <Router>
-      <ToastContainer/>
+        <ToastContainer />
         <Routes>
-        <Route path="/" element={<BusinessSignIn />} />
-        <Route path="/sign-up" element={<BusinessSignUp />} />
-        <Route path="/verify" element={<VerifyEmailAddress />} />
+          <Route path="/" element={<BusinessSignIn />} />
+          <Route path="/register" element={<BusinessSignUp />} />
+          <Route path="/verify" element={<VerifyEmailAddress />} />
           <Route element={<Layout />} >
             <Route path='/' element={<ProtectedRoute />}>
               {routes.map((route, index) => {

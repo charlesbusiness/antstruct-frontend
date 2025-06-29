@@ -10,10 +10,11 @@ import {
   Avatar,
   Divider
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const QuickLinks = () => {
   const quickLinks = [
-    { name: 'Add New Employee', icon: '👤', url: '/create/business/employees' },
+    { name: 'Add New Employee', icon: '👤', url: '/hr/create/employees' },
     { name: 'Process Payroll', icon: '💰', url: '/payroll' },
     { name: 'Performance Reviews', icon: '📊', url: '/reviews' },
     { name: 'Time Off Requests', icon: '⏱️', url: '/time-off' },
@@ -23,7 +24,7 @@ const QuickLinks = () => {
     { name: 'Reports', icon: '📈', url: '/reports' },
     { name: 'Create Daily Deliverables', icon: '📈', url: '/hr/daily/deliverables' },
   ];
-
+  const navigate = useNavigate()
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <Typography variant="h6" component="h2" gutterBottom>
@@ -31,7 +32,7 @@ const QuickLinks = () => {
       </Typography>
       <Grid container spacing={2}>
         {quickLinks.map((link, index) => (
-          <Grid item xs={6} key={index}>
+          <Grid item xs={3} key={index}>
             <Button
               fullWidth
               variant="outlined"
@@ -41,7 +42,8 @@ const QuickLinks = () => {
                 flexDirection: 'column',
                 height: '100%'
               }}
-              href={link.url}
+              onClick={() => navigate(link.url, { push: true })}
+
             >
               <Typography variant="h5" sx={{ mb: 1 }}>
                 {link.icon}

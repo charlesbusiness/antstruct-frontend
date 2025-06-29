@@ -14,8 +14,10 @@ import {
   Typography,
   TablePagination
 } from '@mui/material';
+import useBusinessProfile from '@src/hooks/useBusinessProfile';
 
 const EmployeeTable = ({ employees, onViewMore }) => {
+  const { employees: employeeData } = useBusinessProfile();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -29,7 +31,7 @@ const EmployeeTable = ({ employees, onViewMore }) => {
   };
 
   // Paginated slice of employees
-  const paginatedEmployees = employees.slice(
+  const paginatedEmployees = employeeData?.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -43,22 +45,22 @@ const EmployeeTable = ({ employees, onViewMore }) => {
               <TableCell>Name</TableCell>
               <TableCell>Position</TableCell>
               <TableCell>Department</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell>Phone</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedEmployees.map((employee) => (
+            {paginatedEmployees?.map((employee) => (
               <TableRow key={employee.id}>
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar 
-                      src={employee.image} 
-                      alt={employee.name}
+                    <Avatar
+                      src={employee.profile_image ?? ''}
+                      alt={employee.firstname}
                       sx={{ mr: 2 }}
                     />
                     <Box>
-                      <Typography variant="body1">{employee.name}</Typography>
+                      <Typography variant="body1">{employee.firstname}</Typography>
                       <Typography variant="body2" color="text.secondary">
                         {employee.email}
                       </Typography>
@@ -66,13 +68,9 @@ const EmployeeTable = ({ employees, onViewMore }) => {
                   </Box>
                 </TableCell>
                 <TableCell>{employee.position}</TableCell>
-                <TableCell>{employee.department}</TableCell>
+                <TableCell>{employee.department.department_name}</TableCell>
                 <TableCell>
-                  <Chip 
-                    label={employee.status}
-                    color={employee.status === 'Active' ? 'success' : 'error'}
-                    size="small"
-                  />
+                  <TableCell>{employee.phone}</TableCell>
                 </TableCell>
                 <TableCell>
                   <Button

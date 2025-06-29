@@ -100,6 +100,21 @@ const useBusinessProfile = () => {
         enabled: !!businessProfileQuery.data,
     })
 
+    const platformRoles = useQuery({
+        queryKey: ['platformRoles'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.business.platformRoles,
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch API resources');
+            return response.data;
+        },
+        keepPreviousData: true,
+    })
+
+
     const businessCategories = useQuery({
         queryKey: ['businessCategories'],
         queryFn: async () => {
@@ -142,20 +157,6 @@ const useBusinessProfile = () => {
         keepPreviousData: true,
     });
 
-    // const sprints = useQuery({
-    //     queryKey: ['sprints'],
-    //     queryFn: async () => {
-    //         const response = await submitData({
-    //             data: {},
-    //             endpoint: ApiRoutes.projects.sprints(),
-    //             method: 'get',
-    //         });
-    //         if (response?.error) throw new Error('Failed to fetch API resources');
-    //         return response.data;
-    //     },
-    //     keepPreviousData: true,
-    // });
-
 
     const groupedResources = useMemo(() => {
         if (!businessProfileQuery.data) return null;
@@ -186,12 +187,13 @@ const useBusinessProfile = () => {
         roles: roles.data,
         departments: departmentsQuery.data,
         resources: resourcesQuery.data,
+        platformRoles: platformRoles.data,
         modules: appModules.data,
-        error: businessProfileQuery.error || employeesQuery.error || departmentsQuery.error || resourcesQuery.error || roles.error || appModules.error || businessCategories.error || businessSizes.error || projects.error,
+        error: businessProfileQuery.error || employeesQuery.error || departmentsQuery.error || resourcesQuery.error || roles.error || appModules.error || businessCategories.error || businessSizes.error || projects.error || platformRoles.error,
         expandedModules,
         toggleModule,
         projects: projects.data,
-        isLoading: businessProfileQuery.isLoading || employeesQuery.isLoading || departmentsQuery.isLoading || resourcesQuery.isLoading || roles.isLoading || appModules.isLoading || businessCategories.isLoading || businessSizes.isLoading || projects.isLoading,
+        isLoading: businessProfileQuery.isLoading || employeesQuery.isLoading || departmentsQuery.isLoading || resourcesQuery.isLoading || roles.isLoading || appModules.isLoading || businessCategories.isLoading || businessSizes.isLoading || projects.isLoading || platformRoles.isLoading,
     };
 };
 

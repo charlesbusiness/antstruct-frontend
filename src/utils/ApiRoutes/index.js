@@ -29,6 +29,7 @@ export const ApiRoutes = {
     size: 'config/business/sizes',
     create: 'config/business/create',
     roles: 'config/business/role',
+    platformRoles: 'config/roles',
     createRoles: 'config/business/role',
     createDepartment: 'config/business/department',
     getDepartments: 'config/business/department',

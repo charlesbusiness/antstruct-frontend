@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-export const CreateEmployeeSchema =  Joi.object( {
+export const CreateEmployeeSchema = Joi.object({
     email: Joi.string().email({ tlds: { allow: false } }).required().label('Email'),
     phone: Joi.string().required().min(6).label('Phone Number'),
     address: Joi.string().min(15).required().label('Employee Address'),
@@ -16,6 +16,17 @@ export const CreateEmployeeSchema =  Joi.object( {
             'any.empty': 'Department is required.',
         })
         .label('Department'),
+
+    role_id: Joi.number()
+        .integer()
+        .required()
+        .messages({
+            'number.base': 'Role must be a valid number.',
+            'number.integer': 'Role must be an integer.',
+            'any.required': 'Role is required.',
+            'any.empty': 'Role is required.',
+        })
+        .label('Role'),
     dob: Joi.date()
         .required()
         .less(new Date(new Date().setFullYear(new Date().getFullYear() - 15)))

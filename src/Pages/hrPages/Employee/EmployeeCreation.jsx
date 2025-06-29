@@ -1,0 +1,236 @@
+import * as React from "react";
+import { Box, Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, FormHelperText } from "@mui/material";
+import { Card } from "@src/common/Card";
+import { ApiRoutes } from "@src/utils/ApiRoutes";
+import useSubmitData from "@src/hooks/useSubmitData";
+import { CreateEmployeeSchema } from "@src/validations/business/create-employees-schema";
+import { validate } from "@src/services/validation/validate";
+import useBusinessProfile from "../../../hooks/useBusinessProfile";
+import { useQueryClient } from "@tanstack/react-query";
+
+export default function CreateEmployee({ handleCloseEmployeeForm }) {
+  const [errors, setErrors] = React.useState({});
+  const [departments, setDepartment] = React.useState(null);
+  const { submitData, isLoading } = useSubmitData()
+  const { platformRoles } = useBusinessProfile()
+  const queryClient = useQueryClient()
+  const [formData, setFormData] = React.useState({
+    email: '',
+    phone: '',
+    dob: '',
+    address: '',
+    department_id: '',
+    gender: '',
+    firstname: '',
+    lastname: '',
+    role_id: ''
+  });
+
+  const gender = ['male', 'female', 'others']
+
+  const handleInputChange = (e) => {
+    setErrors('')
+    const { name, value } = e.target
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const validationErrors = validate(formData, CreateEmployeeSchema)
+
+    if (validationErrors) {
+
+      setErrors(validationErrors);
+      return;
+    }
+    const response = await submitData({
+      data: formData,
+      endpoint: ApiRoutes.employees.create,
+      navigationPath: '/hr/employees'
+    })
+
+    if (response.success) {
+      handleCloseEmployeeForm()
+      queryClient.invalidateQueries(['employees'])
+    }
+  }
+
+  const getDepartments = async () => {
+    const response = await submitData({
+      data: {},
+      endpoint: ApiRoutes.business.getDepartments,
+      method: 'get'
+    })
+    if (response?.error == false) {
+      setDepartment(response?.data)
+    }
+  }
+
+  React.useEffect(() => {
+    getDepartments()
+  }, [])
+
+
+  return (
+
+    <Card variant="outlined">
+      <Box sx={{ mt: 1 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Create Employee
+        </Typography>
+
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="First Name"
+            placeholder="Enter First Name"
+            name="firstname"
+            required
+            error={!!errors.firstname}
+            helperText={errors.firstname}
+            color={errors.firstname ? 'error' : 'primary'}
+            value={formData.firstname}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Last Name"
+            placeholder="Enter Last Name"
+            name="lastname"
+            required
+            error={!!errors.lastname}
+            helperText={errors.lastname}
+            color={errors.lastname ? 'error' : 'primary'}
+            value={formData.lastname}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Email"
+            placeholder="Enter Email"
+            name="email"
+            type="email"
+            required
+            error={!!errors.email}
+            helperText={errors.email}
+            color={errors.email ? 'error' : 'primary'}
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Phone"
+            placeholder="Enter Phone Number"
+            name="phone"
+            type="tel"
+            required
+            error={!!errors.phone}
+            helperText={errors.phone}
+            color={errors.phone ? 'error' : 'primary'}
+            value={formData.phone}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Date of Birth"
+            name="dob"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            required
+            error={!!errors.dob}
+            helperText={errors.dob}
+            color={errors.dob ? 'error' : 'primary'}
+            value={formData.dob}
+            onChange={handleInputChange}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Address"
+            placeholder="Enter Address"
+            name="address"
+            multiline
+            rows={2}
+            required
+            error={!!errors.address}
+            helperText={errors.address}
+            color={errors.address ? 'error' : 'primary'}
+            value={formData.address}
+            onChange={handleInputChange}
+          />
+
+          <FormControl fullWidth margin="normal" required error={!!errors.department_id}>
+            <InputLabel>Department</InputLabel>
+            <Select
+              name="department_id"
+              label="Department"
+              value={formData?.department_id || ''}
+              onChange={handleInputChange}
+              color={errors.department_id ? 'error' : 'primary'}
+            >
+              {departments?.map((dept) => (
+                <MenuItem key={dept.id} value={dept.id}>
+                  {dept.department_name}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.department_id && <FormHelperText>{errors.department_id}</FormHelperText>}
+          </FormControl>
+
+          <FormControl fullWidth margin="normal" required error={!!errors.department_id}>
+            <InputLabel>Roles</InputLabel>
+            <Select
+              name="role_id"
+              label="Role"
+              value={formData?.role_id || ''}
+              onChange={handleInputChange}
+              color={errors.role_id ? 'error' : 'primary'}
+            >
+              {platformRoles?.map((role) => (
+                <MenuItem key={role.id} value={role.id}>
+                  {role.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.role_id && <FormHelperText>{errors.role_id}</FormHelperText>}
+          </FormControl>
+
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Gender</InputLabel>
+            <Select
+              name="gender"
+              label="Gender"
+              value={formData?.gender}
+              onChange={handleInputChange}
+              error={!!errors.gender}
+              helperText={errors.gender}
+              color={errors.gender ? 'error' : 'primary'}
+            >
+
+              {
+                gender?.map((gender) => (
+                  <MenuItem key={gender} value={gender}>{gender}</MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
+
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
+            Create Employee
+          </Button>
+
+        </Box>
+      </Box>
+    </Card>
+
+  );
+}

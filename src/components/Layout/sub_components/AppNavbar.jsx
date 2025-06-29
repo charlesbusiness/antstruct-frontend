@@ -10,7 +10,7 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SideMenuMobile from './SideMenuMobile';
 import MenuButton from './MenuButton';
 
-import { SitemarkIcon } from '../../authentication/sub_components/CustomIcons';
+import { SitemarkIcon } from '@src/components/CustomIcons';
 
 const Toolbar = styled(MuiToolbar)({
   width: '100%',
@@ -64,7 +64,7 @@ export default function AppNavbar() {
             sx={{ justifyContent: 'center', mr: 'auto', ml: 2, }}
           >
             <Typography variant="h4" component="h1" sx={{ color: 'text.primary' }}>
-            <SitemarkIcon />
+              <SitemarkIcon />
             </Typography>
           </Stack>
           <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
