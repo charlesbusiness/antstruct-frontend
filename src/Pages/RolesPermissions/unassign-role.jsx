@@ -8,7 +8,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  CircularProgress,
+  MenuItem,
 } from "@mui/material";
 import { Card } from "../../common/Card";
 import useSubmitData from "../../hooks/useSubmitData";
@@ -19,26 +20,29 @@ export default function UnassignRole() {
   const { employees, error } = useBusinessProfile();
   const [selectedEmployeeId, setSelectedEmployeeId] = React.useState("");
   const [assignedRoles, setAssignedRoles] = React.useState([]);
+  const [loadingRoles, setLoadingRoles] = React.useState(false);
   const { submitData } = useSubmitData();
 
   const getAssignedRoles = async (employeeId) => {
+    setLoadingRoles(true);
     const response = await submitData({
       data: {},
       endpoint: `${ApiRoutes.employees.getAssignedRole}/${employeeId}`,
-      method: "get"
+      method: "get",
     });
     if (!response?.error) {
       setAssignedRoles(response?.data || []);
     } else {
       setAssignedRoles([]);
     }
+    setLoadingRoles(false);
   };
 
   const removeAssignedRole = async (employeeId, roleId) => {
     const response = await submitData({
       data: {},
       endpoint: `${ApiRoutes.employees.removeAssignRole}/${employeeId}/${roleId}`,
-      method: "delete"
+      method: "delete",
     });
     if (!response?.error) {
       getAssignedRoles(employeeId);
@@ -74,21 +78,37 @@ export default function UnassignRole() {
             </Select>
           </FormControl>
 
-          {assignedRoles.length > 0 ? (
+          {loadingRoles ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ mt: 3 }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : assignedRoles.length > 0 ? (
             <Box sx={{ mt: 3 }}>
               <Typography variant="h6">Assigned Roles:</Typography>
-              <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+              <ul style={{ listStyle: "none", paddingLeft: 0 }}>
                 {assignedRoles.map((role) => (
                   <li
                     key={role.id}
-                    style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      marginBottom: "8px",
+                    }}
                   >
                     {role.name}
                     <Button
                       variant="outlined"
                       size="small"
                       color="error"
-                      onClick={() => removeAssignedRole(selectedEmployeeId, role.id)}
+                      onClick={() =>
+                        removeAssignedRole(selectedEmployeeId, role.id)
+                      }
                     >
                       Unassign
                     </Button>
@@ -97,7 +117,11 @@ export default function UnassignRole() {
               </ul>
             </Box>
           ) : (
-            selectedEmployeeId && <Typography variant="body2" sx={{ mt: 2 }}>No roles assigned.</Typography>
+            selectedEmployeeId && (
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                No roles assigned.
+              </Typography>
+            )
           )}
         </Box>
       </Card>

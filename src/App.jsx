@@ -8,6 +8,7 @@ import routes from './routes/routes'
 import BusinessSignUp from './Pages/Authentication/BusinessSignUp'
 import BusinessSignIn from './Pages/Authentication/BusinessSignIn'
 import { ProtectedRoute } from './components/Layout/ProtectedRoute'
+import PageNotFound from './Pages/NotFound';
 import VerifyEmailAddress from './Pages/Authentication/VerifyEmailAddress';
 import { TitleProvider } from './hooks/TitleContext';
 const Layout = lazy(() => import('./components/Layout/Dashboard'));
@@ -40,6 +41,7 @@ function App() {
               })}
             </Route>
           </Route>
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
     </TitleProvider>

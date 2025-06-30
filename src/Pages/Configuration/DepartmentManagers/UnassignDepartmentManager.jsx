@@ -7,6 +7,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  CircularProgress,
   MenuItem
 } from "@mui/material";
 import { Card } from "@src/common/Card";
@@ -19,9 +20,11 @@ export default function UnmapDepartment() {
   const [selectedEmployeeId, setSelectedEmployeeId] = React.useState("");
   const [assignedDepartments, setAssignedDepartments] = React.useState([]);
   const { submitData } = useSubmitData();
+  const [loading, setLoading] = React.useState(false);
 
 
   const getAssignedDepartments = async (employeeId) => {
+    setLoading(true);
     const response = await submitData({
       data: {},
       endpoint: `${ApiRoutes.employeeDeptMap.getMapped}?employee=${employeeId}`,
@@ -32,6 +35,7 @@ export default function UnmapDepartment() {
     } else {
       setAssignedDepartments([])
     }
+    setLoading(false);
   };
 
   const unmapDepartment = async (deptId, employeeId) => {
@@ -70,7 +74,12 @@ export default function UnmapDepartment() {
             </Select>
           </FormControl>
 
-          {assignedDepartments.length > 0 ? (
+          {loading ? (
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              <CircularProgress size={20} sx={{ mr: 1 }} />
+              Loading departments...
+            </Typography>
+          ) : assignedDepartments.length > 0 ? (
             <Box sx={{ mt: 3 }}>
               <Typography variant="h6">Mapped Departments:</Typography>
               <ul style={{ listStyle: 'none', paddingLeft: 0 }}>

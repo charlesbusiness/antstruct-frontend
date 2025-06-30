@@ -47,9 +47,9 @@ const UnassignRole = lazy(() => import("../Pages/RolesPermissions/unassign-role"
 const MapResources = lazy(() =>
   import("@src/Pages/Configuration/Resources/MapResources")
 );
-const UnMapResources = lazy(() =>
-  import("@src/Pages/Configuration/Resources/UnMapResources")
-);
+// const UnMapResources = lazy(() =>
+//   import("@src/Pages/Configuration/Resources/UnMapResources")
+// );
 const DepartmentManager = lazy(() =>
   import("@src/Pages/Configuration/DepartmentManagers/DepartmentManager")
 );
@@ -162,11 +162,11 @@ const coreRoutes = [
     component: MapResources,
   },
 
-  {
-    path: "/unmap/api/resource",
-    title: "Un Map Resource To Role",
-    component: UnMapResources,
-  },
+  // {
+  //   path: "/unmap/api/resource",
+  //   title: "Un Map Resource To Role",
+  //   component: UnMapResources,
+  // },
 
   {
     path: "/config/departments",

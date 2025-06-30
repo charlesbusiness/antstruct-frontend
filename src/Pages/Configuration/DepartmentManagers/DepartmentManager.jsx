@@ -18,6 +18,7 @@ import {
   TableCell,
   TableBody,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import { Card } from "@src/common/Card";
 import useSubmitData from "@src/hooks/useSubmitData";
@@ -29,20 +30,20 @@ import useBusinessProfile from "@src/hooks/useBusinessProfile";
 import UnmapDepartment from "./UnassignDepartmentManager";
 
 export default function DepartmentManager() {
-  const [errors, setErrors] = React.useState({})
-  const { departments: dept, employees } = useBusinessProfile()
-  const [mappedDept, setMappedDept] = React.useState([])
-  const [employeeDeptMap, setEmployeeDeptMap] = React.useState([])
-
-  const [createDept, setCreateDept] = React.useState(false)
+  const [errors, setErrors] = React.useState({});
+  const { departments: dept, employees } = useBusinessProfile();
+  const [mappedDept, setMappedDept] = React.useState([]);
+  const [employeeDeptMap, setEmployeeDeptMap] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [createDept, setCreateDept] = React.useState(false);
   const openCreateDept = () => {
-    setCreateDept(!createDept)
-  }
+    setCreateDept(!createDept);
+  };
 
-  const [unmapManagers, setUnmapManager] = React.useState(false)
+  const [unmapManagers, setUnmapManager] = React.useState(false);
   const openUmapManager = () => {
-    setUnmapManager(!unmapManagers)
-  }
+    setUnmapManager(!unmapManagers);
+  };
 
   const { submitData } = useSubmitData();
 
@@ -77,19 +78,17 @@ export default function DepartmentManager() {
       },
       endpoint: ApiRoutes.employeeDeptMap.map,
       reload: false,
-    })
+    });
     if (response.success) {
-
-      buildEmployeeDeptMap()
-      setMappedDept([])
-      openCreateDept(!createDept)
+      buildEmployeeDeptMap();
+      setMappedDept([]);
+      openCreateDept(!createDept);
       setFormData({
         department_id: [],
-        employee: '',
-      })
+        employee: "",
+      });
     }
-  }
-
+  };
 
   const getMapped = async (employee) => {
     const response = await submitData({
@@ -105,7 +104,11 @@ export default function DepartmentManager() {
   };
 
   const buildEmployeeDeptMap = async () => {
-    if (!employees || employees.length === 0) return;
+    setLoading(true);
+    if (!employees || employees.length === 0) {
+      setLoading(false);
+      return;
+    }
     const mapped = await Promise.all(
       employees.map(async (emp) => {
         const response = await submitData({
@@ -120,6 +123,7 @@ export default function DepartmentManager() {
       })
     );
     setEmployeeDeptMap(mapped);
+    setLoading(false);
   };
 
   const unmapDept = async (id, employee) => {
@@ -134,62 +138,83 @@ export default function DepartmentManager() {
     }
   };
 
-
   React.useEffect(() => {
     if (employees?.length) buildEmployeeDeptMap();
   }, [employees]);
 
   return (
     <>
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="300px"
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          {employeeDeptMap?.length > 0 ? (
+            <Box sx={{ mt: 5 }}>
+              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <Button
+                  variant="contained"
+                  onClick={openUmapManager}
+                  sx={{ mr: 2 }}
+                >
+                  Unmap Managers
+                </Button>
 
-      {
-        employeeDeptMap?.length > 0 ? (
-          <Box sx={{ mt: 5 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-              <Button variant="contained" onClick={openUmapManager}
-                sx={{ mr: 2 }}>
-                Unmap  Managers
-              </Button>
+                <Button variant="outlined" onClick={openCreateDept}>
+                  Map New Managers
+                </Button>
+              </Box>
 
-              <Button variant="outlined" onClick={openCreateDept}>
-                Map New Managers
-              </Button>
-            </Box>
-
-            <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                    <TableCell>Employee</TableCell>
-                    <TableCell>Departments</TableCell>
-                    <TableCell>Departments Description</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {employeeDeptMap.map((emp) => (
-                    <TableRow key={emp.id}>
-                      <TableCell>
-                        {emp.firstname} {emp.lastname}
-                      </TableCell>
-                      <TableCell>
-                        {emp.departments?.map((d) => d.department_name).join(", ") || "—"}
-                      </TableCell>
-                      <TableCell>
-                        {emp.departments?.map((d) => d.department_detail).join(", ") || "—"}
-                      </TableCell>
+              <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
+                <Table>
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                      <TableCell>Employee</TableCell>
+                      <TableCell>Departments</TableCell>
+                      <TableCell>Departments Description</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        )
-          : <Typography variant="h4" component={'h1'}>No Employee created at the moment</Typography>
-      }
-
+                  </TableHead>
+                  <TableBody>
+                    {employeeDeptMap.map((emp) => (
+                      <TableRow key={emp.id}>
+                        <TableCell>
+                          {emp.firstname} {emp.lastname}
+                        </TableCell>
+                        <TableCell>
+                          {emp.departments
+                            ?.map((d) => d.department_name)
+                            .join(", ") || "—"}
+                        </TableCell>
+                        <TableCell>
+                          {emp.departments
+                            ?.map((d) => d.department_detail)
+                            .join(", ") || "—"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          ) : (
+            <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
+              {" "}
+              No Employee created at the moment{" "}
+            </Typography>
+          )}
+        </>
+      )}
       <Dialog onClose={openCreateDept} open={createDept} fullWidth>
         <DialogTitle>
-          <Typography variant="h6" component={'h1'}>Department/Managers</Typography>
+          <Typography variant="h6" component={"h1"}>
+            Department/Managers
+          </Typography>
         </DialogTitle>
         <DialogContent fullWidth>
           <Container maxWidth="sm">
@@ -243,7 +268,9 @@ export default function DepartmentManager() {
                         {mapped.department_name}
                         <button
                           type="button"
-                          onClick={() => unmapDept(mapped.id, formData.employee)}
+                          onClick={() =>
+                            unmapDept(mapped.id, formData.employee)
+                          }
                           style={{
                             background: "none",
                             border: "none",
@@ -276,7 +303,9 @@ export default function DepartmentManager() {
 
       <Dialog onClose={openUmapManager} open={unmapManagers} fullWidth>
         <DialogTitle>
-          <Typography variant="h6" component={'h1'}>Department/Managers</Typography>
+          <Typography variant="h6" component={"h1"}>
+            Department/Managers
+          </Typography>
         </DialogTitle>
         <DialogContent fullWidth>
           <UnmapDepartment />

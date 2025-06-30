@@ -47,7 +47,7 @@ const projectModules = {
   ],
 
 
-  Configuration: [
+  'Business Configuration': [
 
     {
       description: "Departments",
@@ -98,12 +98,12 @@ const secondaryListItems = [
 
 // Optional: Map specific icons to known module names
 const moduleIcons = {
-  Configuration: <SettingsRoundedIcon />,
+  'Business Configuration': <SettingsRoundedIcon />,
   'HR Manager': <PeopleRoundedIcon />,
-  Business: <BusinessCenterRoundedIcon />,
-  Category: <CategoryRoundedIcon />,
-  Projects: <AssignmentIcon />,
-  default: <FolderRoundedIcon />,
+  'Business': <BusinessCenterRoundedIcon />,
+  'Category': <CategoryRoundedIcon />,
+  'Projects/Goals': <AssignmentIcon />,
+  'default': <FolderRoundedIcon />,
 };
 
 

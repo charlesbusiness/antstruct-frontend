@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Button,
@@ -11,6 +11,7 @@ import { ApiRoutes } from "@src/utils/ApiRoutes";
 import ButtonLoader from "@src/common/Loader/button-loader";
 import useBusinessProfile from "@src/hooks/useBusinessProfile";
 import { useQueryClient } from "@tanstack/react-query";
+import FileUpload from "@src/components/FileUpload";
 
 export const CreateRequisition = ({ setOpenDialog }) => {
     const queryClient = useQueryClient()
@@ -24,7 +25,7 @@ export const CreateRequisition = ({ setOpenDialog }) => {
         description: '',
         remark: '',
     });
-
+    const [employeeFile, setEmployeeFile] = React.useState(null);
     const [monetaryType, setMonetaryType] = useState({
         budget: '',
         expected_disbursement_date: '',
@@ -170,7 +171,7 @@ export const CreateRequisition = ({ setOpenDialog }) => {
                 multiline
                 rows={3}
             />
-
+            <FileUpload onFileSelect={(file) => setEmployeeFile(file)} />
             <TextField
                 fullWidth
                 label="Remark"

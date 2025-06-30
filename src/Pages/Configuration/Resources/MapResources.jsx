@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { Card } from "@src/common/Card";
 import useSubmitData from "@src/hooks/useSubmitData";
 import { ApiRoutes } from "@src/utils/ApiRoutes";
@@ -12,132 +11,157 @@ import {
   Typography,
   Box,
   Paper,
-  Button, FormControl, InputLabel, Select, MenuItem, Container, Dialog, DialogTitle, DialogContent
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Container,
+  Checkbox,
+  FormControlLabel,
+  Divider,
+  CircularProgress,
+  Grid
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
 import { MapRoleAndResourceSchema } from "@src/validations/business/mapp-resource-to-roles";
-import { MultipleSelectWithFilter } from "@src/common/MultipleSelectWithFilter";
 import useBusinessProfile from "@src/hooks/useBusinessProfile";
-import UnmapResources from "./UnMapResources";
 
 export default function ResourceToRoleMapping() {
   const [errors, setErrors] = React.useState({});
-  const { roles, error: roleError, modules } = useBusinessProfile()
-  const [resources, setResource] = React.useState(null)
-  const [mappedResource, setMappedResource] = React.useState(null)
-
-  const [mapResource, setapResource] = React.useState(false)
-  const openMapResource = () => {
-    setapResource(!mapResource)
-  }
-
-  const [unMapResource, setUnMapResource] = React.useState(false)
-  const openUnMapResource = () => {
-    setUnMapResource(!unMapResource)
-  }
-
-  const { submitData, isLoading } = useSubmitData()
+  const { roles, modules } = useBusinessProfile();
+  const [resources, setResources] = React.useState(null);
+  const [mappedResource, setMappedResource] = React.useState(null);
+  const [selectAll, setSelectAll] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const { submitData, isLoading } = useSubmitData();
 
   const [formData, setFormData] = React.useState({
     api_resource: [],
     business_role_id: '',
     moduleName: '',
-  })
+  });
 
   const handleInputChange = (e) => {
-    setErrors('')
-    const { name, value } = e.target
+    setErrors('');
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value
-    }))
-    if (name == 'business_role_id') {
-      getMappedResource(value)
+    }));
+    
+    if (name === 'business_role_id') {
+      setLoading(true);
+      getMappedResource(value).finally(() => setLoading(false));
     }
 
-    if (name == 'moduleName') {
-      getApiResource(value)
+    if (name === 'moduleName') {
+      setLoading(true);
+      getApiResource(value).finally(() => setLoading(false));
     }
-  }
+  };
+
+  const handleSelectAll = (e) => {
+    const checked = e.target.checked;
+    setSelectAll(checked);
+    if (checked && resources) {
+      setFormData(prev => ({
+        ...prev,
+        api_resource: resources.map(res => res.id)
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        api_resource: []
+      }));
+    }
+  };
+
+  const handleResourceSelection = (selected) => {
+    setFormData(prev => ({
+      ...prev,
+      api_resource: selected
+    }));
+    setSelectAll(selected.length === resources?.length);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const validationErrors = validate(formData, MapRoleAndResourceSchema)
+    const validationErrors = validate(formData, MapRoleAndResourceSchema);
     if (validationErrors) {
-      console.log(validationErrors)
-      setErrors(validationErrors)
+      setErrors(validationErrors);
       return;
     }
+    setLoading(true);
     submitData({
       data: formData,
       endpoint: ApiRoutes.employeeResourceMap.map,
       reload: true,
-    })
-  }
-
+    }).finally(() => {
+      setLoading(false);
+      if (formData.business_role_id) {
+        getMappedResource(formData.business_role_id);
+      }
+    });
+  };
 
   const getApiResource = async (moduleName) => {
     const response = await submitData({
       data: {},
       endpoint: `${ApiRoutes.business.apiResources.moduleResources}?moduleName=${moduleName}`,
       method: 'get'
-    })
-    if (response?.error == false) {
-      setResource(response?.data)
+    });
+    if (response?.error === false) {
+      setResources(response?.data);
+      setSelectAll(false);
     }
-  }
+  };
 
   const getMappedResource = async (business_role_id) => {
     const response = await submitData({
       data: {},
       endpoint: ApiRoutes.employeeResourceMap.getMapped + `/${business_role_id}`,
       method: 'get'
-    })
-    if (response?.error == false) {
-      setMappedResource(response?.data)
+    });
+    if (response?.error === false) {
+      setMappedResource(response?.data);
     } else {
-      setMappedResource([])
+      setMappedResource([]);
     }
-  }
+  };
 
   const unmapResource = async (businessRoleId, resourceId) => {
+    setLoading(true);
     const response = await submitData({
       data: {},
       endpoint: ApiRoutes.employeeResourceMap.unmapResource + `?business_role_id=${businessRoleId}&resource_id=${resourceId}`,
       method: 'delete'
-    })
-    if (response?.error == false) {
-      getMappedResource(businessRoleId)
+    });
+    if (response?.error === false) {
+      await getMappedResource(businessRoleId);
     }
-  }
+    setLoading(false);
+  };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button variant="contained" onClick={openMapResource}>Link Resources</Button>
-        <Button variant="outlined" onClick={openUnMapResource}>Unlink Resources</Button>
-      </Box>
-
-
-      {/* Map resource */}
-
-      <Dialog onClose={openMapResource} open={mapResource} fullWidth>
-
-        <DialogContent fullWidth>
-
-          <Card variant="outlined">
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
-
+    <Container maxWidth="lg" sx={{ py: 2 }}>
+      <Typography variant="h6" component="h1" gutterBottom>
+        Resource to Role Mapping
+      </Typography>
+      
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        {/* Left Section - Form */}
+        <Grid item xs={12} md={6}>
+          <Card variant="outlined" sx={{ height: '100%' }}>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ p: 3 }}>
               <FormControl fullWidth margin="normal" required>
-                <InputLabel>Business Roles</InputLabel>
+                <InputLabel>Business Role</InputLabel>
                 <Select
                   value={formData.business_role_id}
                   onChange={handleInputChange}
                   label="Business Role"
                   name="business_role_id"
                   error={!!errors.business_role_id}
-                  helperText={errors.business_role_id || ''}
                   color={errors.business_role_id ? 'error' : 'primary'}
                 >
                   {roles?.map((role) => (
@@ -149,11 +173,11 @@ export default function ResourceToRoleMapping() {
               </FormControl>
 
               <FormControl fullWidth margin="normal" required>
-                <InputLabel> Module Name</InputLabel>
+                <InputLabel>Module</InputLabel>
                 <Select
                   value={formData.moduleName}
                   onChange={handleInputChange}
-                  label="Module Name"
+                  label="Module"
                   name="moduleName"
                 >
                   {modules?.map((module) => (
@@ -164,65 +188,103 @@ export default function ResourceToRoleMapping() {
                 </Select>
               </FormControl>
 
-              <MultipleSelectWithFilter
-                fieldName={'api_resource'}
-                errors={errors}
-                formData={formData}
-                setFormData={setFormData}
-                inputs={resources}
-                required={true}
-                dbField={'name'}
-                helperText={''}
-                comparedResult={mappedResource}
-              />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-                Link
-              </Button>
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}>
+                  <CircularProgress />
+                </Box>
+              ) : resources ? (
+                <>
+                  <FormControl fullWidth margin="normal">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                        />
+                      }
+                      label="Select All Resources"
+                    />
+                    <Select
+                      multiple
+                      value={formData.api_resource}
+                      onChange={(e) => handleResourceSelection(e.target.value)}
+                      renderValue={(selected) => `${selected.length} selected`}
+                      fullWidth
+                    >
+                      {resources.map((resource) => (
+                        <MenuItem key={resource.id} value={resource.id}>
+                          <Checkbox checked={formData.api_resource.includes(resource.id)} />
+                          <ListItemText primary={resource.name} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <Button 
+                    type="submit" 
+                    fullWidth 
+                    variant="contained" 
+                    sx={{ mt: 2 }}
+                    disabled={isLoading || loading}
+                  >
+                    {isLoading || loading ? <CircularProgress size={24} /> : 'Link Selected Resources'}
+                  </Button>
+                </>
+              ) : null}
             </Box>
           </Card>
-          {mappedResource && mappedResource.length > 0 && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle1" gutterBottom>
-                Mapped Resources
+        </Grid>
+
+        {/* Right Section - Mapped Resources */}
+        <Grid item xs={12} md={6}>
+          <Card variant="outlined" sx={{ height: '100%' }}>
+            <Box sx={{ p: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Currently Mapped Resources
               </Typography>
-              <Paper elevation={1}>
-                <List dense>
-                  {mappedResource.map((mapped) => (
-                    <ListItem
-                      key={mapped.id}
-                      secondaryAction={
-                        <IconButton
-                          edge="end"
-                          aria-label="unmap"
-                          onClick={() =>
-                            unmapResource(formData.business_role_id, mapped.id)
+              
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}>
+                  <CircularProgress />
+                </Box>
+              ) : mappedResource ? (
+                mappedResource.length > 0 ? (
+                  <Paper elevation={1}>
+                    <List dense>
+                      {mappedResource.map((mapped) => (
+                        <ListItem
+                          key={mapped.id}
+                          secondaryAction={
+                            <IconButton
+                              edge="end"
+                              aria-label="unmap"
+                              onClick={() => unmapResource(formData.business_role_id, mapped.id)}
+                              sx={{ color: "error.main" }}
+                              disabled={loading}
+                            >
+                              {loading ? <CircularProgress size={24} /> : <CloseIcon />}
+                            </IconButton>
                           }
-                          sx={{ color: "error.main" }}
                         >
-                          <CloseIcon />
-                        </IconButton>
-                      }
-                    >
-                      <ListItemText primary={mapped.name} />
-                    </ListItem>
-                  ))}
-                </List>
-              </Paper>
+                          <ListItemText primary={mapped.name} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Paper>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No resources currently mapped to this role
+                  </Typography>
+                )
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  Select a role to view mapped resources
+                </Typography>
+              )}
             </Box>
-          )}
-        </DialogContent>
-      </Dialog>
-
-
-      {/* UnMap resource */}
-      <Dialog onClose={openUnMapResource} open={unMapResource} fullWidth>
-        <DialogTitle>
-          <Typography variant="h6" component={'h1'}>Create Department</Typography>
-        </DialogTitle>
-        <DialogContent fullWidth>
-          <UnmapResources />
-        </DialogContent>
-      </Dialog>
+          </Card>
+        </Grid>
+      </Grid>
     </Container>
   );
 }

@@ -125,7 +125,7 @@ StatCard.propTypes = {
   interval: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   trend: PropTypes.oneOf(['down', 'neutral', 'up']).isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired, 
 };
 
 export default StatCard;

@@ -20,7 +20,7 @@ export default function BusinessDashboard() {
   const data = [
     {
       title: "Employees",
-      value: employees?.length,
+      value: employees?.length || 0,
       interval: "Last 30 days",
       trend: "up",
       data: [
@@ -31,7 +31,7 @@ export default function BusinessDashboard() {
     },
     {
       title: "Departments",
-      value: departments?.length,
+      value: departments?.length || 0,
       interval: "Last 30 days",
       trend: "down",
       data: [
@@ -42,7 +42,7 @@ export default function BusinessDashboard() {
     },
     {
       title: "Resources",
-      value: resources?.length,
+      value: resources?.length || 0,
       interval: "Last 30 days",
       trend: "neutral",
       data: [

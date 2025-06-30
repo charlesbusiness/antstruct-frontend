@@ -8,6 +8,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { Card } from "@src/common/Card";
 import useSubmitData from "@src/hooks/useSubmitData";
@@ -30,6 +31,7 @@ export default function AssignRole() {
   const [errors, setErrors] = React.useState({});
   const [assignedRoles, setAssignedRoles] = React.useState([]);
   const [employeeRoleMap, setEmployeeRoleMap] = React.useState([]);
+  const [loadingMap, setLoadingMap] = React.useState(true);
 
   const handleInputChange = (e) => {
     setErrors({});
@@ -80,7 +82,11 @@ export default function AssignRole() {
   };
 
   const buildEmployeeRoleMap = async () => {
-    if (!employees || employees.length === 0) return;
+    setLoadingMap(true);
+    if (!employees || employees.length === 0) {
+      setLoadingMap(false);
+      return;
+    }
 
     const mapped = await Promise.all(
       employees.map(async (emp) => {
@@ -100,6 +106,7 @@ export default function AssignRole() {
     );
 
     setEmployeeRoleMap(mapped);
+    setLoadingMap(false);
   };
 
   React.useEffect(() => {
@@ -197,7 +204,16 @@ export default function AssignRole() {
           </Box>
         </Card>
       </Container>
-      {employeeRoleMap?.length > 0 && (
+      {loadingMap ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ mt: 5 }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : employeeRoleMap?.length > 0 ? (
         <Box sx={{ mt: 5 }}>
           <Typography variant="h6" gutterBottom>
             Employees & Assigned Roles
@@ -231,6 +247,10 @@ export default function AssignRole() {
             </table>
           </Box>
         </Box>
+      ) : (
+        <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
+          No Roles assigned to any employee at the moment.
+        </Typography>
       )}
     </>
   );

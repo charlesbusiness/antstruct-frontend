@@ -14,15 +14,16 @@ import {
   Chip,
   Stack,
   Badge,
-  Divider
+  Divider,
+  CircularProgress,
+  CardActionArea,
+  CardActions
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import useSubmitData from "../../hooks/useSubmitData";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "../../utils/general";
-import { MoreHoriz } from "@mui/icons-material";
 
 export default function SprintDashboard({ showSprintModal, sprintModal = false, project_id }) {
   const client = useQueryClient()
@@ -43,6 +44,7 @@ export default function SprintDashboard({ showSprintModal, sprintModal = false, 
       [name]: value
     }))
   }
+
   const createSprint = async (e) => {
     e.preventDefault()
     const response = await submitData({
@@ -56,154 +58,188 @@ export default function SprintDashboard({ showSprintModal, sprintModal = false, 
     }
   }
 
-  const sprints = useQuery({
-    queryKey: ['sprints', id], // include the ID!
+  const { data, isLoading } = useQuery({
+    queryKey: ['sprints', id],
     queryFn: async () => {
       const response = await submitData({
         data: {},
-        endpoint: ApiRoutes.projects.sprints(id), // pass ID to route
+        endpoint: ApiRoutes.projects.sprints(id),
         method: 'get',
       });
       if (response?.error) throw new Error('Failed to fetch sprints');
       return response.data;
     },
-    enabled: !!id, // only runs if ID is truthy
+    enabled: !!id,
     keepPreviousData: true,
-  })
+  });
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Stack>
-          <Typography variant="h5">Project : {sprints?.data?.[0]?.project?.project_name}</Typography>
-          <Typography variant="body2">Details : {sprints?.data?.[0]?.project?.project_description}</Typography>
-        </Stack>
-      </Box>
+      {isLoading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" sx={{ mt: 5 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack>
+              <Typography variant="h5">Project: {data?.[0]?.project?.project_name}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {data?.[0]?.project?.project_description}
+              </Typography>
+            </Stack>
+          </Box>
 
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        {sprints?.data?.map((sprint) => (
-          <Grid item xs={12} sm={6} md={4} key={sprint.id}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="h6" gutterBottom>
-                    {sprint.sprint_name}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ my: 1, pb: 1, display: 'flex', justifyContent: 'flex-end' }}>
-                  <Badge
-                    badgeContent={sprint.tasks?.length || 0}
-                    color="primary"
-                    sx={{ mr: 2 }}
-                  >
-                    <Typography variant="caption">Tasks</Typography>
-                  </Badge>
-                  {
-                    sprint.tasks?.length > 0 &&
-                    <MoreHoriz sx={{ cursor: 'pointer' }} onClick={() => navigate(`/tasks/${sprint.id}`)} />
+          <Grid container spacing={3}>
+            {data?.map((sprint) => (
+              <Grid item xs={12} sm={6} md={4} key={sprint.id}>
+                <Card sx={{ 
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 4
                   }
-                </Box>
-                <Divider />
+                }}>
+                    <CardContent>
+                      <Box sx={{ 
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 2
+                      }}>
+                        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                          {sprint.sprint_name}
+                        </Typography>
+                        <Chip
+                          label={sprint.project.status}
+                          color={
+                            sprint.project.status === 'active' ? 'success' : 
+                            sprint.project.status === 'completed' ? 'primary' : 'default'
+                          }
+                          size="small"
+                          sx={{ textTransform: 'capitalize' }}
+                        />
+                      </Box>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
-                    Started: {formatDate(sprint.start_date)}
-                  </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          <strong>Start:</strong> {formatDate(sprint.start_date)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          <strong>End:</strong> {formatDate(sprint.end_date)}
+                        </Typography>
+                      </Box>
 
-                  <Chip
-                    label={sprint.status}
-                    color={sprint.status === 'active' ? 'success' : 'default'}
-                    size="small"
-                  />
+                      <Divider sx={{ my: 1 }} />
 
-                </Box>
+                      <Box sx={{ 
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mt: 2
+                      }}>
+                        <Badge
+                          badgeContent={sprint.tasks?.length || 0}
+                          color="primary"
+                          sx={{ 
+                            '& .MuiBadge-badge': {
+                              right: -5,
+                              top: -5,
+                              fontSize: '0.75rem'
+                            }
+                          }}
+                        >
+                          <Typography variant="body2">Tasks</Typography>
+                        </Badge>
+                      </Box>
+                    </CardContent>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
-                    End Date: {formatDate(sprint.end_date)}
-                  </Typography>
-                </Box>
-
-
-
-                <Link variant="contained" to={`/admin/create/task/${sprint.id}?project=${id}`}>Add Task</Link>
-              </CardContent>
-            </Card>
+                  <CardActions sx={{ 
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    p: 2,
+                    pt: 0
+                  }}>
+                    <Button 
+                      size="small" 
+                      component={Link} 
+                      to={`/admin/create/task/${sprint.id}?project=${id}`}
+                      sx={{ textTransform: 'none' }}
+                    >
+                      Add Task
+                    </Button>
+                    {sprint.tasks?.length > 0 && (
+                      <Button 
+                        size="small" 
+                        onClick={() => navigate(`/tasks/${sprint.id}`)}
+                        sx={{ textTransform: 'none' }}
+                      >
+                        View Tasks
+                      </Button>
+                    )}
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        </>
+      )}
 
-      {/* Modal */}
+      {/* Create Sprint Modal */}
       <Dialog
         open={sprintModal}
-        onClose={showSprintModal}
-        slotProps={{
-          paper: {
-
-            sx: {
-              backgroundImage: 'none',
-
-              width: '100%', // Full width
-              m: 'auto',     // Centered
-            },
-          },
-        }}
+        onClose={() => showSprintModal(false)}
+        maxWidth="sm"
+        fullWidth
       >
-        <DialogTitle>Create a sprint</DialogTitle>
-        <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}
-        >
-          <form onSubmit={createSprint}>
+        <DialogTitle sx={{ pb: 1 }}>Create New Sprint</DialogTitle>
+        <DialogContent>
+          <Box component="form" onSubmit={createSprint} sx={{ mt: 1 }}>
             <TextField
               autoFocus
               required
-              margin="dense"
-              id="project"
+              margin="normal"
               name="sprint_name"
-              label="Sprint name"
-              placeholder="Sprint name"
+              label="Sprint Name"
               fullWidth
               value={formData.sprint_name}
               onChange={handleChange}
             />
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="start_date"
-              name="start_date"
-              label="Sprint start date "
-              placeholder=" Sprint start date"
-              fullWidth
-              type="date"
-              value={formData.start_date}
-              onChange={handleChange}
-            />
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="end_date"
-              name="end_date"
-              label="Sprint end date"
-              placeholder="Sprint end date"
-              fullWidth
-              type="date"
-              value={formData.end_date}
-              onChange={handleChange}
-            />
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-              <Button onClick={showSprintModal}>Cancel</Button>
-              <Button variant="contained" type="submit">
-                Create
-              </Button>
+            <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+              <TextField
+                required
+                margin="normal"
+                name="start_date"
+                label="Start Date"
+                type="date"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+                value={formData.start_date}
+                onChange={handleChange}
+              />
+              <TextField
+                required
+                margin="normal"
+                name="end_date"
+                label="End Date"
+                type="date"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+                value={formData.end_date}
+                onChange={handleChange}
+              />
             </Box>
-          </form>
+            <DialogActions sx={{ px: 0, mt: 3 }}>
+              <Button onClick={() => showSprintModal(false)}>Cancel</Button>
+              <Button type="submit" variant="contained">
+                Create Sprint
+              </Button>
+            </DialogActions>
+          </Box>
         </DialogContent>
-        <DialogActions sx={{ pb: 3, px: 3 }}>
-        </DialogActions>
       </Dialog>
     </>
   );

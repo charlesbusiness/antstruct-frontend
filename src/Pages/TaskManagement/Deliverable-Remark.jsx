@@ -32,7 +32,7 @@ export const DeliverableRemark = ({ taskId, deliverableId, closeModal, type }) =
     }
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ p: 1, borderRadius: 2 }}>
+        <Box component="form" onSubmit={handleSubmit}>
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={10}>
                     <TextArea
@@ -45,15 +45,12 @@ export const DeliverableRemark = ({ taskId, deliverableId, closeModal, type }) =
                         errors={errors ?? {}}
                     />
 
-                </Grid>
-
-                <Grid item xs={2}>
-
                     <Button type="submit" variant="contained" fullWidth>
                         {'Remark'}
                     </Button>
-
                 </Grid>
+
+
             </Grid>
         </Box>
     )
