@@ -2,10 +2,11 @@ import { lazy } from "react";
 import { Logout } from "../Logout";
 import BusinessCreation from "../Pages/Configuration/BusinessCreation";
 
-const ProjectDashboard = lazy(() => import("../Pages/TaskManagement/ProjectDashboard"))
+const ProjectDashboard = lazy(() =>
+  import("../Pages/TaskManagement/ProjectDashboard")
+);
 
-const Sprint = lazy(() => import("../Pages/TaskManagement/SprintDashboard"))
-
+const Sprint = lazy(() => import("../Pages/TaskManagement/SprintDashboard"));
 
 const Departments = lazy(() => import("@src/Pages/Configuration/Departments"));
 
@@ -14,7 +15,9 @@ const Roles = lazy(() => import("@src/Pages/RolesPermissions/Roles"));
 const Employees = lazy(() => import("@src/Pages/HrPages/Employee/Employees"));
 
 const HrDashboard = lazy(() => import("@src/Pages/hrPages/HRDashBoard"));
-const DailyDeliverables = lazy(() => import("@src/Pages/hrPages/DailyDeliverables"));
+const DailyDeliverables = lazy(() =>
+  import("@src/Pages/hrPages/DailyDeliverables")
+);
 const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
 
 const AdminCreateDeliverable = lazy(() =>
@@ -35,15 +38,15 @@ const UserUpdateTask = lazy(() =>
 const TaskDashboard = lazy(() =>
   import("@src/Pages/TaskManagement/TaskDashboard")
 );
-const TaskDetails = lazy(() =>
-  import("@src/Pages/TaskManagement/TaskDetails")
-);
+const TaskDetails = lazy(() => import("@src/Pages/TaskManagement/TaskDetails"));
 const CreateEmployee = lazy(() =>
   import("@src/Pages/HrPages/Employee/EmployeeCreation")
 );
 const CreateRole = lazy(() => import("../Pages/RolesPermissions/create-roles"));
 const AssignRole = lazy(() => import("../Pages/RolesPermissions/assign-role"));
-const UnassignRole = lazy(() => import("../Pages/RolesPermissions/unassign-role"));
+const UnassignRole = lazy(() =>
+  import("../Pages/RolesPermissions/unassign-role")
+);
 const MapResources = lazy(() =>
   import("@src/Pages/Configuration/Resources/MapResources")
 );
@@ -54,10 +57,23 @@ const DepartmentManager = lazy(() =>
   import("@src/Pages/Configuration/DepartmentManagers/DepartmentManager")
 );
 const UnAssignDepartmentManager = lazy(() =>
-  import("@src/Pages/Configuration/DepartmentManagers/UnassignDepartmentManager")
+  import(
+    "@src/Pages/Configuration/DepartmentManagers/UnassignDepartmentManager"
+  )
 );
-const Requisition = lazy(() => import("@src/Pages/HrPages/Requisitions/Requisition"));
-
+const Requisition = lazy(() =>
+  import("@src/Pages/HrPages/Requisitions/Requisition")
+);
+const payroll = lazy(() => import("@src/Pages/hrPages/Payroll/Payroll"));
+const performance = lazy(() =>
+  import("@src/Pages/hrPages/PerformanceReview/PerformanceReview")
+);
+const organizationChart = lazy(() =>
+  import("@src/Pages/hrPages/OrgChart/OrganizationChart")
+);
+const policies = lazy(() => import("@src/Pages/hrPages/Policies/Policies"));
+const training = lazy(() => import("@src/Pages/hrPages/training/training"));
+const LeaveRequest = lazy(() => import("@src/Pages/hrPages/Leave/LeaveRequest"));
 const coreRoutes = [
   {
     path: "/dashboard",
@@ -94,7 +110,7 @@ const coreRoutes = [
   },
 
   {
-    path: '/sprints/:id',
+    path: "/sprints/:id",
     title: "Sprint-dashboard",
     component: Sprint,
   },
@@ -162,19 +178,42 @@ const coreRoutes = [
     component: MapResources,
   },
 
-  // {
-  //   path: "/unmap/api/resource",
-  //   title: "Un Map Resource To Role",
-  //   component: UnMapResources,
-  // },
+  {
+    path: "/payroll",
+    title: "Payroll",
+    component: payroll,
+  },
+  {
+    path: "/performace",
+    title: "Performace",
+    component: performance,
+  },
+  {
+    path: "/policies",
+    title: "Policies",
+    component: policies,
+  },
+    {
+    path: "/leave",
+    title: "Leave Request",
+    component: LeaveRequest,
+  },
+  {
+    path: "/training",
+    title: "Training",
+    component: training,
+  },
+  {
+    path: "/org-chart",
+    title: "Organizational Chart",
+    component: organizationChart,
+  },
 
   {
     path: "/config/departments",
     title: "Departments",
     component: Departments,
   },
-
-
 
   {
     path: "/config/departments/managers",
@@ -205,8 +244,6 @@ const coreRoutes = [
     title: "Daily Deliverables",
     component: DailyDeliverables,
   },
-
-
 ];
 
 const routes = [...coreRoutes];

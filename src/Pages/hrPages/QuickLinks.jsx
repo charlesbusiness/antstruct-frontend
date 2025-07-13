@@ -7,7 +7,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Avatar,
   Divider
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -16,12 +15,11 @@ const QuickLinks = () => {
   const quickLinks = [
     { name: 'Add New Employee', icon: '👤', url: '/hr/create/employees' },
     { name: 'Process Payroll', icon: '💰', url: '/payroll' },
-    { name: 'Performance Reviews', icon: '📊', url: '/reviews' },
-    { name: 'Time Off Requests', icon: '⏱️', url: '/time-off' },
+    { name: 'Performance Reviews', icon: '📊', url: '/performace' },
+    { name: 'Leave Requests', icon: '⏱️', url: '/leave' },
     { name: 'Training Programs', icon: '🎓', url: '/training' },
     { name: 'Company Policies', icon: '📜', url: '/policies' },
     { name: 'Org Chart', icon: '🏢', url: '/org-chart' },
-    { name: 'Reports', icon: '📈', url: '/reports' },
     { name: 'Create Daily Deliverables', icon: '📈', url: '/hr/daily/deliverables' },
   ];
   const navigate = useNavigate()
