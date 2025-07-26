@@ -91,6 +91,7 @@ export const dummyEmployees = [
     payPeriod: { start: "2025-07-01", end: "2025-07-31" },
     regularHours: 160,
     overtimeHours: 10,
+    gradeId: 2,
     bonuses: 500,
     deductions: {
       tax: 800,
@@ -500,6 +501,55 @@ export const dummyEmployees = [
         status: "Approved",
       }
     ],
+  },
+];
+
+export const dummyLeavePolicies = [
+  {
+    id: 1,
+    type: "Annual",
+    defaultDays: 20,
+    carryOver: true,
+    description: "Standard annual leave for all employees",
+  },
+  {
+    id: 2,
+    type: "Sick",
+    defaultDays: 10,
+    carryOver: false,
+    description: "Paid sick leave",
+  },
+  {
+    id: 3,
+    type: "Maternity",
+    defaultDays: 90,
+    carryOver: false,
+    description: "Maternity leave for eligible employees",
+  },
+  {
+    id: 4,
+    type: "Paternity",
+    defaultDays: 14,
+    carryOver: false,
+    description: "Paternity leave for new fathers",
+  },
+];
+
+export const dummyGrades = [
+  {
+    id: 1,
+    name: "Junior Staff",
+    leavePolicyIds: [1, 2],
+  },
+  {
+    id: 2,
+    name: "Mid-level Staff",
+    leavePolicyIds: [1, 2, 4],
+  },
+  {
+    id: 3,
+    name: "Senior Staff",
+    leavePolicyIds: [1, 2, 3, 4],
   },
 ];
 

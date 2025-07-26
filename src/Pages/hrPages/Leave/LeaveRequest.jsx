@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -48,6 +49,7 @@ const LeaveRequest = () => {
   const [note, setNote] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+const navigate = useNavigate();
 
   const handleApprove = (empId, requestId) => {
     setEmployees(prev =>
@@ -124,6 +126,23 @@ const LeaveRequest = () => {
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
         Leave Request Management
       </Typography>
+
+<Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={() => navigate("/hr/leave-policies")}
+  >
+    Manage Leave Policies
+  </Button>
+  <Button
+    variant="contained"
+    color="secondary"
+    onClick={() => navigate("/hr/grades")}
+  >
+    Manage Grades
+  </Button>
+</Stack>
 
       <Card elevation={2} sx={{ mb: 4 }}>
         <CardHeader

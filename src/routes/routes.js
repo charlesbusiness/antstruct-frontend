@@ -74,6 +74,10 @@ const organizationChart = lazy(() =>
 const policies = lazy(() => import("@src/Pages/hrPages/Policies/Policies"));
 const training = lazy(() => import("@src/Pages/hrPages/training/training"));
 const LeaveRequest = lazy(() => import("@src/Pages/hrPages/Leave/LeaveRequest"));
+const LeavePolicies = lazy(() =>
+  import("@src/Pages/hrPages/Leave/LeavePolicies")
+);
+const Grades = lazy(() => import("@src/Pages/hrPages/Leave/CreateGrades"));
 const coreRoutes = [
   {
     path: "/dashboard",
@@ -227,6 +231,16 @@ const coreRoutes = [
     component: UnAssignDepartmentManager,
   },
 
+  {
+    path: "/hr/leave-policies",
+    title: "Leave Policies",
+    component: LeavePolicies,
+  },
+  {
+    path: "/hr/grades",
+    title: "Grades",
+    component: Grades,
+  },
   {
     path: "/config/roles",
     title: "Roles",

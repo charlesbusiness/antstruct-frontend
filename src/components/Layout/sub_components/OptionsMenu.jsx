@@ -46,7 +46,7 @@ export default function OptionsMenu() {
         onClose={handleClose}
         onClick={handleClose}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         sx={{
           [`& .${listClasses.root}`]: {
             padding: '4px',
