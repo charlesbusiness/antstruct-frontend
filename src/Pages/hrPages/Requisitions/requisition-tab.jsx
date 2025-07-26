@@ -12,7 +12,7 @@ const TABS = [
     { label: 'Financials', type: REQUISITION_TYPES.MONEY },
     { label: 'Equipment', type: REQUISITION_TYPES.EQUIPMENT },
     { label: 'Human Resources', type: REQUISITION_TYPES.HR },
-];
+]
 
 export const RequisitionTabs = ({ requisitions }) => {
     const [currentTab, setCurrentTab] = useState(0);

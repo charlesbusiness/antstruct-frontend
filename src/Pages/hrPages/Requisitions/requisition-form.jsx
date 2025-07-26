@@ -145,6 +145,7 @@ export const CreateRequisition = ({ setOpenDialog }) => {
                 onChange={handleInputChange}
                 margin="normal"
                 select
+                required
             >
                 {departments?.map((dept) => (
                     <MenuItem key={dept?.id} value={dept?.id}>
@@ -159,6 +160,7 @@ export const CreateRequisition = ({ setOpenDialog }) => {
                 value={formData.purpose}
                 onChange={handleInputChange}
                 margin="normal"
+                required
             />
 
             <TextField
@@ -170,18 +172,9 @@ export const CreateRequisition = ({ setOpenDialog }) => {
                 margin="normal"
                 multiline
                 rows={3}
+                required
             />
-            <FileUpload onFileSelect={(file) => setEmployeeFile(file)} />
-            <TextField
-                fullWidth
-                label="Remark"
-                name="remark"
-                value={formData.remark}
-                onChange={handleInputChange}
-                margin="normal"
-                multiline
-                rows={2}
-            />
+
 
             {/* Conditional Fields */}
             {formData.type === REQUISITION_TYPES.MONEY && (
@@ -193,6 +186,7 @@ export const CreateRequisition = ({ setOpenDialog }) => {
                         value={monetaryType.budget}
                         onChange={handleTypeInputChange}
                         margin="normal"
+                        required
                     />
                     <TextField
                         fullWidth
@@ -209,22 +203,7 @@ export const CreateRequisition = ({ setOpenDialog }) => {
 
             {formData.type === REQUISITION_TYPES.EQUIPMENT && (
                 <>
-                    <TextField
-                        fullWidth
-                        label="Item"
-                        name="item"
-                        value={equipmentType.item}
-                        onChange={handleTypeInputChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Specifications"
-                        name="specs"
-                        value={equipmentType.specs}
-                        onChange={handleTypeInputChange}
-                        margin="normal"
-                    />
+
                     <TextField
                         fullWidth
                         label="Quantity"
@@ -233,6 +212,7 @@ export const CreateRequisition = ({ setOpenDialog }) => {
                         onChange={handleTypeInputChange}
                         margin="normal"
                         type="number"
+                        required
                     />
                 </>
             )}
@@ -275,6 +255,18 @@ export const CreateRequisition = ({ setOpenDialog }) => {
                     />
                 </>
             )}
+
+            <TextField
+                fullWidth
+                label="Remark"
+                name="remark"
+                value={formData.remark}
+                onChange={handleInputChange}
+                margin="normal"
+                multiline
+                rows={2}
+            />
+            <FileUpload onFileSelect={(file) => setEmployeeFile(file)} />
 
             <Box mt={3}>
                 <Button type="submit" variant="contained" fullWidth>

@@ -19,9 +19,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import useSubmitData from "../../hooks/useSubmitData";
-import useBusinessProfile from "../../hooks/useBusinessProfile";
+import useBusinessProfile from "@src/hooks/useBusinessProfile";
 import { useQueryClient } from "@tanstack/react-query";
-import { formatDate } from "../../utils/general";
+import { formatDate } from "@src/utils/general";
 import SprintDashboard from "./SprintDashboard";
 
 export default function ProjectDashboard() {
@@ -37,7 +37,7 @@ export default function ProjectDashboard() {
   });
   const [isLoading, setIsLoading] = React.useState(false);
   const { submitData } = useSubmitData();
-  const { projects } = useBusinessProfile();
+  const { projects, isLoading: loadingStatus } = useBusinessProfile();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,6 +74,7 @@ export default function ProjectDashboard() {
 
   return (
     <>
+
       <Box
         sx={{
           display: "flex",
@@ -89,7 +90,7 @@ export default function ProjectDashboard() {
           Create Project/Goals
         </Button>
       </Box>
-      {projects === undefined ? (
+      {loadingStatus ? (
         <Box
           display="flex"
           justifyContent="center"
@@ -175,7 +176,7 @@ export default function ProjectDashboard() {
           ))}
         </Grid>
       ) : (
-        <Typography variant="body1"  sx={{ mt: 2, color: 'text.secondary' }}>No projects found.</Typography>
+        <Typography variant="body1" sx={{ mt: 2, color: 'text.secondary' }}>No projects found.</Typography>
       )}
 
       <Dialog

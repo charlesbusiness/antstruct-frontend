@@ -169,7 +169,7 @@ export default function AdminCreateDeliverable() {
       <Box>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={6}>
-            <Button onClick={() => navigation(`/sprints/${projectId}`)}>Go to dashboard</Button>
+            <Button onClick={() => navigation(`/task/${id}`)}>Go to dashboard</Button>
           </Grid>
         </Grid>
       </Box>
