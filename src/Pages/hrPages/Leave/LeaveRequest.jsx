@@ -39,6 +39,7 @@ import {
   Info as InfoIcon
 } from "@mui/icons-material";
 import allEmployees from "../Payroll/data";
+import LeaveCategorySettingForm from "./settings/LeaveCategory";
 
 const LeaveRequest = () => {
   const [employees, setEmployees] = useState(allEmployees);
@@ -54,13 +55,13 @@ const LeaveRequest = () => {
       prev.map(emp =>
         emp.id === empId
           ? {
-              ...emp,
-              leaveRequests: emp.leaveRequests.map(req =>
-                req.id === requestId 
-                  ? { ...req, status: "Approved", note } 
-                  : req
-              ),
-            }
+            ...emp,
+            leaveRequests: emp.leaveRequests.map(req =>
+              req.id === requestId
+                ? { ...req, status: "Approved", note }
+                : req
+            ),
+          }
           : emp
       )
     );
@@ -73,13 +74,13 @@ const LeaveRequest = () => {
       prev.map(emp =>
         emp.id === empId
           ? {
-              ...emp,
-              leaveRequests: emp.leaveRequests.map(req =>
-                req.id === requestId 
-                  ? { ...req, status: "Declined", note } 
-                  : req
-              ),
-            }
+            ...emp,
+            leaveRequests: emp.leaveRequests.map(req =>
+              req.id === requestId
+                ? { ...req, status: "Declined", note }
+                : req
+            ),
+          }
           : emp
       )
     );
@@ -104,8 +105,8 @@ const LeaveRequest = () => {
   const filteredEmployees = employees
     .map(emp => ({
       ...emp,
-      leaveRequests: filterStatus === "all" 
-        ? emp.leaveRequests 
+      leaveRequests: filterStatus === "all"
+        ? emp.leaveRequests
         : emp.leaveRequests?.filter(req => req.status === filterStatus)
     }))
     .filter(emp => emp.leaveRequests?.length > 0);
@@ -124,6 +125,9 @@ const LeaveRequest = () => {
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
         Leave Request Management
       </Typography>
+      <Box sx={{ my: 2 }}>
+        <LeaveCategorySettingForm />
+      </Box>
 
       <Card elevation={2} sx={{ mb: 4 }}>
         <CardHeader
@@ -181,18 +185,18 @@ const LeaveRequest = () => {
                         <Chip label={emp.leaveEntitlement} variant="outlined" />
                       </TableCell>
                       <TableCell align="center">
-                        <Chip 
-                          label={emp.leaveTaken} 
-                          color="primary" 
-                          variant="outlined" 
+                        <Chip
+                          label={emp.leaveTaken}
+                          color="primary"
+                          variant="outlined"
                         />
                       </TableCell>
                       <TableCell align="center">
                         <Chip
                           label={emp.leaveEntitlement - emp.leaveTaken}
                           color={
-                            (emp.leaveEntitlement - emp.leaveTaken) > 5 
-                              ? "success" 
+                            (emp.leaveEntitlement - emp.leaveTaken) > 5
+                              ? "success"
                               : "warning"
                           }
                         />
@@ -200,14 +204,14 @@ const LeaveRequest = () => {
                       <TableCell>
                         <Stack spacing={1}>
                           {emp.leaveRequests?.map((req) => (
-                            <Paper 
-                              key={req.id} 
-                              variant="outlined" 
+                            <Paper
+                              key={req.id}
+                              variant="outlined"
                               sx={{ p: 2, position: 'relative' }}
                             >
-                              <Stack 
-                                direction="row" 
-                                justifyContent="space-between" 
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
                                 alignItems="center"
                               >
                                 <Box>
@@ -216,7 +220,7 @@ const LeaveRequest = () => {
                                     <Typography variant="body1" fontWeight="medium">
                                       {req.type}
                                     </Typography>
-                                    <Chip 
+                                    <Chip
                                       label={req.status}
                                       size="small"
                                       color={getStatusColor(req.status)}
@@ -276,7 +280,7 @@ const LeaveRequest = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

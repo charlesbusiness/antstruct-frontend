@@ -1,3 +1,4 @@
+
 export const formatRoute = (str) => {
   return str.replace(/([a-z])([A-Z])/g, '$1/$2').toLowerCase();
 }
@@ -27,4 +28,19 @@ export const REQUISITION_TYPES = {
   EQUIPMENT: 'equipment',
   HR: 'internal'
 };
+
+export function resetFormData(template) {
+  const cleared = {}
+  for (const key in template) {
+    cleared[key] = ''
+  }
+  console.log(cleared)
+  return cleared
+}
+
+
+
+
+
+
 

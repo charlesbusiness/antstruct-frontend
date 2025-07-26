@@ -26,7 +26,8 @@ import {
   Chip,
   styled,
   Avatar,
-  LinearProgress
+  LinearProgress,
+  Grid
 } from "@mui/material";
 import {
   Visibility as ViewIcon,
@@ -320,11 +321,11 @@ const PerformanceReview = () => {
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Typography minWidth={150}><strong>Rating:</strong></Typography>
                     <Chip
-                      label={selectedEmployee.performance?.rating ? 
-                        performanceRatings.find(r => r.value === selectedEmployee.performance.rating)?.label : 
+                      label={selectedEmployee.performance?.rating ?
+                        performanceRatings.find(r => r.value === selectedEmployee.performance.rating)?.label :
                         "Not rated"}
-                      color={selectedEmployee.performance?.rating ? 
-                        performanceRatings.find(r => r.value === selectedEmployee.performance.rating)?.color : 
+                      color={selectedEmployee.performance?.rating ?
+                        performanceRatings.find(r => r.value === selectedEmployee.performance.rating)?.color :
                         "default"}
                       icon={getRatingIcon(selectedEmployee.performance?.rating)}
                       variant="outlined"
@@ -342,7 +343,7 @@ const PerformanceReview = () => {
                         value={(selectedEmployee.performance?.goalsMet / selectedEmployee.performance?.goalsTotal) * 100 || 0}
                         color={
                           (selectedEmployee.performance?.goalsMet / selectedEmployee.performance?.goalsTotal) >= 0.8 ? "success" :
-                          (selectedEmployee.performance?.goalsMet / selectedEmployee.performance?.goalsTotal) >= 0.5 ? "primary" : "error"
+                            (selectedEmployee.performance?.goalsMet / selectedEmployee.performance?.goalsTotal) >= 0.5 ? "primary" : "error"
                         }
                         sx={{ height: 8, borderRadius: 4, mb: 1 }}
                       />

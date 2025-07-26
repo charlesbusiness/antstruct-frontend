@@ -157,6 +157,20 @@ const useBusinessProfile = () => {
         keepPreviousData: true,
     });
 
+    const leaveCategory = useQuery({
+        queryKey: ['leaveCategory'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.hrManager.leave.category.get,
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch API resources');
+            return response.data;
+        },
+        keepPreviousData: true,
+    });
+
 
     const groupedResources = useMemo(() => {
         if (!businessProfileQuery.data) return null;
@@ -181,6 +195,7 @@ const useBusinessProfile = () => {
     return {
         businessUserProfile: groupedResources,
         businessInfo: businessProfileQuery.data,
+        leaveCategory: leaveCategory.data,
         employees: employeesQuery.data,
         businessCategories: businessCategories.data,
         businessSizes: businessSizes.data,

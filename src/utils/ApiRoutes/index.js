@@ -100,6 +100,14 @@ export const ApiRoutes = {
       create: 'hr/manager/deliverables/create',
       update: (id) => `hr/manager/deliverables/update/${id}`,
       get: (search) => `hr/manager/deliverables?${search}`,
+    },
+
+    leave: {
+      category: {
+        create: 'hr/manager/leave/category',
+        get: 'hr/manager/leave/category',
+        delete: (id) => `hr/manager/leave/category/${id}`,
+      }
     }
   }
 }
