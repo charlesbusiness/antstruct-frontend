@@ -1,59 +1,61 @@
-import {
-  Grid,
-  Paper,
-  Typography,
-  Avatar,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Divider,
-  Box
-} from '@mui/material';
+import { Grid, Paper, Typography, Avatar, Box } from "@mui/material";
 import {
   People as PeopleIcon,
   CheckCircle as CheckCircleIcon,
   Engineering as EngineeringIcon,
-  Work as WorkIcon
-} from '@mui/icons-material';
+  Work as WorkIcon,
+} from "@mui/icons-material";
+import { dummyEmployees, departments } from "../hrPages/Payroll/data";
+const StatsOverview = () => {
+  const totalEmployees = dummyEmployees.length;
+const today = new Date();
+const activeEmployees = dummyEmployees.filter(e => {
+  const onLeave = e.leaveRequests?.some(req => {
+    const start = new Date(req.startDate);
+    const end = new Date(req.endDate);
+    return req.status === "Approved" && start <= today && end >= today;
+  });
+  return !onLeave;
+}).length;
 
-const StatsOverview = ({ employees }) => {
-  // Calculate some stats from employee data
-  const totalEmployees = employees.length;
-  const activeEmployees = employees.filter(e => e.status === 'Active').length;
-  const leaveEmployees = employees.filter(e => e.status === 'Leave').length;
-  const depts = employees.length;
+const leaveEmployees = dummyEmployees.length - activeEmployees;
+  const depts = departments.length;
+  // Percentages
+const activePercent = ((activeEmployees / totalEmployees) * 100).toFixed(0) + "%";
+const leavePercent = ((leaveEmployees / totalEmployees) * 100).toFixed(0) + "%";
 
-  const stats = [
-    { 
-      name: 'Total Employees', 
-      value: totalEmployees, 
-      change: '+2 new', 
-      icon: <PeopleIcon fontSize="large" />,
-      color: 'primary'
-    },
-    { 
-      name: 'Active Employees', 
-      value: activeEmployees, 
-      change: '50%', 
-      icon: <CheckCircleIcon fontSize="large" />,
-      color: 'success'
-    },
-    { 
-      name: 'Employees on Leave', 
-      value: leaveEmployees, 
-      change: '50%', 
-      icon: <EngineeringIcon fontSize="large" />,
-      color: 'warning'
-    },
-    { 
-      name: 'Departments', 
-      value: depts,
-      change: ' ', 
-      icon: <WorkIcon fontSize="large" />,
-      color: 'info'
-    },
-  ];
+const newHires = 2; 
+
+const stats = [
+  {
+    name: "Total Employees",
+    value: totalEmployees,
+    change: `+${newHires} new`,
+    icon: <PeopleIcon fontSize="large" />,
+    color: "primary",
+  },
+  {
+    name: "Active Employees",
+    value: activeEmployees,
+    change: activePercent, 
+    icon: <CheckCircleIcon fontSize="large" />,
+    color: "success",
+  },
+  {
+    name: "Employees on Leave",
+    value: leaveEmployees,
+    change: leavePercent,
+    icon: <EngineeringIcon fontSize="large" />,
+    color: "warning",
+  },
+  {
+    name: "Departments",
+    value: depts,
+    change: "",
+    icon: <WorkIcon fontSize="large" />,
+    color: "info",
+  },
+];
 
   return (
     <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
@@ -63,22 +65,24 @@ const StatsOverview = ({ employees }) => {
       <Grid container spacing={3}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            <Paper 
-              variant="outlined" 
-              sx={{ 
+            <Paper
+              variant="outlined"
+              sx={{
                 p: 3,
                 borderLeft: `4px solid`,
-                borderLeftColor: `${stat.color}.main`
+                borderLeftColor: `${stat.color}.main`,
               }}
             >
               <Box display="flex" justifyContent="space-between">
-                <Avatar sx={{ bgcolor: `${stat.color}.light`, color: `${stat.color}.dark` }}>
+                <Avatar
+                  sx={{
+                    bgcolor: `${stat.color}.light`,
+                    color: `${stat.color}.dark`,
+                  }}
+                >
                   {stat.icon}
                 </Avatar>
-                <Typography 
-                  color={`${stat.color}.main`} 
-                  fontWeight="bold"
-                >
+                <Typography color={`${stat.color}.main`} fontWeight="bold">
                   {stat.change}
                 </Typography>
               </Box>
@@ -92,56 +96,6 @@ const StatsOverview = ({ employees }) => {
           </Grid>
         ))}
       </Grid>
-      
-      {/* Recent Activity */}
-      <Typography variant="h6" component="h3" mt={4} mb={2}>
-        Recent Activity
-      </Typography>
-      <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: 'primary.light' }}>👤</Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary="New hire onboarding"
-            secondary={
-              <>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  Jane Smith completed onboarding for new marketing specialist
-                </Typography>
-                <br />
-                {"2 hours ago"}
-              </>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: 'success.light' }}>💰</Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary="Payroll processed"
-            secondary={
-              <>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  June payroll completed for 42 employees
-                </Typography>
-                <br />
-                {"1 day ago"}
-              </>
-            }
-          />
-        </ListItem>
-      </List>
     </Paper>
   );
 };

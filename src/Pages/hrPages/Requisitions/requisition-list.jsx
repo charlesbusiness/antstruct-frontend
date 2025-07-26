@@ -28,7 +28,6 @@ export const RequisitionList = () => {
         },
         keepPreviousData: true,
         refetchIntervalInBackground: false,
-        keepPreviousData: true,
         refetchOnWindowFocus: false,         // don't refetch when window regains focus
         refetchOnReconnect: false,           // don't refetch on network reconnect
         refetchInterval: false,              // disable polling
