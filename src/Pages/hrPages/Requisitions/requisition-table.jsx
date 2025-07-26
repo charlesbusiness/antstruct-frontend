@@ -160,7 +160,7 @@ export const RequisitionTable = ({ requisitions }) => {
                       <StatusBadge status={req.status} />
                     </TableCell>
                     <TableCell align="center">
-                      {req.status === 'pending' || req.status === 'reviewed' && (
+                      {(req.status === 'pending' || req.status === 'reviewed') && (
                         <>
                           <IconButton color="success" onClick={() => openComment(req)} title="Approve">
                             <Check />
