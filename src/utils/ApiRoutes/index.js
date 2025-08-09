@@ -4,7 +4,6 @@ export const ApiRoutes = {
     register: 'user/register',
     login: 'user/login',
     verifyAccount: 'user/verify',
-    resendVeirificationCode: 'user/resend/code',
     resendVerificationCode: 'user/resend/code',
     sendForgotPassword: 'account/recovery/email',
     resetPassword: 'account/recovery/reset/password',
@@ -14,12 +13,12 @@ export const ApiRoutes = {
   admin: {
     apiResources: {
       create: 'admin/endpoints',
-      get: 'admin/endpoints',
+      get: (publicStatus) => `admin/endpoints?is_public=${publicStatus}`,
     },
 
     authentication: {
       register: 'admin/register',
-      register: 'admin/login',
+      login: 'admin/login',
     }
   },
 
@@ -42,6 +41,7 @@ export const ApiRoutes = {
   },
 
   employees: {
+    assignGrade: (id) => `config/business/employees/grade/${id}`,
     create: 'config/business/employees',
     getEmployees: 'config/business/employees',
     assignRole: 'config/business/employees/roles',
@@ -66,6 +66,7 @@ export const ApiRoutes = {
     tasks: (query, sprint) => `tasks/admin/tasks?sprint=${sprint}`,
     task: (id) => `tasks/admin/task/${id}`,
     taskUpdate: (id) => `tasks/admin/task/status/${id}`,
+    assignTask: `tasks/admin/assign`,
     deliverableUpdate: `tasks/admin/deliverable/status`,
   },
 
@@ -107,7 +108,19 @@ export const ApiRoutes = {
         create: 'hr/manager/leave/category',
         get: 'hr/manager/leave/category',
         delete: (id) => `hr/manager/leave/category/${id}`,
+      },
+      applications: {
+        apply: 'leave/manager/apply',
+        leaves: 'leave/manager/apply/leaves'
       }
-    }
+    },
+
+    grades: {
+      create: 'hr/manager/employment/grade',
+      get: 'hr/manager/employment/grade',
+      delete: (id) => `hr/manager/employment/grade/${id}`,
+      update: (id) => `hr/manager/employment/grade/${id}`,
+    },
+
   }
 }

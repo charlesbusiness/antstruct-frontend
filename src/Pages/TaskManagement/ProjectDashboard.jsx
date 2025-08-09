@@ -23,9 +23,10 @@ import useBusinessProfile from "@src/hooks/useBusinessProfile";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "@src/utils/general";
 import SprintDashboard from "./SprintDashboard";
+import Can from "../../components/Can";
+import { ENDPOINTS } from "../../utils/consts";
 
 export default function ProjectDashboard() {
-  const navigate = useNavigate();
   const [projectModal, setprojectModal] = React.useState(false);
   const [projectId, setProjectId] = React.useState("");
   const [sprintModal, setSprintModal] = React.useState(false);
@@ -86,9 +87,11 @@ export default function ProjectDashboard() {
         <Typography variant="h6" component="h1" gutterBottom>
           Manage Projects/Goals
         </Typography>
-        <Button variant="contained" onClick={showProjectModal}>
-          Create Project/Goals
-        </Button>
+        <Can endpoint={ENDPOINTS?.CREATE_PROJECT}>
+          <Button variant="contained" onClick={showProjectModal}>
+            Create Project/Goals
+          </Button>
+        </Can>
       </Box>
       {loadingStatus ? (
         <Box
@@ -147,21 +150,24 @@ export default function ProjectDashboard() {
                     />
                   </Box>
 
-                  <Typography sx={{ mb: 1 }}>Active Sprint: </Typography>
+                  {/* <Typography sx={{ mb: 1 }}>Active Sprint: </Typography> */}
 
                   <Box
                     sx={{ display: "flex", justifyContent: "space-between" }}
                   >
+                    {/* <Can endpoint={ENDPOINTS.ADMIN_CREATE_TASK}> */}
                     <Link variant="outlined" to={`/sprints/${project.id}`}>
-                      Manage Sprints
+                      Sprints
                     </Link>
-
-                    <Button
-                      variant="contained"
-                      onClick={() => showSprintModal(project.id)}
-                    >
-                      Add Sprint
-                    </Button>
+                    {/* </Can> */}
+                    <Can endpoint={ENDPOINTS.CREATE_SPRINT}>
+                      <Button
+                        variant="contained"
+                        onClick={() => showSprintModal(project.id)}
+                      >
+                        Add Sprint
+                      </Button>
+                    </Can>
                   </Box>
                   {sprintModal && (
                     <SprintDashboard

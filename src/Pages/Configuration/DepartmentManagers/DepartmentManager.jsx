@@ -28,6 +28,8 @@ import { MultipleSelectWithFilter } from "@src/common/MultipleSelectWithFilter";
 import { EmployeeDepartmentManager } from "@src/validations/business/employee-department-managers";
 import useBusinessProfile from "@src/hooks/useBusinessProfile";
 import UnmapDepartment from "./UnassignDepartmentManager";
+import Can from "../../../components/Can";
+import { ENDPOINTS } from "../../../utils/consts";
 
 export default function DepartmentManager() {
   const [errors, setErrors] = React.useState({});
@@ -158,17 +160,20 @@ export default function DepartmentManager() {
           {employeeDeptMap?.length > 0 ? (
             <Box sx={{ mt: 5 }}>
               <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-                <Button
-                  variant="contained"
-                  onClick={openUmapManager}
-                  sx={{ mr: 2 }}
-                >
-                  Unmap Managers
-                </Button>
-
-                <Button variant="outlined" onClick={openCreateDept}>
-                  Map New Managers
-                </Button>
+                <Can endpoint={ENDPOINTS.UNMAPPED_DEPT}>
+                  <Button
+                    variant="contained"
+                    onClick={openUmapManager}
+                    sx={{ mr: 2 }}
+                  >
+                    Unmap Managers
+                  </Button>
+                </Can>
+                <Can endpoint={ENDPOINTS.MAP_DEPARTMENT_TO_EMPLOYEE_MANAGERS}>
+                  <Button variant="outlined" onClick={openCreateDept}>
+                    Map New Managers
+                  </Button>
+                </Can>
               </Box>
 
               <TableContainer component={Paper} sx={{ overflowX: "auto" }}>

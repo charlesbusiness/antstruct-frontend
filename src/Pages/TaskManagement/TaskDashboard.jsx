@@ -114,9 +114,8 @@ export default function TaskDashboard() {
 
             <Box sx={{ display: "flex", gap: 3 }}>
               <Chip
-                label={`Active Sprint: ${
-                  tasks ? tasks[0]?.sprint?.sprint_name : ""
-                }`}
+                label={`Active Sprint: ${tasks ? tasks[0]?.sprint?.sprint_name : ""
+                  }`}
                 color="primary"
                 variant="outlined"
               />
@@ -176,7 +175,7 @@ export default function TaskDashboard() {
                             color="text.secondary"
                             sx={{ mr: 2 }}
                           >
-                            {task.assignees[0].assignee.firstname}
+                            {task.assignees[0]?.assignee?.firstname}
                           </Typography>
                           <DueDateIcon
                             fontSize="small"
@@ -327,8 +326,8 @@ export default function TaskDashboard() {
                           task.progress === 100
                             ? "Done"
                             : task.progress > 0
-                            ? "In Progress"
-                            : "Pending"
+                              ? "In Progress"
+                              : "Pending"
                         )}
                         label={task.status}
                         size="small"
@@ -336,12 +335,12 @@ export default function TaskDashboard() {
                           task.progress === 100
                             ? "success"
                             : task.progress > 0
-                            ? "info"
-                            : "default"
+                              ? "info"
+                              : "default"
                         }
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={1}>
                       <Chip
                         icon={getPriorityIcon(task.priority)}
                         label={task.priority}
@@ -350,21 +349,21 @@ export default function TaskDashboard() {
                           task.priority === "high"
                             ? "error"
                             : task.priority === "moderate"
-                            ? "warning"
-                            : task.priority === "low"
-                            ? "success"
-                            : "info"
+                              ? "warning"
+                              : task.priority === "low"
+                                ? "success"
+                                : "info"
                         }
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                       <Typography variant="body2">
                         {formatDate(task.expected_date_of_delivery)}
                       </Typography>
                     </Grid>
                     <Grid item xs={1}>
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         onClick={() => navigate(`/task/${task.id}`)}
                       >
                         view

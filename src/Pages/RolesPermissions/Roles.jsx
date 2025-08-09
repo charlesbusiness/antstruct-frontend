@@ -16,6 +16,8 @@ import useBusinessProfile from "@src/hooks/useBusinessProfile";
 import AssignRole from "./assign-role";
 import UnassignRole from "./unassign-role";
 import RoleCreation from "./create-roles";
+import Can from "../../components/Can";
+import { ENDPOINTS } from "../../utils/consts";
 
 export default function Roles() {
   const { roles } = useBusinessProfile();
@@ -43,16 +45,23 @@ export default function Roles() {
   return (
     <Container>
       <Grid container sx={{ display: "flex", justifyContent: "start", gap: 2 }}>
-        <Grid>
-          <Button variant="contained" onClick={openAssignModal}>Assign Role</Button>
-        </Grid>
-        <Grid>
-          <Button variant="outlined" onClick={openUnAssignModal}>Unassign Role</Button>
-          {/* <Link to={'/config/unassign/role'}>Unassign Role</Link> */}
-        </Grid>
-        <Grid>
-          <Button variant="contained" onClick={openCreateRole}>Add Role</Button>
-        </Grid>
+        <Can endpoint={ENDPOINTS.ASSIGN_ROLE_TO_EMPLOYEE}>
+          <Grid>
+            <Button variant="contained" onClick={openAssignModal}>Assign Role</Button>
+          </Grid>
+        </Can>
+
+        <Can endpoint={ENDPOINTS.UNASSIGN_ROLE_TO_EMPLOYEE}>
+          <Grid>
+            <Button variant="outlined" onClick={openUnAssignModal}>Unassign Role</Button>
+          </Grid>
+        </Can>
+        <Can endpoint={ENDPOINTS.CREATE_BUSINESS_ROLE}>
+          <Grid>
+            <Button variant="contained" onClick={openCreateRole}>Add Role</Button>
+          </Grid>
+        </Can>
+
       </Grid>
       <Divider sx={{ my: 2 }} />
       {loading ? (

@@ -17,6 +17,8 @@ import { validate } from "@src/services/validation/validate";
 import { AssignRoleSchema } from "@src/validations/business/assign-role-schema";
 import { MultipleSelectWithFilter } from "@src/common/MultipleSelectWithFilter";
 import useBusinessProfile from "@src/hooks/useBusinessProfile";
+import Can from "../../components/Can";
+import { ENDPOINTS } from "../../utils/consts";
 
 export default function AssignRole() {
   const { submitData, isLoading } = useSubmitData();
@@ -191,15 +193,16 @@ export default function AssignRole() {
                   ))}
                 </ul>
               )}
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3 }}
-              >
-                Assign Role
-              </Button>
+              <Can endpoint={ENDPOINTS.ASSIGN_ROLE_TO_EMPLOYEE}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3 }}
+                >
+                  Assign Role
+                </Button>
+              </Can>
             </Box>
           </Box>
         </Card>

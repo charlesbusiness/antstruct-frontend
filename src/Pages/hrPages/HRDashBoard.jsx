@@ -19,72 +19,65 @@ import {
 } from '@mui/material';
 import QuickLinks from "./QuickLinks";
 import StatsOverview from "./StatsOverview";
-import { dummyEmployees, dummyGrades, dummyLeavePolicies } from "../hrPages/Payroll/data";
+
+import useBusinessProfile from '../../hooks/useBusinessProfile';
+import useSubmitData from '../../hooks/useSubmitData';
+import { ApiRoutes } from '../../utils/ApiRoutes';
 
 const HRDashboard = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
+  const { submitData } = useSubmitData()
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-  const [selectedLeave, setSelectedLeave] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [reason, setReason] = useState("");
 
-  // Assume logged-in user (replace with actual user context/auth later)
-  const currentUser = dummyEmployees[3]; // Example: Alice Johnson
-  // const userGrade = dummyGrades.find(g => g.id == currentUser.gradeId) || null;
-  const userGrade = dummyGrades.find(g => g.id === 2); 
-
-  const allowedLeavePolicies = dummyLeavePolicies.filter(p =>
-    userGrade?.leavePolicyIds.includes(p.id)
-  );
+  const { businessInfo } = useBusinessProfile()
 
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({ open: true, message, severity });
   };
+  const [formData, setFormData] = useState({
+    leave_category_id: '',
+    request_days: '',
+    start_date: '',
+    end_date: '',
+    reason: ''
+  })
 
-  const handleApply = () => {
-    // === Validation ===
-    if (!selectedLeave) {
-      showSnackbar("Please select a leave type.", "error");
-      return;
-    }
-    if (!startDate || !endDate) {
-      showSnackbar("Please select start and end dates.", "error");
-      return;
-    }
-    if (new Date(startDate) > new Date(endDate)) {
-      showSnackbar("Start date cannot be after end date.", "error");
-      return;
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
 
-    // Optional: Calculate duration & validate entitlement
-    const duration =
-      (new Date(endDate).getTime() - new Date(startDate).getTime()) /
-        (1000 * 60 * 60 * 24) +
-      1;
-    const remaining = currentUser.leaveEntitlement - currentUser.leaveTaken;
-    if (duration > remaining) {
-      showSnackbar(`You only have ${remaining} days remaining.`, "error");
-      return;
+  const handleApply = async (e) => {
+    e.preventDefault()
+    const response = await submitData({
+      endpoint: ApiRoutes.hrManager.leave.applications.apply,
+      data: formData,
+      reload: false
+    })
+    if (response.success) {
+      showSnackbar("Leave application submitted!", "success");
+      setOpen(false);
     }
-
-    // Submit logic (for now, just log & snackbar)
-    console.log({
-      employee: currentUser.name,
-      leaveType: selectedLeave,
-      startDate,
-      endDate,
-      reason,
-      duration,
-    });
-
-    showSnackbar("Leave application submitted!", "success");
-    setOpen(false);
-    setSelectedLeave("");
-    setStartDate("");
-    setEndDate("");
-    setReason("");
   };
+
+  React.useEffect(() => {
+    if (formData.start_date && formData.request_days) {
+      const start = new Date(formData.start_date);
+      const days = parseInt(formData.request_days, 10);
+
+      if (!isNaN(start.getTime()) && !isNaN(days) && days > 0) {
+        // Add request_days - 1 to the start date
+        const end = new Date(start);
+        end.setDate(start.getDate() + days - 1);
+
+        setFormData(prev => ({
+          ...prev,
+          end_date: end.toISOString().split("T")[0] // YYYY-MM-DD
+        }));
+      }
+    }
+  }, [formData.start_date, formData.request_days]);
+
 
   return (
     <>
@@ -108,17 +101,18 @@ const HRDashboard = () => {
       </Container>
 
       {/* Apply Leave Dialog */}
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth component={'form'} onSubmit={handleApply}>
         <DialogTitle>Apply for Leave</DialogTitle>
         <DialogContent>
           <FormControl fullWidth margin="normal">
             <InputLabel>Leave Type</InputLabel>
             <Select
-              value={selectedLeave}
-              onChange={(e) => setSelectedLeave(e.target.value)}
+              value={formData.leave_category_id}
+              onChange={handleInputChange}
+              name='leave_category_id'
             >
-              {allowedLeavePolicies.map(policy => (
-                <MenuItem key={policy.id} value={policy.type}>{policy.type}</MenuItem>
+              {businessInfo?.leavePlans?.map(policy => (
+                <MenuItem key={policy.id} value={policy.id}>{policy.leave_type}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -127,32 +121,45 @@ const HRDashboard = () => {
             margin="normal"
             label="Start Date"
             type="date"
-            InputLabelProps={{ shrink: true }}
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            name='start_date'
+            value={formData.start_date}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Leave Days"
+            name='request_days'
+            type='number'
+            value={formData.request_days}
+            onChange={handleInputChange}
           />
           <TextField
             fullWidth
             margin="normal"
             label="End Date"
             type="date"
-            InputLabelProps={{ shrink: true }}
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            name="end_date"
+            value={formData.end_date}
+            InputProps={{
+              readOnly: true,
+            }}
           />
+
           <TextField
             fullWidth
             margin="normal"
             label="Reason (Optional)"
             multiline
             rows={3}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
+            name='reason'
+            value={formData.reason}
+            onChange={handleInputChange}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleApply}>Submit</Button>
+          <Button variant="contained" type='submit'>Submit</Button>
         </DialogActions>
       </Dialog>
 

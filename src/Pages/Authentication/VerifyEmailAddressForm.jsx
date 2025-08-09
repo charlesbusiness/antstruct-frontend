@@ -53,7 +53,7 @@ export default function VerifyEmailAddressForm() {
     const { email, phone } = contextData
     submitData({
       data: { phone: phone, email: email },
-      endpoint: ApiRoutes.authentication.resendVeirificationCode,
+      endpoint: ApiRoutes.authentication.resendVerificationCode,
       navigationPath: '/verify'
     })
   }

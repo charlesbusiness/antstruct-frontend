@@ -8,12 +8,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  OutlinedInput,
+  OutlinedInput
 } from "@mui/material";
 import useSubmitData from "../../hooks/useSubmitData";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import useBusinessProfile from "../../hooks/useBusinessProfile";
-import { MultipleSelectFiled } from "../../common/MultipleSelect";
 import { TextField } from "../../common/TextField";
 import { TextArea } from "../../common/TextArea";
 import AdminCreateDeliverable from "./AdminCreateDeliverable";
@@ -34,11 +33,10 @@ export default function AdminCreateTask() {
 
   const { submitData } = useSubmitData();
   const navigation = useNavigate()
-  const { employees } = useBusinessProfile()
   const [errors, setErrors] = React.useState({})
   const [open, setOpen] = React.useState(false);
 
-  const handleOpen = () => setOpen(true);
+  // const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { id } = useParams()
   const [searchParams] = useSearchParams();
@@ -66,7 +64,7 @@ export default function AdminCreateTask() {
   return (
     <Container maxWidth="md">
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Create New Task
         </Typography>
 
@@ -141,18 +139,6 @@ export default function AdminCreateTask() {
             handleInputChange={handleChange}
             required={false}
           />
-
-          <FormControl fullWidth margin="normal">
-            {/* <InputLabel>Assignee(s)</InputLabel> */}
-            <MultipleSelectFiled
-              formData={formData}
-              setFormData={setFormData}
-              errors={errors}
-              dbField={'firstname'}
-              fieldName={'assignee'}
-              inputs={employees}
-            />
-          </FormControl>
 
           <Button type="submit" variant="contained" sx={{ mt: 3 }} fullWidth>
             Create Task

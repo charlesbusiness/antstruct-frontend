@@ -22,6 +22,8 @@ import useBusinessProfile from "../../hooks/useBusinessProfile";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Can from "../../components/Can";
+import { ENDPOINTS } from "../../utils/consts";
 
 export default function Departments() {
   const navigate = useNavigate();
@@ -84,9 +86,11 @@ export default function Departments() {
           <Typography variant="h6" component="h1" gutterBottom>
             Departments
           </Typography>
-          <Button variant="contained" onClick={openCreateDept}>
-            Add New
-          </Button>
+          <Can endpoint={ENDPOINTS.CREATE_BUSINESS_DEPARTMENT}>
+            <Button variant="contained" onClick={openCreateDept}>
+              Add New
+            </Button>
+          </Can>
         </Grid>
         <Divider sx={{ my: 1 }} />
         {departments && departments.length > 0 ? (
