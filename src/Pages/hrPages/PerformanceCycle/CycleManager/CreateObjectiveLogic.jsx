@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { MetricMeaseurement } from '../../../utils/consts';
-import useSubmitData from '../../../hooks/useSubmitData';
+import { MetricMeaseurement } from '@src/utils/consts';
+import useSubmitData from '@src/hooks/useSubmitData';
 import { useParams } from 'react-router';
-import { getCycles } from '../../../hooks';
 import { useQuery } from '@tanstack/react-query';
-import { ApiRoutes } from '../../../utils/ApiRoutes';
-import { resetFormData } from '../../../utils/general';
+import { resetFormData } from '@src/utils/general';
 import CreateObjectiveForm from './CreateObjectiveForm';
+import { ApiRoutes } from '../../../../utils/ApiRoutes';
+import { getCycles } from '../../../../hooks';
 
 export default function CreateObjectiveLogic({ selectedDept, selectedEmp }) {
 
@@ -36,33 +36,33 @@ export default function CreateObjectiveLogic({ selectedDept, selectedEmp }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const submissionData = {
-      ...(selectedEmp ? { employee: selectedEmp } : ''),
-      ...(selectedDept ? { department: selectedDept } : ''),
+      ...(selectedEmp ? { employee_id: selectedEmp } : ''),
+      ...(selectedDept ? { department_id: selectedDept } : ''),
       title: formData.title,
       description: formData.description,
       weight: formData.weight,
-      cycleId: formData.cycleId,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      metricType: metric
+      performance_cycle_id: formData.cycleId,
+      start_date: formData.startDate,
+      end_date: formData.endDate,
+      metric_type: metric
     };
 
     // Add fields specific to each metric
     switch (metric) {
       case MetricMeaseurement.CURRENCY:
         submissionData.currency = formData.currency;
-        submissionData.startValue = formData.startValue;
-        submissionData.targetValue = formData.targetValue;
+        submissionData.start_value = formData.startValue;
+        submissionData.target_value = formData.targetValue;
         break;
 
       case MetricMeaseurement.NUMBER:
       case MetricMeaseurement.PERCENTAGE:
-        submissionData.startValue = formData.startValue;
-        submissionData.targetValue = formData.targetValue;
+        submissionData.start_value = formData.startValue;
+        submissionData.target_value = formData.targetValue;
         break;
 
       case MetricMeaseurement.YESORNO:
-        submissionData.yesNoTarget = formData.yesorNoValue;
+        submissionData.target_value = formData.yesorNoValue;
         break;
 
       case MetricMeaseurement.RATINGSCALE:
@@ -73,12 +73,12 @@ export default function CreateObjectiveLogic({ selectedDept, selectedEmp }) {
         break;
     }
 
-    if (submissionData.startDate == '' || submissionData.endDate == '') {
-      delete submissionData['startDate']
-      delete submissionData['endDate']
+    if (submissionData.start_date == '' || submissionData.end_date == '') {
+      delete submissionData['start_date']
+      delete submissionData['end_date']
     }
     const response = await submitData({
-      endpoint: ApiRoutes.performance.objectives.createObjectives,
+      endpoint: ApiRoutes.performanceManager.objectives.create,
       data: submissionData,
       reload: false
     });
@@ -91,24 +91,28 @@ export default function CreateObjectiveLogic({ selectedDept, selectedEmp }) {
   const { data: cycleData, error, isLoading } = useQuery({
     queryKey: ['cyclesData', yearFilter],
     queryFn: async () => await getCycles(submitData, yearFilter),
-    keepPreviousData: true,
+    keepPreviousData: false,
   })
-
-  const activeCycles = cycleData?.data?.filter(cycle => cycle.status === 'active') || [];
+  const activeCycles = cycleData?.filter(cycle => cycle.status === 'active') || [];
 
   useEffect(() => {
     if (activeCycles.length > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        cycleId: activeCycles[0]._id
-      }));
+      if (formData.cycleId !== activeCycles[0].id) {
+        setFormData((prev) => ({
+          ...prev,
+          cycleId: activeCycles[0].id
+        }));
+      }
     } else if (formData.cycles) {
-      setFormData((prev) => ({
-        ...prev,
-        cycleId: formData.cycles
-      }));
+      if (formData.cycleId !== formData.cycles) {
+        setFormData((prev) => ({
+          ...prev,
+          cycleId: formData.cycles
+        }));
+      }
     }
-  }, [activeCycles, formData.cycles]);
+  }, [activeCycles, formData.cycles, formData.cycleId]);
+
 
 
   return (

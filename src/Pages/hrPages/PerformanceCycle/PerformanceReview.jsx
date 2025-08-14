@@ -130,6 +130,22 @@ const PerformanceReview = () => {
         Employee Performance Evaluation
       </Typography>
 
+      <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/hr/leave-policies")}
+        >
+          Manage Leave Policies
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate("/hr/grades")}
+        >
+          Manage Grades
+        </Button>
+      </Stack>
       <Paper elevation={2} sx={{ p: 3, mb: 4 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
           <TextField

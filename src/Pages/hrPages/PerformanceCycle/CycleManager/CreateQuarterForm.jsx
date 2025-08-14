@@ -18,18 +18,19 @@ import {
     MenuItem
 } from "@mui/material"
 import {
-    Add as AddIcon,
-    Update,
-
+    Update
 } from '@mui/icons-material';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import useSubmitData from "../../../hooks/useSubmitData"
-import { ApiRoutes } from "../../../utils/ApiRoutes"
-import { formatDate, resetFormData } from "../../../utils/general"
 import { useQueryClient } from "@tanstack/react-query"
-import { CYCLESTATUS } from "../../../utils/consts";
+import { toast } from "react-toastify";
+import useSubmitData from "../../../../hooks/useSubmitData";
+import { ApiRoutes } from "../../../../utils/ApiRoutes";
+import { formatDateOnly } from "../../../../utils/general";
+import { CYCLESTATUS } from "../../../../utils/consts";
+import { format } from "date-fns";
+import { parseISO } from "date-fns";
 
 export default function CreateQuarterForm({ openModal, cycleData }) {
     const queryClient = useQueryClient()
@@ -40,9 +41,9 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
 
     const [quarter, setQuarter] = useState({
         name: "",
-        startDate: null,
-        endDate: null,
-        status:''
+        start_date: null,
+        end_date: null,
+        status: ''
     })
 
     const handleInputChange = (e) => {
@@ -56,15 +57,29 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
 
     const createQuarter = async (e) => {
         e.preventDefault()
-        if(!cycleData){delete quarter.status}
+
+        if (cycleData?.quarters?.length > 1 && (!selectedQuarter || selectedQuarter?.status == 'completed')) {
+            toast.info("Quarter creation completed already for this cycle")
+            return
+        }
+
+        if (!cycleData) { delete quarter.status }
+        const payload = {
+            ...quarter,
+            start_date: format(quarter.start_date, "yyyy-MM-dd"),
+            end_date: format(quarter.end_date, "yyyy-MM-dd"),
+        };
+
         const response = await submitData({
-            endpoint: ApiRoutes.performance.createQuarter,
-            data: { ...quarter, cycleId: cycleData?._id },
+            endpoint: ApiRoutes.performanceManager.quarters.create,
+            data: {
+                ...payload,
+                performance_cycle_id: cycleData?.id
+            },
             reload: false
         })
 
         if (response?.success) {
-            resetFormData(quarter)
             openModal()
             queryClient.invalidateQueries(['cyclesData'])
         }
@@ -76,9 +91,10 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
             setQuarter({
                 name: selectedQuarter.name || '',
                 status: selectedQuarter.status || '',
-                quarterId: selectedQuarter._id || '',
-                startDate: selectedQuarter.startDate ? new Date(selectedQuarter.startDate) : null,
-                endDate: selectedQuarter.endDate ? new Date(selectedQuarter.endDate) : null,
+                quarter_id: selectedQuarter.id || '',
+                start_date: selectedQuarter.start_date ? new Date(selectedQuarter.start_date) : null,
+                end_date: selectedQuarter.end_date ? new Date(selectedQuarter.end_date) : null,
+
             });
         }
     }, [selectedQuarter]);
@@ -91,7 +107,7 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <Typography variant="subtitle2" color="text.secondary">Name</Typography>
-                                <Typography>{cycleData.name}</Typography>
+                                <Typography>{cycleData.cycle_name}</Typography>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Typography variant="subtitle2" color="text.secondary">Status</Typography>
@@ -118,11 +134,11 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Typography variant="subtitle2" color="text.secondary">Start Date</Typography>
-                                <Typography>{new Date(cycleData.startDate).toLocaleDateString()}</Typography>
+                                <Typography>{formatDateOnly(cycleData.start_month)}</Typography>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Typography variant="subtitle2" color="text.secondary">End Date</Typography>
-                                <Typography>{new Date(cycleData.endDate).toLocaleDateString()}</Typography>
+                                <Typography>{formatDateOnly(cycleData.end_month)}</Typography>
                             </Grid>
                             <Grid item xs={12}>
                                 <Typography variant="subtitle2" color="text.secondary">Description</Typography>
@@ -141,13 +157,14 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                             <CardContent>
                                 <Grid container spacing={3} component={'form'} onSubmit={createQuarter}>
 
-                                <Grid item xs={12}>
+                                    <Grid item xs={12}>
                                         <Box display="flex" justifyContent="flex-end">
                                             <Button type="submit" variant="contained" sx={{ mt: 1 }}>
                                                 {selectedQuarter ? 'Update Quarter' : 'Save Quarter'}
                                             </Button>
                                         </Box>
                                     </Grid>
+
 
                                     <Grid item xs={12} sm={4}>
                                         <TextField
@@ -163,8 +180,8 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                                     <Grid item xs={12} sm={4}>
                                         <DatePicker
                                             label="Quarter Start Date"
-                                            value={quarter.startDate}
-                                            onChange={handleDateChange("startDate")}
+                                            value={quarter.start_date}
+                                            onChange={handleDateChange("start_date")}
                                             renderInput={(params) => <TextField fullWidth {...params}
                                                 required
                                             />}
@@ -173,8 +190,8 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                                     <Grid item xs={12} sm={4}>
                                         <DatePicker
                                             label="Quarter End Date"
-                                            value={quarter.endDate}
-                                            onChange={handleDateChange("endDate")}
+                                            value={quarter.end_date}
+                                            onChange={handleDateChange("end_date")}
                                             renderInput={(params) => <TextField fullWidth {...params}
                                                 required
                                             />}
@@ -193,6 +210,7 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                                                 onChange={handleInputChange}
                                                 select
                                                 required
+                                                disabled={selectedQuarter.status === 'completed'}
                                             >
                                                 {
                                                     Object.keys(CYCLESTATUS).map((key) =>
@@ -202,7 +220,7 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                                             </TextField>
                                         </Grid>
                                     }
-                                 
+
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -230,8 +248,8 @@ export default function CreateQuarterForm({ openModal, cycleData }) {
                                     {cycleData?.quarters?.map((quarter) => (
                                         <TableRow key={quarter.id}>
                                             <TableCell>{quarter.name}</TableCell>
-                                            <TableCell>{formatDate(quarter.startDate)}</TableCell>
-                                            <TableCell>{formatDate(quarter.endDate)}</TableCell>
+                                            <TableCell>{formatDateOnly(quarter.start_date)}</TableCell>
+                                            <TableCell>{formatDateOnly(quarter.end_date)}</TableCell>
                                             <TableCell>
                                                 <Box
                                                     sx={{

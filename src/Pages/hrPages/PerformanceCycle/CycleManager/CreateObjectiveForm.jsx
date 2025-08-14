@@ -10,8 +10,9 @@ import {
   Divider,
   Paper
 } from '@mui/material';
-import { CURRENCY,  MetricMeaseurement } from '../../../utils/consts';
-import { CyclesYearFilter } from '../../../Components/CyclesYearFilter';
+import { CURRENCY, MetricMeaseurement } from '@src/utils/consts';
+import { LabelBox } from './LabelBox';
+import { CycleCommonFields } from './CycleCommonFields';
 
 export default function CreateObjectiveForm({
   yearFilter,
@@ -24,80 +25,17 @@ export default function CreateObjectiveForm({
   cycleData
 }) {
 
- 
-  const LabelBox = ({ children }) => (
-    <Box
-      sx={{
-        backgroundColor: '#f5f5f5',
-        px: 2,
-        py: 1,
-        borderRadius: 1,
-        minWidth: '120px',
-        textAlign: 'right',
-        fontWeight: 'bold'
-      }}
-    >
-      {children}
-    </Box>
-  );
-
   return (
     <>
-      <Box sx={{  mx: 'auto', }} component={'form'} onSubmit={handleSubmit}>
+      <Box sx={{ mx: 'auto', }} component={'form'} onSubmit={handleSubmit}>
         <Paper variant="outlined" sx={{ borderRadius: 2, p: 3 }}>
-          <Grid container spacing={1} alignItems="center" sx={{ mb: 2 }}>
-            <Grid item xs={4} md={3} lg={3}>
-              <LabelBox>
-                Available Cycles
-              </LabelBox>
-            </Grid>
-            <Grid item xs={8} md={9} lg={8}>
-              <CyclesYearFilter yearFilter={yearFilter} setYearFilter={setYearFilter} />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={1} alignItems="center" sx={{ mb: 2 }}>
-            <Grid item xs={4} md={3} lg={3}>
-              <LabelBox>
-                Appraisal Cycles
-              </LabelBox>
-            </Grid>
-            <Grid item xs={8} md={9} lg={8}>
-              <TextField
-                fullWidth
-                size="small"
-                value={formData?.cycles}
-                select
-                onChange={handleInputChange}
-                name='cycles'
-              >
-                <MenuItem>Select</MenuItem>
-                {cycleData?.data?.map((cycle) => (
-                  <MenuItem key={cycle._id} value={cycle._id}>
-                    {cycle.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={1} alignItems="center" sx={{ mb: 2 }}>
-            <Grid item xs={4} md={3} lg={3}>
-              <LabelBox>
-                Active Cycle <span style={{ color: 'red' }}>*</span>
-              </LabelBox>
-            </Grid>
-            <Grid item xs={8} md={9} lg={8}>
-              <TextField
-                fullWidth
-                size="small"
-                value={
-                  (cycleData?.data?.find(c => c._id === formData?.cycleId)?.name) || ''
-                }
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-          </Grid>
+          <CycleCommonFields
+            formData={formData}
+            handleInputChange={handleInputChange}
+            cycleData={cycleData}
+            yearFilter={yearFilter}
+            setYearFilter={setYearFilter}
+          />
 
           <Grid container spacing={2} alignItems="flex-start" sx={{ mb: 2 }}>
             <Grid item xs={4} md={3}>

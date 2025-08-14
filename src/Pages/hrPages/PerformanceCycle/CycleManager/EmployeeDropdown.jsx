@@ -5,8 +5,8 @@ import {
     TextField,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import useSubmitData from '../../../hooks/useSubmitData';
-import { ApiRoutes } from '../../../utils/ApiRoutes';
+import useSubmitData from '@src/hooks/useSubmitData';
+import { ApiRoutes } from '@src/utils/ApiRoutes';
 
 const EmployeeDropdown = ({
     value,
@@ -30,7 +30,7 @@ const EmployeeDropdown = ({
         queryKey: ['employees', filterByManagerId, debouncedSearch],
         queryFn: async () => {
             const result = await submitData({
-                endpoint: ApiRoutes.employees.employees(null, debouncedSearch),
+                endpoint: ApiRoutes.employees.getEmployees,
                 method: 'get'
             });
 
@@ -39,20 +39,20 @@ const EmployeeDropdown = ({
         keepPreviousData: true,
     })
 
-    const employees = managerData ? managerData: data?.data || []
-    const selectedEmployee = employees.find(emp => emp._id === value) || null
+    const employees = managerData ? managerData : data?.data || []
+    const selectedEmployee = employees.find(emp => emp.id === value) || null
 
     return (
         <Autocomplete
             fullWidth
             size="medium"
             options={employees}
-            getOptionLabel={(emp) => `${emp.firstName} ${emp.surname}`}
+            getOptionLabel={(emp) => `${emp.firstname} ${emp.lastname}`}
             loading={isLoading}
             value={selectedEmployee}
-            onChange={(e, newValue) => onChange(newValue?._id || '')}
+            onChange={(e, newValue) => onChange(newValue?.id || '')}
             onInputChange={(e, newInputValue) => setSearchInput(newInputValue)}
-            isOptionEqualToValue={(option, val) => option._id === val._id}
+            isOptionEqualToValue={(option, val) => option.id === val.id}
             renderInput={(params) => (
                 <TextField
                     {...params}

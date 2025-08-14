@@ -16,10 +16,9 @@ import {
     IconButton,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { ApiRoutes } from "../../../utils/ApiRoutes";
-import useSubmitData from "../../../hooks/useSubmitData";
+import useSubmitData from "@src/hooks/useSubmitData";
 import { useQueryClient } from "@tanstack/react-query";
-import { resetFormData } from "../../../utils/general";
+import { resetFormData } from "@src/utils/general";
 
 export default function PerformanceRemarkManager({ remarks }) {
     const [remarkData, setRemarkData] = useState({
@@ -46,7 +45,7 @@ export default function PerformanceRemarkManager({ remarks }) {
         const formatedData = {
             start: parseFloat(remarkData.start),
             end: parseFloat(remarkData.end),
-            ...(selectedRemark ? { remarkId: selectedRemark._id } : '')
+            ...(selectedRemark ? { remarkId: selectedRemark.id } : '')
         }
         const response = await submitData({
             endpoint: ApiRoutes.performance.remarks.create,
@@ -69,7 +68,7 @@ export default function PerformanceRemarkManager({ remarks }) {
                 start: selectedRemark.start || '',
                 end: selectedRemark.end || '',
                 remark: selectedRemark.remark || '',
-                remarkId: selectedRemark._id || '',
+                remarkId: selectedRemark.id || '',
             })
         }
     }, [selectedRemark])

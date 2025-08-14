@@ -47,6 +47,7 @@ export const ApiRoutes = {
     assignRole: 'config/business/employees/roles',
     removeAssignRole: 'config/business/employees/roles',
     getAssignedRole: 'config/business/employees/roles',
+    department: (department) => `config/business/employees/department/data/${department}`,
   },
 
   employeeResourceMap: {
@@ -121,6 +122,31 @@ export const ApiRoutes = {
       delete: (id) => `hr/manager/employment/grade/${id}`,
       update: (id) => `hr/manager/employment/grade/${id}`,
     },
+  },
 
+  performanceManager: {
+    cycle: {
+      create: 'performance/manager/cycles',
+      update: (id) => `hr/manager/deliverables/update/${id}`,
+      get: 'performance/manager/cycles',
+    },
+
+    quarters: {
+      create: 'performance/manager/quarters',
+    },
+
+    reviews: {
+      startReview: 'performance/manager/reviews',
+    },
+
+    objectives: {
+      create: 'performance/manager/objectives',
+      getObjectives: (employee, cycleId) => {
+        let url = 'performance/manager/objectives'
+        if (employee) url = url.concat(`/${employee}`)
+        if (cycleId) url = url.concat(`?cycle_id=${cycleId}`)
+        return url
+      },
+    },
   }
 }

@@ -22,20 +22,20 @@ import {
 import {
 
   Add as AddIcon,
-  FilterList as FilterIcon,
-  Search as SearchIcon,
-  DateRange as DateRangeIcon,
 } from '@mui/icons-material';
-import CreateCycleForm from './createCycleForm';
-import { getCycles, getRemarks } from '../../../hooks';
+import CreateCycleForm from './CreateCycleForm';
+// import { getCycles, getRemarks } from '../../../hooks';
 import { useQuery } from '@tanstack/react-query';
-import useSubmitData from '../../../hooks/useSubmitData';
-import { formatDate, getYearOptions } from '../../../utils/general';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import CreateQuarterForm from './createQuarterForm';
 import PerformanceRemarkManager from './PerformanceRemark';
-import { CyclesYearFilter } from '../../../Components/CyclesYearFilter';
+
+import useSubmitData from '../../../../hooks/useSubmitData';
+import { formatDate, formatDateOnly, getYearOptions } from '../../../../utils/general';
+import CreateQuarterForm from './CreateQuarterForm';
+import { CyclesYearFilter } from '../../../../components/CyclesYearFilter';
+import { ApiRoutes } from '../../../../utils/ApiRoutes';
+import { getCycles } from '../../../../hooks';
 
 
 const CycleManager = () => {
@@ -45,23 +45,26 @@ const CycleManager = () => {
   const [quarterFilter, setQuarterFilter] = useState('Q1');
   const [selectedCycle, setSelectedCycle] = useState(null)
 
-  const { data: queryResult, error, isLoading } = useQuery({
+  const { data: cycleData, error, isLoading } = useQuery({
     queryKey: ['cyclesData', yearFilter],
     queryFn: async () => await getCycles(submitData, yearFilter),
     keepPreviousData: true,
   })
 
-  const { data: remarkResult } = useQuery({
-    queryKey: ['remarkData'],
-    queryFn: async () => await getRemarks(submitData),
-    keepPreviousData: true,
-  });
+
+
+
+  // const { data: remarkResult } = useQuery({
+  //   queryKey: ['remarkData'],
+  //   // queryFn: async () => await getRemarks(submitData),
+  //   keepPreviousData: true,
+  // });
 
 
   const yearOptions = getYearOptions();
 
 
-  const cycles = queryResult?.data || []
+  const cycles = cycleData || []
 
   const [cycleModal, setCycleModal] = React.useState(false)
   const [quarterModal, setQuarterModal] = React.useState(false)
@@ -123,10 +126,10 @@ const CycleManager = () => {
                   </TableHead>
                   <TableBody>
                     {cycles?.map((cycle) => (
-                      <TableRow key={cycle._id}>
-                        <TableCell>{cycle.name}</TableCell>
-                        <TableCell>{formatDate(cycle.startDate)}</TableCell>
-                        <TableCell>{formatDate(cycle.endDate)}</TableCell>
+                      <TableRow key={cycle.id}>
+                        <TableCell>{cycle.cycle_name}</TableCell>
+                        <TableCell>{formatDateOnly(cycle.start_month)}</TableCell>
+                        <TableCell>{formatDateOnly(cycle.end_month)}</TableCell>
                         <TableCell>
                           <Box
                             sx={{
@@ -151,8 +154,8 @@ const CycleManager = () => {
                             {cycle.status}
                           </Box>
                         </TableCell>
-                        <TableCell>{cycle.quarters?.length}</TableCell>
-                        <TableCell>{cycle.cycleYear}</TableCell>
+                        <TableCell>{cycle.quarters?.length || 0}</TableCell>
+                        <TableCell>{cycle.year}</TableCell>
                         <TableCell>
                           <Button size="small"
                             onClick={() => toggleCycle(cycle)}>
@@ -175,7 +178,7 @@ const CycleManager = () => {
 
       </Grid>
 
-      <PerformanceRemarkManager remarks={remarkResult?.data?.data} />
+      {/* <PerformanceRemarkManager remarks={remarkResult?.data?.data} /> */}
 
       {/*create Cycle Dialog */}
 

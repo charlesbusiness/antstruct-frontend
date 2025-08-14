@@ -11,7 +11,9 @@ import {
     Edit,
     Check
 } from '@mui/icons-material';
-import { MetricMeaseurement } from "../../../utils/consts";
+import { MetricMeaseurement } from "@src/utils/consts";
+import { isAdmin, isGeneralUser, isManager } from '../../../../utils/general';
+import { useMemo } from 'react';
 
 export const KeyResultRow = ({
     keyResult,
@@ -22,18 +24,27 @@ export const KeyResultRow = ({
     setCurrentValue,
     editable,
     setEditable,
-    weight
+    weight,
+    adminEditable,
+    setAdminEditable,
+    profile,
+    submitUserReview,
+    submitManagerReview,
+    reviews
 }) => {
+
     const handleValueChange = (e) => setCurrentValue(e.target.value);
     const handleSelectChange = (e) => setCurrentValue(e.target.value === 'yes' ? 100 : 0);
-
+    const generalUser = isGeneralUser(profile)
+    const managerUser = isManager(profile)
+    const adminUser = isAdmin(profile)
     const computeProgress = () => {
         const safeRange = (start, end) => {
             const range = end - start;
             return range !== 0 ? Math.min(100, Math.max(0, ((currentValue - start) / range) * 100)) : 0;
         };
 
-        switch (metricType.toLowerCase()) {
+        switch (metricType?.toLowerCase()) {
             case 'number':
             case 'currency':
             case 'percentage':
@@ -70,7 +81,7 @@ export const KeyResultRow = ({
             return items
         }
 
-        switch (metricType.toLowerCase()) {
+        switch (metricType?.toLowerCase()) {
             case 'percentage':
             case 'currency':
                 return (
@@ -127,24 +138,70 @@ export const KeyResultRow = ({
     };
 
 
-    const progress = computeProgress();
+    const progress = useMemo(() => computeProgress(), [currentValue, startValue, targetValue, weight, metricType]);
+
+
     return (
         <TableRow>
-            <TableCell sx={{ maxWidth: 300 }}>{keyResult.title}</TableCell>
+
+            <TableCell>{keyResult.title}</TableCell>
             <TableCell>{keyResult.weight}%</TableCell>
-            <TableCell>Actual Value</TableCell>
             <TableCell>{renderActualValueInput()}</TableCell>
-            <TableCell>{Math.round(progress)}%</TableCell>
-            <TableCell>
-                <Button
-                    variant='outlined'
-                    color={editable ? 'success' : 'success'}
-                    onClick={() => setEditable(!editable)}
-                    size="small"
-                >
-                    {editable ? <Check fontSize="medium" /> : <Edit fontSize="medium" />}
-                </Button>
-            </TableCell>
+            <TableCell>{reviews?.self_score ?? 0}</TableCell>
+            <TableCell>{reviews?.percentage_score || 0}%</TableCell>
+            {
+                (generalUser) &&
+                <TableCell>
+                    <Button
+                        variant='outlined'
+                        color={editable ? 'success' : 'success'}
+
+                        size="small"
+                    >
+                        {
+                            editable ?
+                                <Check fontSize="medium"
+                                    onClick={() => {
+                                        setEditable(!editable)
+                                        submitUserReview()
+                                    }
+                                    }
+                                /> :
+                                <Edit fontSize="medium"
+                                    onClick={() => setEditable(!editable)}
+                                />
+                        }
+                    </Button>
+                </TableCell>
+            }
+            {/* {
+                (managerUser && !adminUser) &&
+                <TableCell>
+                    <Button
+                        variant='outlined'
+                        color={adminEditable ? 'success' : 'success'}
+
+                        size="small"
+                    >
+                        {
+                            adminEditable ?
+                                <Check fontSize="medium"
+                                    onClick={() => {
+                                        setAdminEditable(!adminEditable)
+                                        submitManagerReview()
+                                    }
+                                    }
+                                /> :
+                                <Edit fontSize="medium"
+                                    onClick={() => setAdminEditable(!adminEditable)}
+                                />
+                        }
+                    </Button>
+                </TableCell>
+            } */}
+
+            {/* For non general users */}
+
         </TableRow>
     );
 }

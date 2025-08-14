@@ -1,4 +1,4 @@
-// CreateObjectiveFlow.jsx
+
 
 import React, { useState } from 'react';
 import {
@@ -8,23 +8,23 @@ import {
 import EmployeeDropdown from './EmployeeDropdown';
 import DepartmentDropdown from './DepartmentDropdown';
 import CreateObjectiveLogic from './CreateObjectiveLogic';
-import { isAdmin as adminRole, isGeneralUser, isLineManager, isManager as managerRole } from '../../../utils/general';
-import useSubmitData from '../../../hooks/useSubmitData';
+import { isAdmin as adminRole, isGeneralUser, isManager as managerRole } from '@src/utils/general';
+import useSubmitData from '@src/hooks/useSubmitData';
 import { useQuery } from '@tanstack/react-query';
-import { lineManagerData } from '../../../hooks';
-import useGeneralData from '../../../hooks/useGeneralData';
+import useBusinessProfile from '../../../../hooks/useBusinessProfile';
+import { departmentData } from '../../../../hooks';
 
 const CreateObjectiveFlow = ({ user }) => {
   const [level, setLevel] = useState('');
   const [selectedDept, setSelectedDept] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [showForm, setShowForm] = useState(false);
-  const { departments, isLoading, error:isError } = useGeneralData()
+  const { departments, isLoading, error: isError } = useBusinessProfile()
 
   const isAdmin = adminRole(user)
   const isManager = managerRole(user)
   const isEmployee = isGeneralUser(user)
-  const lineManager = isLineManager(user)
+
   const handleScopeChange = (e) => {
     setLevel(e.target.value);
     setSelectedDept('');
@@ -42,15 +42,15 @@ const CreateObjectiveFlow = ({ user }) => {
     setShowForm(true);
   }
 
-  const {submitData} = useSubmitData()
-  const { data: lineManagerRelated, isError: dataError, isLoading:loadingData } = useQuery({
-      queryKey: ['lineManager'],
-      queryFn: () => lineManagerData(submitData),
-      keepPreviousData: true,
-      enabled: !!lineManager || isManager
+  const { submitData } = useSubmitData()
+  const { data: lineManagerRelated, isError: dataError, isLoading: loadingData } = useQuery({
+    queryKey: ['lineManager'],
+    queryFn: () => departmentData(submitData, user?.department?.id),
+    keepPreviousData: true,
+    enabled: !!isManager
   })
 
-  const data = (lineManager || isManager) ? lineManagerRelated?.departments : departments
+  const data = isAdmin ? departments : [user?.department]
 
   return (
     <Box sx={{ mx: 'auto', mt: 4 }}>
@@ -58,15 +58,13 @@ const CreateObjectiveFlow = ({ user }) => {
         Create Performance Objective
       </Typography>
 
-      {user && (isAdmin || isManager || lineManager) && (
+      {user && (isAdmin || isManager) && (
         <FormControl fullWidth margin="normal">
           <InputLabel>Objective Level</InputLabel>
           <Select value={level} onChange={handleScopeChange} label="Objective Level">
             {
               isAdmin &&
-
               <MenuItem value="organization">Organization</MenuItem>
-
             }
             <MenuItem value="department">Department</MenuItem>
             <MenuItem value="employee">Employee</MenuItem>
@@ -75,12 +73,12 @@ const CreateObjectiveFlow = ({ user }) => {
       )
       }
 
-      {level === 'department' && (isAdmin || lineManager | isManager) && (
+      {level === 'department' && (isAdmin || isManager) && (
         <DepartmentDropdown
           value={selectedDept}
           onChange={setSelectedDept}
           data={data}
-          isError={dataError || isError}
+          isError={isError}
           isLoading={loadingData || isLoading}
         />
       )}
@@ -91,7 +89,7 @@ const CreateObjectiveFlow = ({ user }) => {
           onChange={setSelectedEmployee} />
       )}
 
-      {level === 'employee' && (isManager || lineManager) && (
+      {level === 'employee' && (isManager && !isAdmin) && (
         <EmployeeDropdown
           label="Select Subordinate"
           value={selectedEmployee}
@@ -108,7 +106,7 @@ const CreateObjectiveFlow = ({ user }) => {
             </Button>
           ) : (
             <CreateObjectiveLogic
-              createdBy={user._id}
+              createdBy={user.id}
               targetLevel={level}
               selectedDept={selectedDept}
               selectedEmp={selectedEmployee}

@@ -11,14 +11,13 @@ import {
 } from '@mui/material';
 import {
     CheckCircle,
-    Warning,
     Error,
     Comment,
     CalendarToday
 } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import useSubmitData from '../../../hooks/useSubmitData';
-import { getObjectives } from '../../../hooks';
+import { getObjectives } from '../../../../hooks';
 
 const MetricDisplay = ({ objective }) => {
     const { metricType, startValue, targetValue, currency, yesNoTarget } = objective;
@@ -155,13 +154,13 @@ const ObjectiveCard = ({ objective }) => {
                 <Box>
                     <Typography variant="caption" color="text.secondary">
                         <CalendarToday sx={{ fontSize: 14, verticalAlign: 'middle', mr: 0.5 }} />
-                        Created: {formatDate(objective.createdAt)}
+                        Created: {formatDate(objective.created_at)}
                     </Typography>
                 </Box>
                 <Box>
                     <Typography variant="caption" color="text.secondary">
                         <CalendarToday sx={{ fontSize: 14, verticalAlign: 'middle', mr: 0.5 }} />
-                        Updated: {formatDate(objective.updatedAt)}
+                        Updated: {formatDate(objective.updated_at)}
                     </Typography>
                 </Box>
             </Stack>
@@ -196,14 +195,14 @@ const PerformanceDashboard = () => {
 
             {objectives?.map((objective) => (
                 <ObjectiveCard
-                    key={objective._id.$oid}
+                    key={objective.id.$oid}
                     objective={{
                         ...objective,
-                        _id: objective._id.$oid,
+                        id: objective.id.$oid,
                         cycleId: objective.cycleId.$oid,
                         employee: objective.employee.$oid,
-                        createdAt: objective.createdAt.$date,
-                        updatedAt: objective.updatedAt.$date
+                        createdAt: objective.created_at.$date,
+                        updatedAt: objective.updated_at.$date
                     }}
                 />
             ))}

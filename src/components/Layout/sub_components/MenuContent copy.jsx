@@ -32,7 +32,7 @@ const secondaryListItems = [
 
 export default function MenuContent() {
   const [dynamicMenu, setDynamicMenu] = React.useState([]);
-const [expandedModules, setExpandedModules] = React.useState({});
+  const [expandedModules, setExpandedModules] = React.useState({});
 
   const navigate = useNavigate();
   const { submitData, isLoading } = useSubmitData()
@@ -40,11 +40,11 @@ const [expandedModules, setExpandedModules] = React.useState({});
   const [profile, setProfile] = React.useState(null)
 
   const toggleModule = (moduleName) => {
-  setExpandedModules(prev => ({
-    ...prev,
-    [moduleName]: !prev[moduleName],
-  }));
-};
+    setExpandedModules(prev => ({
+      ...prev,
+      [moduleName]: !prev[moduleName],
+    }));
+  };
 
 
   const getApiResource = async () => {
@@ -55,7 +55,7 @@ const [expandedModules, setExpandedModules] = React.useState({});
     })
     if (response?.error == false) {
       const { data } = response
-      console.log(data)
+
       setApiResources(response?.data)
     }
   }

@@ -8,14 +8,14 @@ import {
     Typography
 } from '@mui/material';
 
-import { TabPanel } from '../../../Components/TabPanel';
+import { TabPanel } from '@src/Components/TabPanel';
 import ActivePerformanceObjective from './ActivePerformanceObjective';
 import DraftPerformanceObjective from './DraftPerformanceObjective';
 import { useQuery } from '@tanstack/react-query';
-import { getObjectives } from '../../../hooks';
-import useSubmitData from '../../../hooks/useSubmitData';
+import { getObjectives } from '@src/hooks';
+import useSubmitData from '@src/hooks/useSubmitData';
 import { useParams } from 'react-router';
-import { OBJECTIVESTATUS } from '../../../utils/consts';
+import { OBJECTIVESTATUS } from '@src/utils/consts';
 
 
 const PerformanceDashboard = () => {
@@ -27,7 +27,7 @@ const PerformanceDashboard = () => {
         keepPreviousData: true
     })
 
-    const objectives = queryResult?.data || []
+    const objectives = queryResult || []
 
     const [value, setValue] = useState(0)
 
@@ -41,18 +41,16 @@ const PerformanceDashboard = () => {
         }
     })
 
-
-
     return (
         <>
             <Card sx={{ mt: 2 }}>
                 <Typography variant="h5" gutterBottom fontWeight="bold" sx={{ mb: 3 }}>
-                    Performance Objectives
+                    Performance Reviews
                 </Typography>
 
                 <CardContent>
                     <Tabs value={value} onChange={handleChange} aria-label="Objectives">
-                        <Tab label="Active Objectives" />
+                        <Tab label="Performance Review" />
                         <Tab label="Drafts Objectives" />
                     </Tabs>
 

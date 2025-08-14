@@ -29,10 +29,10 @@ const ActivePerformanceObjective = ({ objectives }) => {
                 {objectives.length > 0 ? (
                     objectives.map((objective) => (
                         <ObjectiveCard
-                            key={objective._id}
+                            key={objective.id}
                             objective={objective}
                             onOpenDetails={handleOpenDetails}
-                           
+
                         />
                     ))
                 ) : (

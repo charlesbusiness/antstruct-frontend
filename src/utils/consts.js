@@ -35,3 +35,44 @@ export const ENDPOINTS = {
     "CREATE_PROJECT": "createProject",
     "CREATE_SPRINT": "createSprint"
 }
+
+
+
+export const CYCLESTATUS = {
+    PENDING: 'pending',
+    ACTIVE: 'active',
+    COMPLETED: 'completed',
+    LOCKED: 'locked'
+}
+export const CYCLELOCKSTATUS = {
+    LOCKED: 'locked',
+    OPEN: 'open',
+}
+
+export const OBJECTIVESTATUS = {
+    DRAFT: 'draft',
+    ACTIVATE: 'active',
+    REVIEW: 'reviewed'
+}
+
+export const MetricMeaseurement = {
+    YESORNO: 'yes/no',
+    CURRENCY: 'currency',
+    NUMBER: 'number',
+    RATINGSCALE: 'rating scale',
+    PERCENTAGE: 'percentage'
+}
+
+
+export const CURRENCY = {
+    USD: 'USD',
+    NGN: 'NGN',
+    GHANACEDI: 'GHC'
+}
+
+
+export const APP_ROLE = {
+    'BUSINESS_SUPER_ADMIN': 'business-super-admin',
+    'BUSINESS_GENERAL_USER': 'business-general-user',
+    'BUSINESS_ADMIN': 'business-admin',
+}

@@ -7,7 +7,7 @@ import {
     Divider,
     Button,
 } from '@mui/material';
-import { formatDate } from '../../../utils/general';
+import { formatDate } from '@src/utils/general';
 
 export const ObjectiveDetails = ({ modalOpen, handleCloseDetails, selectedObjective }) => {
     return (
@@ -25,11 +25,11 @@ export const ObjectiveDetails = ({ modalOpen, handleCloseDetails, selectedObject
                         <Divider sx={{ my: 2 }} />
                         <Typography variant="body2"><strong>Weight:</strong> {selectedObjective.weight}%</Typography>
                         <Typography variant="body2"><strong>Status:</strong> {selectedObjective.status}</Typography>
-                        <Typography variant="body2"><strong>Metric Type:</strong> {selectedObjective.metricType}</Typography>
+                        <Typography variant="body2"><strong>Metric Type:</strong> {selectedObjective.metric_type}</Typography>
                         <Typography variant="body2"><strong>Start Value:</strong> {selectedObjective.startValue}</Typography>
                         <Typography variant="body2"><strong>Target Value:</strong> {selectedObjective.targetValue}</Typography>
-                        <Typography variant="body2"><strong>Created At:</strong> {formatDate( selectedObjective.createdAt)}</Typography>
-                        <Typography variant="body2"><strong>Updated At:</strong> {formatDate( selectedObjective.updatedAt)}</Typography>
+                        <Typography variant="body2"><strong>Created At:</strong> {formatDate(selectedObjective.created_at)}</Typography>
+                        <Typography variant="body2"><strong>Updated At:</strong> {formatDate(selectedObjective.update_at)}</Typography>
                     </>
                 ) : (
                     <Typography>Loading...</Typography>

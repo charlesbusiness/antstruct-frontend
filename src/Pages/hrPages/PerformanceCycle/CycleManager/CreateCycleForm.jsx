@@ -11,23 +11,26 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import useSubmitData from "../../../hooks/useSubmitData"
-import { ApiRoutes } from "../../../utils/ApiRoutes"
-import { resetFormData } from "../../../utils/general"
 import { useQueryClient } from "@tanstack/react-query"
-import { CYCLESTATUS } from "../../../utils/consts"
+import useSubmitData from "../../../../hooks/useSubmitData"
+import { ApiRoutes } from "../../../../utils/ApiRoutes"
+import { CYCLESTATUS } from "../../../../utils/consts"
+import { format } from "date-fns";
+import { parseISO } from "date-fns";
+
 
 export default function CreateCycleForm({ openModal, cycleData, yearOptions }) {
     const queryClient = useQueryClient()
     const { submitData, isLoading } = useSubmitData()
+
     const [cycle, setCycle] = useState({
-        name: cycleData ? cycleData.name : "",
-        cycleYear: cycleData ? cycleData.cycleYear : "",
-        startDate: cycleData ? cycleData.startDate : null,
-        endDate: cycleData ? cycleData.endDate : null,
-        description: cycleData ? cycleData.description : '',
-        status: cycleData ? cycleData.status : '',
-    })
+        cycle_name: cycleData?.cycle_name || "",
+        year: cycleData?.year || "",
+        start_month: cycleData?.start_month ? parseISO(cycleData.start_month) : null,
+        end_month: cycleData?.end_month ? parseISO(cycleData.end_month) : null,
+        description: cycleData?.description || "",
+        status: cycleData?.status || "",
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -38,26 +41,26 @@ export default function CreateCycleForm({ openModal, cycleData, yearOptions }) {
         setCycle((prev) => ({ ...prev, [name]: date }));
     }
 
+
     const createCycle = async (e) => {
         e.preventDefault()
-        if (!cycleData) {
-            delete cycle.status
-        }
+        const payload = {
+            ...cycle,
+            start_month: format(cycle.start_month, "yyyy-MM-dd"),
+            end_month: format(cycle.end_month, "yyyy-MM-dd")
+        };
+
         const response = await submitData({
-            endpoint: ApiRoutes.performance.createCycle,
-            data: {
-                ...cycle,
-                ...(cycleData ? { cycleId: cycleData._id } : {})
-            },
-            reload: false
-        })
+            data: { ...payload, ...(cycleData ? { cycle_id: cycleData.id } : {}) },
+            endpoint: ApiRoutes.performanceManager.cycle.create,
+        });
 
         if (response?.success) {
-            resetFormData(cycle)
-            openModal()
             queryClient.invalidateQueries(['cyclesData'])
+            openModal(false)
         }
-    }
+    };
+
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -69,11 +72,11 @@ export default function CreateCycleForm({ openModal, cycleData, yearOptions }) {
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         fullWidth
-                                        name="name"
+                                        name="cycle_name"
                                         required
                                         label="Cycle Name"
                                         placeholder="e.g. Q1 2025"
-                                        value={cycle.name}
+                                        value={cycle.cycle_name}
                                         onChange={handleInputChange}
                                     />
                                 </Grid>
@@ -103,10 +106,10 @@ export default function CreateCycleForm({ openModal, cycleData, yearOptions }) {
                                     <TextField
                                         select
                                         fullWidth
-                                        name="cycleYear"
+                                        name="year"
                                         required
                                         label="Cycle Year"
-                                        value={cycle.cycleYear}
+                                        value={cycle.year}
                                         onChange={handleInputChange}
                                     >
                                         {yearOptions.map((year) => (
@@ -134,8 +137,8 @@ export default function CreateCycleForm({ openModal, cycleData, yearOptions }) {
                                 <Grid item xs={12} sm={6}>
                                     <DatePicker
                                         label="Cycle Start Date"
-                                        value={cycle.startDate}
-                                        onChange={handleDateChange("startDate")}
+                                        value={cycle.start_month}
+                                        onChange={handleDateChange("start_month")}
                                         renderInput={(params) => <TextField fullWidth {...params}
                                             required
                                         />}
@@ -144,8 +147,8 @@ export default function CreateCycleForm({ openModal, cycleData, yearOptions }) {
                                 <Grid item xs={12} sm={6}>
                                     <DatePicker
                                         label="Cycle End Date"
-                                        value={cycle.endDate}
-                                        onChange={handleDateChange("endDate")}
+                                        value={cycle.end_month}
+                                        onChange={handleDateChange("end_month")}
                                         renderInput={(params) => <TextField fullWidth {...params}
                                             required
                                         />}

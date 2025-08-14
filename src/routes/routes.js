@@ -65,9 +65,18 @@ const Requisition = lazy(() =>
   import("@src/Pages/HrPages/Requisitions/Requisition")
 );
 const payroll = lazy(() => import("@src/Pages/hrPages/Payroll/Payroll"));
-const performance = lazy(() =>
-  import("@src/Pages/hrPages/PerformanceReview/PerformanceReview")
+
+const Appraisal = lazy(() =>
+  import("@src/Pages/hrPages/PerformanceCycle/CycleManager/Appraisal")
 );
+
+const PerformanceDashboard = lazy(() =>
+  import("@src/Pages/hrPages/Performance/Objectives/PerformanceObjectiveDashboard")
+);
+const ObjectiveData = lazy(() =>
+  import("@src/Pages/hrPages/Performance/Objectives/ObjectiveData")
+);
+
 const organizationChart = lazy(() =>
   import("@src/Pages/hrPages/OrgChart/OrganizationChart")
 );
@@ -187,17 +196,31 @@ const coreRoutes = [
     title: "Payroll",
     component: payroll,
   },
+
   {
     path: "/performace",
     title: "Performace",
-    component: performance,
+    component: Appraisal,
   },
+
+  {
+    path: "/objectives",
+    title: "Objective",
+    component: ObjectiveData,
+  },
+
+  {
+    path: "/reviews",
+    title: "Performance Review",
+    component: PerformanceDashboard,
+  },
+
   {
     path: "/policies",
     title: "Policies",
     component: policies,
   },
-    {
+  {
     path: "/leave",
     title: "Leave Request",
     component: LeaveRequest,

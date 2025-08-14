@@ -8,8 +8,8 @@ import { AssignmentTurnedIn } from '@mui/icons-material';
 
 import { ObjectiveDetails } from './ObjectiveDetails';
 import { ObjectiveCard } from './ObjectiveCard';
-import { ApiRoutes } from '../../../utils/ApiRoutes';
-import useSubmitData from '../../../hooks/useSubmitData';
+import { ApiRoutes } from '@src/utils/ApiRoutes';
+import useSubmitData from '@src/hooks/useSubmitData';
 import { useQueryClient } from '@tanstack/react-query';
 
 const DraftPerformanceObjective = ({ objectives }) => {
@@ -56,12 +56,12 @@ const DraftPerformanceObjective = ({ objectives }) => {
                 {objectives.length > 0 ? (
                     objectives.map((objective) => (
                         <ObjectiveCard
-                            key={objective._id}
+                            key={objective.id}
                             objective={objective}
                             onOpenDetails={handleOpenDetails}
                             status={status}
                             handleStatusChange={
-                                (e) => handleStatusChange(objective._id, e)
+                                (e) => handleStatusChange(objective.id, e)
                             }
                             handleInputChange={handleInputChange}
                         />
