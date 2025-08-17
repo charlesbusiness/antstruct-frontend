@@ -111,7 +111,7 @@ const LeavePolicies = () => {
     <Box sx={{ p: isMobile ? 2 : 4 }}>
       <Stack direction={isMobile ? "column" : "row"} justifyContent="space-between" alignItems="center" spacing={2} mb={3}>
         <Typography variant={isMobile ? "h5" : "h4"}>Leave Policies</Typography>
-        <Can endpoint={ENDPOINTS.CREATE_CATEGORY}>
+        <Can endpoint={ENDPOINTS.CREATE_LEAVE_CATEGORY}>
           <Button
             variant="contained"
             color="primary"

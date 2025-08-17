@@ -147,12 +147,12 @@ const LeaveRequest = () => {
               <FormControl size="small" sx={{ minWidth: 150 }}>
                 <InputLabel>Filter by Employee</InputLabel>
                 <Select
-                  value={employeeFilter}
+                  value={employeeFilter || ''}
                   onChange={(e) => setEmployeeFilter(e.target.value)}
                 >
                   {
                     employees?.map(employee => (
-                      <MenuItem value={employee.id}>{employee?.firstname}</MenuItem>
+                      <MenuItem key={employee?.id} value={employee.id}>{employee?.firstname}</MenuItem>
                     ))
                   }
                 </Select>
@@ -316,7 +316,7 @@ const LeaveRequest = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={leaveRequest?.data?.pageData?.total}
+          count={leaveRequest?.data?.pageData?.total || 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -338,7 +338,7 @@ const LeaveRequest = () => {
             multiline
             rows={3}
             fullWidth
-            value={note}
+            value={note || ''}
             onChange={(e) => setNote(e.target.value)}
             variant="outlined"
           />

@@ -24,7 +24,7 @@ export const ENDPOINTS = {
     "MAP_DEPARTMENT_TO_EMPLOYEE_MANAGERS": "mapDepartmentToEmployeeManagers",
     "UNMAPPED_DEPT": "unmappedDept",
     "ROLE_RESOURCE_MAPPING": "roleResourceMapping",
-    "CREATE_CATEGORY": "createCategory",
+    "CREATE_LEAVE_CATEGORY": "createLeaveCategory",
     "DELETE_LEAVE_CATEGORY": "deleteLeaveCategory",
     "CREATE_GRADES": "createGrades",
     "UPDATE_GRADES": "updateGrades",

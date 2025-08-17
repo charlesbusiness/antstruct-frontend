@@ -21,7 +21,7 @@ export const MultipleSelectWithFilter = ({ inputs = [], formData, setFormData, e
             renderInput={(params) => (
                 <TextField {...params}
                     name={fieldName}
-                    label="Select"
+                    label={`Select ${fieldName?.split('_')?.join(' ')}`}
                     variant="outlined"
                     required={required}
                     error={!!errors[fieldName]}
