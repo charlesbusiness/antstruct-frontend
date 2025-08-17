@@ -87,6 +87,7 @@ const LeavePolicies = lazy(() =>
   import("@src/Pages/hrPages/Leave/LeavePolicies")
 );
 const Grades = lazy(() => import("@src/Pages/hrPages/Leave/CreateGrades"));
+const Inventory = lazy(() => import("@src/Pages/Inventory"));
 const coreRoutes = [
   {
     path: "/dashboard",
@@ -263,6 +264,11 @@ const coreRoutes = [
     path: "/hr/grades",
     title: "Grades",
     component: Grades,
+  },
+  {
+    path: "/inventory",
+    title: "Inventory",
+    component: Inventory,
   },
   {
     path: "/config/roles",
