@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   List,
   ListItem,
@@ -24,7 +24,7 @@ import { DashboardRounded } from '@mui/icons-material';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <DashboardRounded />, path: '/dashboard' },
-  { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory' }
+
 ];
 
 const projectModules = {
@@ -113,12 +113,19 @@ export default function MenuContent() {
   const { expandedModules, toggleModule, businessUserProfile: profile } = useBusinessProfileContext()
   const navigate = useNavigate();
   const location = useLocation();
+  const [dashboardMenu, setDashboardMenu] = useState(mainListItems)
+  useEffect(() => {
+    const inventoryMenu = { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory' }
+    if (profile && !dashboardMenu.includes(inventoryMenu)) {
+      setDashboardMenu([...dashboardMenu, inventoryMenu])
+    }
+  }, [profile])
 
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
       {/* Top Menu */}
       <List dense>
-        {mainListItems.map((item, index) => (
+        {dashboardMenu.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
             <ListItemButton onClick={() => navigate(item.path)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
@@ -128,61 +135,64 @@ export default function MenuContent() {
         ))}
 
         {/* Project Menus */}
-        {projectModules && (
-          <List dense subheader={<li />}>
-            {Object.entries(projectModules).map(([moduleName, routes]) => {
-              const isActiveModule = routes.some(
-                (route) => route.endpoint === location.pathname
-              );
+        {
+          profile &&
+          projectModules && (
+            <List dense subheader={<li />}>
+              {Object.entries(projectModules).map(([moduleName, routes]) => {
+                const isActiveModule = routes.some(
+                  (route) => route.endpoint === location.pathname
+                );
 
-              return (
-                <React.Fragment key={moduleName}>
-                  <ListItem disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                      onClick={() => toggleModule(moduleName)}
-                      selected={isActiveModule} // <-- This highlights the module if it's active
-                      sx={{
-                        bgcolor: isActiveModule ? 'action.selected' : 'inherit',
-                      }}
-                    >
-                      <ListItemIcon>
-                        {moduleIcons[moduleName] || moduleIcons.default}
-                      </ListItemIcon>
-                      <ListItemText primary={moduleName} />
-                    </ListItemButton>
-                  </ListItem>
+                return (
+                  <React.Fragment key={moduleName}>
+                    <ListItem disablePadding sx={{ display: 'block' }}>
+                      <ListItemButton
+                        onClick={() => toggleModule(moduleName)}
+                        selected={isActiveModule} // <-- This highlights the module if it's active
+                        sx={{
+                          bgcolor: isActiveModule ? 'action.selected' : 'inherit',
+                        }}
+                      >
+                        <ListItemIcon>
+                          {moduleIcons[moduleName] || moduleIcons.default}
+                        </ListItemIcon>
+                        <ListItemText primary={moduleName} />
+                      </ListItemButton>
+                    </ListItem>
 
-                  <Collapse in={expandedModules[moduleName]} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      {routes.map((route, idx) => (
-                        <ListItem key={idx} disablePadding sx={{ pl: 5 }}>
-                          <ListItemButton onClick={() => navigate(route.endpoint)}>
-                            <ListItemText
-                              primary={
-                                <span
-                                  style={{
-                                    fontWeight:
-                                      location.pathname === route.endpoint ? 'bold' : 'normal',
-                                    color:
-                                      location.pathname === route.endpoint
-                                        ? '#1976d2'
-                                        : 'inherit',
-                                  }}
-                                >
-                                  {route.description || 'Unnamed'}
-                                </span>
-                              }
-                            />
-                          </ListItemButton>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Collapse>
-                </React.Fragment>
-              );
-            })}
-          </List>
-        )}
+                    <Collapse in={expandedModules[moduleName]} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {routes.map((route, idx) => (
+                          <ListItem key={idx} disablePadding sx={{ pl: 5 }}>
+                            <ListItemButton onClick={() => navigate(route.endpoint)}>
+                              <ListItemText
+                                primary={
+                                  <span
+                                    style={{
+                                      fontWeight:
+                                        location.pathname === route.endpoint ? 'bold' : 'normal',
+                                      color:
+                                        location.pathname === route.endpoint
+                                          ? '#1976d2'
+                                          : 'inherit',
+                                    }}
+                                  >
+                                    {route.description || 'Unnamed'}
+                                  </span>
+                                }
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Collapse>
+                  </React.Fragment>
+                );
+              })}
+            </List>
+          )
+        }
 
 
 

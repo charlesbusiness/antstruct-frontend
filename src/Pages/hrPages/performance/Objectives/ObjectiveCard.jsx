@@ -29,6 +29,7 @@ import useBusinessProfile from "../../../../hooks/useBusinessProfile";
 import { ApiRoutes } from "../../../../utils/ApiRoutes";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import DraftObjectiveForm from "./DraftObjectiveForm";
 
 
 const StatusChip = ({ status }) => {
@@ -45,7 +46,10 @@ const StatusChip = ({ status }) => {
     return <Chip label={label} color={color} size="small" />;
 }
 
-export const ObjectiveCard = ({ objective, onOpenDetails, handleInputChange, status, handleStatusChange }) => {
+export const ObjectiveCard = ({
+    objective,
+    onOpenDetails
+}) => {
     const queryClient = useQueryClient()
     const [expanded, setExpanded] = useState(false)
     const { businessInfo } = useBusinessProfile()
@@ -108,67 +112,40 @@ export const ObjectiveCard = ({ objective, onOpenDetails, handleInputChange, sta
                     (objective.status === OBJECTIVESTATUS.DRAFT
                         || objective.status === OBJECTIVESTATUS.REVIEW
                     )
-                    && (
-                        <Box sx={{ minWidth: 450, display: 'flex', justifyContent: 'space-between' }}
-                            component={'form'} onSubmit={handleStatusChange}>
-                            <Box sx={{ minWidth: 150 }}>
-                                <TextField
-                                    size="small"
-                                    select
-                                    fullWidth
-                                    label="select status"
-                                    required
-                                    name="status"
-                                    value={status.status}
-                                    onChange={handleInputChange}
-                                >
-                                    {Object.entries(OBJECTIVESTATUS).map(([key, value]) => (
-                                        <MenuItem key={key} value={value}>
-                                            {key.toLowerCase()}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Box>
-
-                            <Box sx={{ minWidth: 150, mx: 2 }}>
-                                <TextField
-                                    size="small"
-                                    fullWidth
-                                    label="add a comment"
-                                    value={status.comment}
-                                    name="comment"
-                                    onChange={handleInputChange}
-                                />
-                            </Box>
-
-                            <Box sx={{ minWidth: 100 }}>
-                                <Button
-                                    variant="contained"
-                                    type="submit"
-                                >Save</Button>
-                            </Box>
-                        </Box>
-                    )}
+                    && <DraftObjectiveForm
+                        objective={objective}
+                    />
+                }
             </Stack>
 
 
             {!expanded && (
-                <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
-                    <Chip label={`Weight: ${objective.weight}%`} size="small" />
-                    <Chip
-                        label={`${percentage}% Complete`}
-                        color={
-                            percentage === 100
-                                ? "success"
-                                : percentage >= 50
-                                    ? "primary"
-                                    : percentage > 0
-                                        ? "warning"
-                                        : "default"
-                        }
-                        size="small"
-                    />
-                </Stack>
+                <>
+                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
+                        <Chip label={`Weight: ${objective.weight}%`} size="small" />
+                        <Chip
+                            label={`${percentage}% Complete`}
+                            color={
+                                percentage === 100
+                                    ? "success"
+                                    : percentage >= 50
+                                        ? "primary"
+                                        : percentage > 0
+                                            ? "warning"
+                                            : "default"
+                            }
+                            size="small"
+                        />
+                    </Stack>
+                    <Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2 }}>
+
+                        <Button variant="outlined" size="small"
+                            onClick={() => onOpenDetails(objective)}
+                            startIcon={<Comment fontSize="small" />}>
+                            Details
+                        </Button>
+                    </Stack>
+                </>
             )}
 
             <Collapse in={expanded}>

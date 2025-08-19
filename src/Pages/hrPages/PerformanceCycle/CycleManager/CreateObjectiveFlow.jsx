@@ -20,7 +20,6 @@ const CreateObjectiveFlow = ({ user }) => {
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [showForm, setShowForm] = useState(false);
   const { departments, isLoading, error: isError } = useBusinessProfile()
-
   const isAdmin = adminRole(user)
   const isManager = managerRole(user)
   const isEmployee = isGeneralUser(user)
@@ -44,11 +43,12 @@ const CreateObjectiveFlow = ({ user }) => {
 
   const { submitData } = useSubmitData()
   const { data: lineManagerRelated, isError: dataError, isLoading: loadingData } = useQuery({
-    queryKey: ['lineManager'],
+    queryKey: ['departmentDataQuery'],
     queryFn: () => departmentData(submitData, user?.department?.id),
     keepPreviousData: true,
     enabled: !!isManager
   })
+
 
   const data = isAdmin ? departments : [user?.department]
 
@@ -78,8 +78,6 @@ const CreateObjectiveFlow = ({ user }) => {
           value={selectedDept}
           onChange={setSelectedDept}
           data={data}
-          isError={isError}
-          isLoading={loadingData || isLoading}
         />
       )}
 

@@ -92,7 +92,7 @@ const HRDashboard = () => {
           </Button>
         </Grid>
 
-        <StatsOverview />
+        {/* <StatsOverview /> */}
         <Grid container spacing={3} mt={2}>
           <Grid item xs={12} md={12}>
             <QuickLinks />

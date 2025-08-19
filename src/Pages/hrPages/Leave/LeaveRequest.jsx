@@ -38,14 +38,17 @@ import {
 } from "@mui/icons-material";
 import useSubmitData from "../../../hooks/useSubmitData";
 import { ApiRoutes } from "../../../utils/ApiRoutes";
-import { useQuery } from "@tanstack/react-query";
-import { formatDate } from "../../../utils/general";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { formatDate, isAdmin, isManager, resetFormData } from "../../../utils/general";
 import useBusinessProfile from "../../../hooks/useBusinessProfile";
+import { APPLICATIONSTAGES, LEAVESTATUS } from "../../../utils/consts";
 
 const LeaveRequest = () => {
   const { submitData } = useSubmitData()
-  const { employees } = useBusinessProfile()
+  const { employees, businessInfo: profile } = useBusinessProfile()
   const [filterStatus, setFilterStatus] = useState("all");
+  const lastFocusedElement = React.useRef(null);
+  const queryClient = useQueryClient()
   const [employeeFilter, setEmployeeFilter] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -53,7 +56,8 @@ const LeaveRequest = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
-
+  const adminUser = isAdmin(profile)
+  const isManagerUser = isManager(profile)
   const statusParam = filterStatus !== "all" ? `&status=${filterStatus}` : "";
   const employeeParams = employeeFilter !== null ? `&employee_id=${employeeFilter}` : "";
 
@@ -76,10 +80,11 @@ const LeaveRequest = () => {
   });
 
 
-  const openActionDialog = (empId, requestId, action) => {
+  const openActionDialog = (empId, requestId, action, event) => {
     setSelectedRequest({ empId, requestId, action });
-    setDialogOpen(true);
+    setDialogOpen(!dialogOpen);
   };
+
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -88,8 +93,20 @@ const LeaveRequest = () => {
       case "pending": return "warning";
       default: return "default";
     }
-  };
+  }
 
+  const handleStatusChange = async () => {
+    const response = await submitData({
+      endpoint: ApiRoutes.hrManager.leave.applications.update(selectedRequest.requestId),
+      method: 'patch',
+      data: { status: selectedRequest.action }
+    })
+    if (response.success) {
+      resetFormData(selectedRequest)
+      setDialogOpen(!dialogOpen);
+      queryClient.invalidateQueries(['leaveRequests'])
+    }
+  }
 
 
   const handleChangePage = (event, newPage) => {
@@ -99,8 +116,17 @@ const LeaveRequest = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
+  }
+  const handleShouldBeDisabled = (req) => {
+    const stage = req.stage;
+    if (!adminUser && !isManagerUser) return true;
+    if (stage == APPLICATIONSTAGES.MANAGER && !isManagerUser) return true;
+    if (stage == APPLICATIONSTAGES.HRM && !adminUser) return true;
+    if (stage == APPLICATIONSTAGES.FINAL) return true;
 
+    return false;
+  }
+  console.log(profile)
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
@@ -139,6 +165,7 @@ const LeaveRequest = () => {
                   <MenuItem value="all">All Requests</MenuItem>
                   <MenuItem value="pending">Pending</MenuItem>
                   <MenuItem value="approved">Approved</MenuItem>
+                  <MenuItem value="completed">Completed</MenuItem>
                   <MenuItem value="declined">Declined</MenuItem>
                 </Select>
 
@@ -180,7 +207,8 @@ const LeaveRequest = () => {
             </TableHead>
             <TableBody>
               {leaveRequest?.data?.pageData?.total > 0 ? leaveRequest?.data?.leaveData?.map((emp) => (
-                <TableRow key={emp.id} hover>
+                <TableRow key={`emp-${emp.employee_id}`} hover>
+
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Avatar sx={{ bgcolor: 'primary.main' }}>
@@ -211,9 +239,9 @@ const LeaveRequest = () => {
                   </TableCell>
                   <TableCell>
                     <Stack spacing={1}>
-                      {emp.leaves?.map((req) => (
+                      {emp?.leaves?.map((req) => (
                         <Paper
-                          key={req.id}
+                          key={`leave-${req.leave_id}`}  // Add unique key here
                           variant="outlined"
                           sx={{ p: 2, position: 'relative' }}
                         >
@@ -247,26 +275,59 @@ const LeaveRequest = () => {
                                 </Typography>
                               )}
                             </Box>
-                            {req.status === "pending" && (
+                            {req.status === LEAVESTATUS.PENDING && (
                               <Stack direction="row" spacing={0.5}>
                                 <Tooltip title="Approve">
-                                  <IconButton
-                                    size="small"
-                                    color="success"
-                                    onClick={() => openActionDialog(emp.id, req.id, "approve")}
-                                  >
-                                    <ApproveIcon fontSize="small" />
-                                  </IconButton>
+                                  <span> {/* Wrap the disabled button in a span */}
+                                    <IconButton
+                                      size="small"
+                                      color="success"
+                                      onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.APPROVE)}
+                                      disabled={handleShouldBeDisabled(req)}
+                                    >
+                                      <ApproveIcon fontSize="small" />
+                                    </IconButton>
+                                  </span>
                                 </Tooltip>
-                                <Tooltip title="Decline">
-                                  <IconButton
-                                    size="small"
-                                    color="error"
-                                    onClick={() => openActionDialog(emp.id, req.id, "decline")}
-                                  >
-                                    <DeclineIcon fontSize="small" />
-                                  </IconButton>
+                                {
+                                  profile?.employee?.id == emp.employee_id ?
+                                    <Tooltip title="Cancel">
+                                      <IconButton
+                                        size="small"
+                                        color="error"
+                                        onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.CANCLED)}
+                                      >
+                                        <DeclineIcon fontSize="small" />
+                                      </IconButton>
+                                    </Tooltip> :
+                                    <Tooltip title="Decline">
+                                      <IconButton
+                                        size="small"
+                                        color="error"
+                                        onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.DECLINED)}
+                                      >
+                                        <DeclineIcon fontSize="small" />
+                                      </IconButton>
+                                    </Tooltip>
+                                }
+
+                              </Stack>
+                            )}
+                            {req.status === LEAVESTATUS.APPROVE && profile.employee.id === emp?.employee_id && (
+                              <Stack direction="row" spacing={0.5}>
+                                <Tooltip title="Mark completed">
+                                  <span> {/* Wrap the disabled button in a span */}
+                                    <IconButton
+                                      size="small"
+                                      color="success"
+                                      onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.COMPLETED)}
+                                    >
+                                      <ApproveIcon fontSize="small" />
+                                    </IconButton>
+                                  </span>
                                 </Tooltip>
+
+
                               </Stack>
                             )}
                           </Stack>
@@ -348,16 +409,12 @@ const LeaveRequest = () => {
           <Button
             color={selectedRequest?.action === "approve" ? "success" : "error"}
             variant="contained"
-            onClick={() => {
-              selectedRequest?.action === "approve"
-                ? handleApprove(selectedRequest.empId, selectedRequest.requestId)
-                : handleDecline(selectedRequest.empId, selectedRequest.requestId);
-            }}
+            onClick={handleStatusChange}
             startIcon={
               selectedRequest?.action === "approve" ? <ApproveIcon /> : <DeclineIcon />
             }
           >
-            {selectedRequest?.action === "approve" ? "Approve" : "Decline"}
+            {selectedRequest?.action}
           </Button>
         </DialogActions>
       </Dialog>

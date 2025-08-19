@@ -45,17 +45,20 @@ export default function HighlightedCard({ businessUserprofile }) {
               Create Business
             </Button>
           )}
-          <Button
-            variant="contained"
-            size="small"
-            color="primary"
-            startIcon={<ShoppingCartIcon />}
-            endIcon={<ChevronRightRoundedIcon />}
-            fullWidth={isSmallScreen}
-            onClick={() => navigate("/make/requisition")}
-          >
-            Requisitions
-          </Button>
+          {
+            businessUserprofile &&
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              startIcon={<ShoppingCartIcon />}
+              endIcon={<ChevronRightRoundedIcon />}
+              fullWidth={isSmallScreen}
+              onClick={() => navigate("/make/requisition")}
+            >
+              Requisitions
+            </Button>
+          }
         </CardContent>
 
       </Card>

@@ -54,9 +54,10 @@ export const getYearOptions = (startYear = 2020) => {
 
 
 export const isAdmin = (profile) => {
-  return profile?.appRole?.key == APP_ROLE.BUSINESS_ADMIN;
+  const key = profile?.appRole?.key;
+  return key === APP_ROLE.BUSINESS_ADMIN || key === APP_ROLE.BUSINESS_SUPER_ADMIN;
+};
 
-}
 
 export const isManager = (profile) => {
   return profile?.isManager == true;

@@ -1,11 +1,9 @@
 // PerformanceDashboard.jsx
 import React, { useState } from 'react';
 import {
-    Card,
-    CardContent,
+    Box,
     Tab,
-    Tabs,
-    Typography
+    Tabs
 } from '@mui/material';
 
 import { TabPanel } from '@src/Components/TabPanel';
@@ -43,31 +41,24 @@ const PerformanceDashboard = () => {
 
     return (
         <>
-            <Card sx={{ mt: 2 }}>
-                <Typography variant="h5" gutterBottom fontWeight="bold" sx={{ mb: 3 }}>
-                    Performance Reviews
-                </Typography>
+            <Box sx={{ mt: 2, px: 2 }}>
+                <Tabs value={value} onChange={handleChange} aria-label="Objectives">
+                    <Tab label="Performance Review" />
+                    <Tab label="Drafts Objectives" />
+                </Tabs>
 
-                <CardContent>
-                    <Tabs value={value} onChange={handleChange} aria-label="Objectives">
-                        <Tab label="Performance Review" />
-                        <Tab label="Drafts Objectives" />
-                    </Tabs>
+                <TabPanel value={value} index={0}>
+                    <ActivePerformanceObjective
+                        objectives={activeObjectives}
+                    />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <DraftPerformanceObjective
+                        objectives={draftObjectives}
+                    />
+                </TabPanel>
 
-                    <TabPanel value={value} index={0}>
-                        <ActivePerformanceObjective
-                            objectives={activeObjectives}
-                        />
-                    </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        <DraftPerformanceObjective
-                            objectives={draftObjectives}
-                        />
-                    </TabPanel>
-
-
-                </CardContent>
-            </Card>
+            </Box>
 
         </>
     )

@@ -1,26 +1,18 @@
 import React, { useState } from 'react';
 import {
     Box,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
 import { AssignmentTurnedIn } from '@mui/icons-material';
 
 import { ObjectiveDetails } from './ObjectiveDetails';
 import { ObjectiveCard } from './ObjectiveCard';
-import { ApiRoutes } from '@src/utils/ApiRoutes';
-import useSubmitData from '@src/hooks/useSubmitData';
-import { useQueryClient } from '@tanstack/react-query';
 
 const DraftPerformanceObjective = ({ objectives }) => {
-    const { submitData } = useSubmitData()
-    const queryClient = useQueryClient()
+
     const [selectedObjective, setSelectedObjective] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const [status, setStatus] = useState({
-        comment: '',
-        status: ''
-    })
+
     const handleOpenDetails = (objective) => {
         setSelectedObjective(objective);
         setModalOpen(true);
@@ -31,25 +23,6 @@ const DraftPerformanceObjective = ({ objectives }) => {
         setSelectedObjective(null);
     }
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setStatus(prev => ({ ...prev, [name]: value }))
-    }
-
-    const handleStatusChange = async (id, e) => {
-        e.preventDefault()
-        const response = await submitData({
-            endpoint: ApiRoutes.performance.objectives.updateObjectives,
-            data: { ...status, id },
-            method: 'put',
-            reload: false
-        })
-        if (response?.success) {
-            queryClient.invalidateQueries(['objectiveData'])
-        }
-    }
-
-
     return (
         <>
             <Box sx={{ mx: 'auto', py: 2 }}>
@@ -59,11 +32,6 @@ const DraftPerformanceObjective = ({ objectives }) => {
                             key={objective.id}
                             objective={objective}
                             onOpenDetails={handleOpenDetails}
-                            status={status}
-                            handleStatusChange={
-                                (e) => handleStatusChange(objective.id, e)
-                            }
-                            handleInputChange={handleInputChange}
                         />
                     ))
                 ) : (

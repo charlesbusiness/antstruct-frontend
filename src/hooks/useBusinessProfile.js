@@ -19,7 +19,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
-    });
+    })
 
     const apiResources = useQuery({
         queryKey: ['apiResources'],
@@ -33,7 +33,9 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
-    });
+        enabled: !!businessProfileQuery?.data
+    })
+
     // Once the businessProfileQuery has data, build allowed & endpoints:
     const { allowed, endpoints } = useMemo(() => {
         const resources = apiResources?.data || [];
@@ -69,6 +71,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     });
 
     const employeesQuery = useQuery({
@@ -87,7 +90,7 @@ const useBusinessProfile = () => {
     });
 
     const departmentsQuery = useQuery({
-        queryKey: ['departments'],
+        queryKey: ['departmentsQuery'],
         queryFn: async () => {
             const response = await submitData({
                 data: {},
@@ -146,6 +149,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     })
 
 
@@ -189,6 +193,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     });
 
     const leaveCategory = useQuery({
@@ -203,6 +208,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     });
 
     const employmentGrade = useQuery({
@@ -217,6 +223,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     });
 
 
@@ -238,7 +245,8 @@ const useBusinessProfile = () => {
             ...prev,
             [moduleName]: !prev[moduleName],
         }));
-    };
+    }
+
 
     return {
         businessUserProfile: groupedResources,

@@ -31,27 +31,24 @@ import EditIcon from '@mui/icons-material/Edit';
 import PerformanceRemarkManager from './PerformanceRemark';
 
 import useSubmitData from '../../../../hooks/useSubmitData';
-import { formatDate, formatDateOnly, getYearOptions } from '../../../../utils/general';
+import { formatDate, formatDateOnly, getYearOptions, isAdmin } from '../../../../utils/general';
 import CreateQuarterForm from './CreateQuarterForm';
 import { CyclesYearFilter } from '../../../../components/CyclesYearFilter';
-import { ApiRoutes } from '../../../../utils/ApiRoutes';
 import { getCycles } from '../../../../hooks';
 
 
-const CycleManager = () => {
+const CycleManager = ({ profile }) => {
   const { submitData } = useSubmitData()
   const theme = useTheme();
   const [yearFilter, setYearFilter] = useState('');
   const [quarterFilter, setQuarterFilter] = useState('Q1');
   const [selectedCycle, setSelectedCycle] = useState(null)
-
+  const adminUser = isAdmin(profile)
   const { data: cycleData, error, isLoading } = useQuery({
     queryKey: ['cyclesData', yearFilter],
     queryFn: async () => await getCycles(submitData, yearFilter),
     keepPreviousData: true,
   })
-
-
 
 
   // const { data: remarkResult } = useQuery({
@@ -62,7 +59,6 @@ const CycleManager = () => {
 
 
   const yearOptions = getYearOptions();
-
 
   const cycles = cycleData || []
 
@@ -93,9 +89,11 @@ const CycleManager = () => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Card>
+
             <CardHeader
               title="Cycle Management"
               action={
+                adminUser &&
                 <Button variant="contained" startIcon={<AddIcon />}
                   onClick={openCycleModal}>
                   New Cycle

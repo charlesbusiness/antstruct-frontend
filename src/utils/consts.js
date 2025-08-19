@@ -76,3 +76,18 @@ export const APP_ROLE = {
     'BUSINESS_GENERAL_USER': 'business-general-user',
     'BUSINESS_ADMIN': 'business-admin',
 }
+
+
+export const LEAVESTATUS = {
+    PENDING: 'pending',
+    APPROVE: 'approved',
+    COMPLETED: 'completed',
+    DECLINED: 'declined',
+    CANCLED: 'cancled'
+}
+export const APPLICATIONSTAGES = {
+    MANAGER: 'manager',
+    HRM: 'hr',
+    FINAL: 'final',
+}
+

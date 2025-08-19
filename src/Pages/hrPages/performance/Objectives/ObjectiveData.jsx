@@ -18,11 +18,13 @@ import {
 } from '@mui/material';
 
 import { Edit, Delete } from '@mui/icons-material';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getObjectives } from '@src/hooks';
 import useSubmitData from '@src/hooks/useSubmitData';
+import { ApiRoutes } from '../../../../utils/ApiRoutes';
 
 const ObjectiveData = () => {
+    const queryClient = useQueryClient()
     const { submitData } = useSubmitData();
     const { data: queryResult } = useQuery({
         queryKey: ['objectiveData'],
@@ -46,19 +48,22 @@ const ObjectiveData = () => {
     const handleEditSubmit = async () => {
         if (!selectedObjective) return;
 
-        // Example: Send updated data to backend
-        await submitData({
-            endpoint: '/update-objective', // ✅ Replace with actual endpoint
+        const response = await submitData({
+            endpoint: ApiRoutes.performanceManager.objectives.update(selectedObjective.id),
             data: {
-                id: selectedObjective.id,
+                objective_id: selectedObjective.id,
                 title: selectedObjective.title,
                 description: selectedObjective.description,
                 weight: selectedObjective.weight,
                 target_value: selectedObjective.target_value
-            }
-        });
-
-        setOpenEdit(false);
+            },
+            method: 'patch'
+        })
+        if (response.success) {
+            setSelectedObjective(null)
+            queryClient.invalidateQueries(['objectiveData'])
+            setOpenEdit(false)
+        }
     };
 
     return (
@@ -134,7 +139,7 @@ const ObjectiveData = () => {
                             label="Weight"
                             type="number"
                             fullWidth
-                            value={selectedObjective?.weight || 0}
+                            value={selectedObjective?.weight || ''}
                             onChange={(e) =>
                                 setSelectedObjective({ ...selectedObjective, weight: parseFloat(e.target.value) })
                             }
@@ -143,7 +148,7 @@ const ObjectiveData = () => {
                             label="Target Value"
                             type="number"
                             fullWidth
-                            value={selectedObjective?.target_value || 0}
+                            value={selectedObjective?.target_value || ''}
                             onChange={(e) =>
                                 setSelectedObjective({ ...selectedObjective, target_value: parseFloat(e.target.value) })
                             }

@@ -68,16 +68,26 @@ export default function SideMenu() {
       >
         <Avatar
           sizes="small"
-          alt={businessInfo?.business_name || ' '}
+          alt={
+            businessInfo?.employee ?
+              businessInfo.employee.firstname :
+              businessInfo?.business_name || ' '}
           src="/static/images/avatar/9.jpg"
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            {businessInfo?.business_name || ' '}
+            {
+              businessInfo?.employee ?
+                businessInfo.employee.firstname :
+                businessInfo?.business_name || ' '}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {businessInfo?.email || ' '}
+            {
+              businessInfo?.employee ?
+                businessInfo.employee.email :
+                businessInfo?.email || ' '
+            }
           </Typography>
         </Box>
         <OptionsMenu />

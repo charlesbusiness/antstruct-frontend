@@ -112,6 +112,7 @@ export const ApiRoutes = {
       },
       applications: {
         apply: 'leave/manager/apply',
+        update: (leave) => `leave/manager/apply/${leave}`,
         leaves: 'leave/manager/apply/leaves'
       }
     },
@@ -141,6 +142,8 @@ export const ApiRoutes = {
 
     objectives: {
       create: 'performance/manager/objectives',
+      update: (id) => `performance/manager/objectives/${id}`,
+      changeStatus: (id) => `performance/manager/objectives/status/${id}`,
       getObjectives: (employee, cycleId) => {
         let url = 'performance/manager/objectives'
         if (employee) url = url.concat(`/${employee}`)

@@ -25,9 +25,19 @@ const CreateGrades = () => {
     }))
   }
 
+  const [grades, setGrades] = useState({});
+
+  const handleGradeChange = (id, value) => {
+    setGrades((prev) => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+
   const assignGrade = async (id) => {
     const response = await submitData({
-      data: { grade_id: gradeData.gradeId },
+      data: { grade_id: grades[id] },
       endpoint: ApiRoutes.employees.assignGrade(id),
       method: 'patch'
     })
@@ -87,13 +97,18 @@ const CreateGrades = () => {
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [newGrade, setNewGrade] = useState({ name: "", policies: [] });
-
+  console.log(gradeData)
   const handleOpenDialog = (grade = null) => {
     if (grade) {
       setEditingId(grade.id);
+
       const withDays = Array.isArray(grade.leave_categories)
-        ? grade.leave_categories.map(cat => ({ policyId: cat.id, policyDays: cat.pivot.policy_days || 0 }))
+        ? grade.leave_categories.map(cat => ({
+          policyId: cat.id,
+          policyDays: cat.pivot.policy_days ?? policies.find(p => p.id === cat.id)?.defaultDays ?? 0
+        }))
         : [];
+
       setNewGrade({ name: grade.name || "", policies: withDays });
     } else {
       setEditingId(null);
@@ -102,14 +117,16 @@ const CreateGrades = () => {
     setOpen(true);
   }
 
+
   const handlePolicyChange = (selectedIds) => {
-    // ensure policies array contains objects
     const updated = selectedIds.map(id => {
       const existing = newGrade.policies.find(p => p.policyId === id);
-      return existing || { policyId: id, policyDays: 0 };
+      const defaultDays = policies.find(p => p.id === id)?.defaultDays ?? 0;
+      return existing || { policyId: id, policyDays: defaultDays };
     });
     setNewGrade(prev => ({ ...prev, policies: updated }));
   };
+
 
   const handlePolicyDaysChange = (id, value) => {
     setNewGrade(prev => ({
@@ -220,8 +237,8 @@ const CreateGrades = () => {
                         label="Assign Grade"
                         size="small"
                         name="gradeId"
-                        value={gradeData.gradeId || ""}
-                        onChange={handleAssignGradeInput}
+                        value={grades[emp.id] || ''}
+                        onChange={(e) => handleGradeChange(emp.id, e.target.value)}
                         onBlur={() => assignGrade(emp?.id)}
                         fullWidth
                       >
