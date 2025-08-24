@@ -21,15 +21,11 @@ export default function HighlightedCard({ businessUserprofile }) {
         <CardContent>
           <InsightsRoundedIcon />
           <Typography
-            component="h2"
             variant="subtitle2"
             gutterBottom
             sx={{ fontWeight: "600" }}
           >
             Quick Links
-          </Typography>
-          <Typography sx={{ color: "text.secondary", mb: "8px" }}>
-            Ensure to enter the right Business Credentials.
           </Typography>
           {businessUserprofile == null && (
             <Button

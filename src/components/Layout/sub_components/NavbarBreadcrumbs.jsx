@@ -3,9 +3,8 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import routes from '../../../routes/routes';
-import { useTitle } from '../../../hooks/TitleContext';
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   margin: theme.spacing(1, 0),
@@ -18,85 +17,46 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   },
 }));
 
-const LinkItem = styled(Link)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  textDecoration: 'none',
-  '&:hover': {
-    textDecoration: 'underline',
-  },
-}));
-
-// Only used when route isn't found in routes.js
-const generateFallbackBreadcrumbs = (pathname) => {
+// Helper to get route titles for each path segment
+function getRouteTitles(pathname) {
   const segments = pathname.split('/').filter(Boolean);
-  const breadcrumbs = [];
-  
-  let accumulatedPath = '';
-  
-  segments.forEach((segment, index) => {
-    accumulatedPath += `/${segment}`;
-    const isLast = index === segments.length - 1;
-    
-    breadcrumbs.push({
-      name: segment.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase()),
-      path: accumulatedPath,
-      isLast
+  let accumulated = '';
+  const titles = [];
+  segments.forEach((segment, idx) => {
+    accumulated += '/' + segment;
+    // Try to match full path with params replaced by :param
+    let match = routes.find(route => {
+      // Convert route.path to regex for params
+      const routePattern = route.path.replace(/:[^/]+/g, '[^/]+');
+      const regex = new RegExp('^' + routePattern + '$');
+      return regex.test(accumulated);
     });
+    if (match && match.title) {
+      titles.push(match.title);
+    }
   });
-  
-  return breadcrumbs;
-};
+  return titles;
+}
 
 export default function NavbarBreadcrumbs() {
-  const { title } = useTitle();
   const location = useLocation();
-  const currentRoute = routes.find(route => route.path === location.pathname);
-  
-  // Default simple breadcrumb (Home > Current Page)
-  if (currentRoute || title) {
-    return (
-      <StyledBreadcrumbs
-        aria-label="breadcrumb"
-        separator={<NavigateNextRoundedIcon fontSize="small" />}
-      >
-        <LinkItem to="/">
-          <Typography variant="body1">Home</Typography>
-        </LinkItem>
-        <Typography variant="body1" sx={{ color: 'text.primary', fontWeight: 600 }}>
-          {title || currentRoute.title}
-        </Typography>
-      </StyledBreadcrumbs>
-    );
-  }
-  
-  // Fallback for undefined routes - generates path-based breadcrumbs
-  const fallbackBreadcrumbs = generateFallbackBreadcrumbs(location.pathname);
-  
+  const titles = getRouteTitles(location.pathname);
+
+  if (!titles.length) return null;
+
   return (
     <StyledBreadcrumbs
       aria-label="breadcrumb"
       separator={<NavigateNextRoundedIcon fontSize="small" />}
     >
-      <LinkItem to="/">
-        <Typography variant="body1">Home</Typography>
-      </LinkItem>
-      
-      {fallbackBreadcrumbs.map((crumb, index) => (
-        crumb.isLast ? (
-          <Typography 
-            key={index} 
-            variant="body1" 
-            sx={{ color: 'text.primary', fontWeight: 600 }}
-          >
-            {crumb.name}
-          </Typography>
-        ) : (
-          <LinkItem key={index} to={crumb.path}>
-            <Typography variant="body1">
-              {crumb.name}
-            </Typography>
-          </LinkItem>
-        )
+      {titles.map((title, idx) => (
+        <Typography
+          key={idx}
+          variant="body1"
+          sx={{ color: idx === titles.length - 1 ? 'text.primary' : 'text.secondary', fontWeight: idx === titles.length - 1 ? 600 : 400 }}
+        >
+          {title}
+        </Typography>
       ))}
     </StyledBreadcrumbs>
   );

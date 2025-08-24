@@ -19,7 +19,7 @@ const QuickLinks = () => {
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
   const quickLinks = [
-    { name: 'Add New Employee', icon: '👤', url: '/hr/create/employees' },
+    { name: 'Manage Employees', icon: '👤', url: '/hr/employees' },
     { name: 'Process Payroll', icon: '💰', url: '/payroll' },
     { name: 'Performance Reviews', icon: '📊', url: '/performace' },
     { name: 'Leave Requests', icon: '⏱️', url: '/leave' },

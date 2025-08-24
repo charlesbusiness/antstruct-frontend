@@ -56,9 +56,3 @@ export function a11yProps(index) {
     };
 }
 
-export const priorityCounts = {
-    Low: 4,
-    Normal: 12,
-    Moderate: 8,
-    High: 6
-};

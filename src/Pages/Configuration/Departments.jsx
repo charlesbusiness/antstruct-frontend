@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Grid,
-  CardContent,
   Box,
   Button,
   TextField,
@@ -11,8 +10,16 @@ import {
   DialogTitle,
   DialogContent,
   Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Alert
 } from "@mui/material";
-import { Card } from "../../common/Card";
+import { Add as AddIcon } from "@mui/icons-material";
 import useSubmitData from "@src/hooks/useSubmitData";
 import { ApiRoutes } from "@src/utils/ApiRoutes";
 import ButtonLoader from "@src/common/Loader/button-loader";
@@ -76,122 +83,168 @@ export default function Departments() {
       setFormData({ department_detail: "", department_name: "" });
       queryClient.invalidateQueries(["departments"]);
       setCreateDept(!createDept);
+      toast.success("Department created successfully!");
     }
   };
 
   return (
     <>
-      <Box sx={{ mt: 2 }}>
-        <Grid sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h6" component="h1" gutterBottom>
+      <Box sx={{ mt: 2, p: 2 }}>
+        <Grid container justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+          <Typography variant="h5" component="h1" fontWeight="bold">
             Departments
           </Typography>
           <Can endpoint={ENDPOINTS.CREATE_BUSINESS_DEPARTMENT}>
-            <Button variant="contained" onClick={openCreateDept}>
-              Add New
+            <Button 
+              variant="contained" 
+              onClick={openCreateDept}
+              startIcon={<AddIcon />}
+            >
+              Add New Department
             </Button>
           </Can>
         </Grid>
-        <Divider sx={{ my: 1 }} />
+        
+        <Divider sx={{ my: 2 }} />
+        
         {departments && departments.length > 0 ? (
-          <Grid container spacing={2}>
-            {departments?.map((department) => (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={4}
-                key={department.id}
-                sx={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Card variant="outlined" sx={{ p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h6" color="textSecondary">
-                      {" "}
-                      Name: {department.department_name}
-                    </Typography>
-                    <Typography variant="body2">
-                      Details: {department.department_detail}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <TableContainer component={Paper} elevation={2}>
+            <Table sx={{ minWidth: 650 }} aria-label="departments table">
+              <TableHead sx={{ backgroundColor: 'primary.main' }}>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Department Name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Description</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {departments.map((department) => (
+                  <TableRow
+                    key={department.id}
+                    sx={{ 
+                      '&:last-child td, &:last-child th': { border: 0 },
+                      '&:hover': { backgroundColor: 'action.hover' }
+                    }}
+                  >
+                    <TableCell component="th" scope="row" sx={{ fontWeight: 'medium' }}>
+                      {department.department_name}
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" color="text.secondary">
+                        {department.department_detail || "No description provided"}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         ) : (
-          <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
-            No departments created.
-          </Typography>
+          <Alert 
+            severity="info" 
+            sx={{ 
+              mt: 2, 
+              display: 'flex', 
+              alignItems: 'center',
+              '& .MuiAlert-message': { flexGrow: 1 }
+            }}
+          >
+            <Box>
+              <Typography variant="body1" gutterBottom>
+                No departments have been created yet.
+              </Typography>
+              <Typography variant="body2">
+                Get started by creating your first department to organize your business structure.
+              </Typography>
+            </Box>
+            <Can endpoint={ENDPOINTS.CREATE_BUSINESS_DEPARTMENT}>
+              <Button 
+                variant="contained" 
+                onClick={openCreateDept}
+                size="small"
+                sx={{ ml: 2 }}
+              >
+                Create Department
+              </Button>
+            </Can>
+          </Alert>
         )}
       </Box>
 
-      <Dialog onClose={openCreateDept} open={createDept} fullWidth>
+      <Dialog onClose={openCreateDept} open={createDept} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography variant="h6" component={"h1"}>
-            Create Department
+          <Typography variant="h6" component="h1" fontWeight="bold">
+            Create New Department
           </Typography>
         </DialogTitle>
-        <DialogContent fullWidth>
-          <Container maxWidth="sm" sx={{ mt: 1 }}>
-            <Card variant="outlined">
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  gap: 2,
-                }}
-              >
-                <TextField
-                  name="department_name"
-                  placeholder="Enter Department Name"
-                  label="Department Name"
-                  type="text"
-                  id="department_name"
-                  autoComplete="department_name"
-                  autoFocus
-                  required
-                  fullWidth
-                  variant="outlined"
-                  error={!!errors.department_name}
-                  helperText={errors.department_name}
-                  color={errors.department_name ? "error" : "primary"}
-                  value={formData.department_name}
-                  onChange={handleInputChange}
-                />
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
+              <TextField
+                name="department_name"
+                placeholder="Enter Department Name"
+                label="Department Name"
+                type="text"
+                id="department_name"
+                autoComplete="department_name"
+                autoFocus
+                required
+                fullWidth
+                variant="outlined"
+                error={!!errors.department_name}
+                helperText={errors.department_name}
+                color={errors.department_name ? "error" : "primary"}
+                value={formData.department_name}
+                onChange={handleInputChange}
+              />
 
-                <TextField
-                  name="department_detail"
-                  placeholder="Enter Department Detail"
-                  label="Department Detail"
-                  type="text"
-                  id="department_detail"
-                  autoComplete="department_detail"
-                  autoFocus
-                  required
-                  fullWidth
-                  variant="outlined"
-                  error={!!errors.department_detail}
-                  helperText={errors.department_detail}
-                  color={errors.department_detail ? "error" : "primary"}
-                  value={formData.department_detail}
-                  onChange={handleInputChange}
-                />
+              <TextField
+                name="department_detail"
+                placeholder="Enter Department Description"
+                label="Department Description"
+                type="text"
+                id="department_detail"
+                autoComplete="department_detail"
+                required
+                fullWidth
+                variant="outlined"
+                multiline
+                rows={3}
+                error={!!errors.department_detail}
+                helperText={errors.department_detail}
+                color={errors.department_detail ? "error" : "primary"}
+                value={formData.department_detail}
+                onChange={handleInputChange}
+              />
 
+              <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  fullWidth
+                  onClick={openCreateDept}
+                >
+                  Cancel
+                </Button>
                 <Button
                   type="submit"
                   disabled={isLoading ?? false}
                   fullWidth
                   variant="contained"
                 >
-                  {isLoading ? <ButtonLoader /> : "Create"}
+                  {isLoading ? <ButtonLoader /> : "Create Department"}
                 </Button>
               </Box>
-            </Card>
-          </Container>
+            </Box>
+          </Box>
         </DialogContent>
       </Dialog>
     </>

@@ -153,7 +153,7 @@ export default function TaskDetails() {
   return (
     <Container maxWidth="xl" sx={{ py: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-        <Typography variant="h4" component="h1" fontWeight="bold">
+        <Typography variant="h4" component="h2" fontWeight="bold" textTransform="capitalize">
           {task?.title}
         </Typography>
         <Chip

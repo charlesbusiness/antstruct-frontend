@@ -24,7 +24,6 @@ import { DashboardRounded } from '@mui/icons-material';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <DashboardRounded />, path: '/dashboard' },
-
 ];
 
 const projectModules = {

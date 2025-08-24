@@ -39,20 +39,12 @@ const TaskDashboard = lazy(() =>
   import("@src/Pages/TaskManagement/TaskDashboard")
 );
 const TaskDetails = lazy(() => import("@src/Pages/TaskManagement/TaskDetails"));
-const CreateEmployee = lazy(() =>
-  import("@src/Pages/HrPages/Employee/EmployeeCreation")
-);
-const CreateRole = lazy(() => import("../Pages/RolesPermissions/create-roles"));
+
 const AssignRole = lazy(() => import("../Pages/RolesPermissions/assign-role"));
-const UnassignRole = lazy(() =>
-  import("../Pages/RolesPermissions/unassign-role")
-);
+
 const MapResources = lazy(() =>
   import("@src/Pages/Configuration/Resources/MapResources")
 );
-// const UnMapResources = lazy(() =>
-//   import("@src/Pages/Configuration/Resources/UnMapResources")
-// );
 const DepartmentManager = lazy(() =>
   import("@src/Pages/Configuration/DepartmentManagers/DepartmentManager")
 );
@@ -101,7 +93,7 @@ const coreRoutes = [
   },
   {
     path: "/tasks/:id",
-    title: "Porject Management",
+    title: "Tasks Management",
     component: TaskDashboard,
   },
 
@@ -119,13 +111,13 @@ const coreRoutes = [
 
   {
     path: "/project/dashboard",
-    title: "projects-dashboard",
+    title: "Projects Dashboard",
     component: ProjectDashboard,
   },
 
   {
     path: "/sprints/:id",
-    title: "Sprint-dashboard",
+    title: "Sprint Dashboard",
     component: Sprint,
   },
 
@@ -166,24 +158,9 @@ const coreRoutes = [
     component: Employees,
   },
   {
-    path: "hr/create/employees",
-    title: "Create Employee",
-    component: CreateEmployee,
-  },
-  {
-    path: "/create/business/role",
-    title: "Create Role",
-    component: CreateRole,
-  },
-  {
     path: "/config/assign/role",
     title: "Assign Role",
     component: AssignRole,
-  },
-  {
-    path: "/config/unassign/role",
-    title: "Unassign Role",
-    component: UnassignRole,
   },
 
   {
