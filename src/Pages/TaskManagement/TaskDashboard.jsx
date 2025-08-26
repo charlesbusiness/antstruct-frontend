@@ -436,22 +436,21 @@ export default function TaskDashboard() {
 
           {/* Task List Tab */}
           <TabPanel value={value} index={1}>
-            {!tasks || tasks?.length === 0 ? (
-              <Box sx={{ textAlign: "center" }}>
-                <Typography variant="body1" color="text.secondary">
-                  No tasks found
-                </Typography>
-              </Box>
-            ) : (
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 0,
-                  borderRadius: 3,
-                  background:
-                    "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-                }}
-              >
+            <Paper
+              elevation={0}
+              sx={{
+                p: 1,
+                borderRadius: 3,
+                background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+              }}
+            >
+              {!tasks || tasks?.length === 0 ? (
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography variant="body1" color="text.secondary">
+                    No tasks found
+                  </Typography>
+                </Box>
+              ) : (
                 <TableContainer>
                   <Table>
                     <TableHead>
@@ -506,7 +505,27 @@ export default function TaskDashboard() {
                           </TableCell>
 
                           <TableCell>
-                            <FormControl size="small" sx={{ minWidth: 120 }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Avatar
+                                sx={{
+                                  width: 28,
+                                  height: 28,
+                                  mr: 1,
+                                  bgcolor: "primary.main",
+                                }}
+                              >
+                                <UserIcon fontSize="small" />
+                              </Avatar>
+                              {/* {user.assignee.firstname} */}
+                              {task.assignees[0]?.assignee?.firstname ||
+                                "Unassigned"}
+                            </Box>
+                            {/* <FormControl size="small" sx={{ minWidth: 120 }}>
                               <Select
                                 value={task.assignees[0]?.assignee?.id || ""}
                                 sx={{
@@ -538,11 +557,12 @@ export default function TaskDashboard() {
                                         <UserIcon fontSize="small" />
                                       </Avatar>
                                       {user.assignee.firstname}
+                            {task.assignees[0]?.assignee?.firstname || "Unassigned"}
                                     </Box>
                                   </MenuItem>
                                 ))}
                               </Select>
-                            </FormControl>
+                            </FormControl> */}
                           </TableCell>
 
                           <TableCell>
@@ -607,8 +627,8 @@ export default function TaskDashboard() {
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </Paper>
-            )}
+              )}
+            </Paper>
           </TabPanel>
         </Container>
       )}
