@@ -24,14 +24,12 @@ import {
   Add as AddIcon,
 } from '@mui/icons-material';
 import CreateCycleForm from './CreateCycleForm';
-// import { getCycles, getRemarks } from '../../../hooks';
 import { useQuery } from '@tanstack/react-query';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import PerformanceRemarkManager from './PerformanceRemark';
 
 import useSubmitData from '../../../../hooks/useSubmitData';
-import { formatDate, formatDateOnly, getYearOptions, isAdmin } from '../../../../utils/general';
+import { formatDateOnly, getYearOptions, isAdmin } from '../../../../utils/general';
 import CreateQuarterForm from './CreateQuarterForm';
 import { CyclesYearFilter } from '../../../../components/CyclesYearFilter';
 import { getCycles } from '../../../../hooks';

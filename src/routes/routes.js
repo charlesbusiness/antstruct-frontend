@@ -14,9 +14,9 @@ const Roles = lazy(() => import("@src/Pages/RolesPermissions/Roles"));
 
 const Employees = lazy(() => import("@src/Pages/HrPages/Employee/Employees"));
 
-const HrDashboard = lazy(() => import("@src/Pages/hrPages/HRDashBoard"));
+const HrDashboard = lazy(() => import("@src/Pages/HrPages/HRDashBoard"));
 const DailyDeliverables = lazy(() =>
-  import("@src/Pages/hrPages/DailyDeliverables")
+  import("@src/Pages/HrPages/DailyDeliverables")
 );
 const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
 
@@ -54,31 +54,31 @@ const UnAssignDepartmentManager = lazy(() =>
   )
 );
 const Requisition = lazy(() =>
-  import("@src/Pages/hrPages/Requisitions/Requisition")
+  import("@src/Pages/HrPages/Requisitions/Requisition")
 );
-const payroll = lazy(() => import("@src/Pages/hrPages/Payroll/Payroll"));
+const payroll = lazy(() => import("@src/Pages/HrPages/Payroll/Payroll"));
 
 const Appraisal = lazy(() =>
-  import("@src/Pages/hrPages/PerformanceCycle/CycleManager/Appraisal")
+  import("@src/Pages/HrPages/PerformanceCycle/CycleManager/Appraisal")
 );
 
 const PerformanceDashboard = lazy(() =>
-  import("@src/Pages/hrPages/Performance/Objectives/PerformanceObjectiveDashboard")
+  import("@src/Pages/HrPages/Performance/Objectives/PerformanceObjectiveDashboard")
 );
 const ObjectiveData = lazy(() =>
-  import("@src/Pages/hrPages/Performance/Objectives/ObjectiveData")
+  import("@src/Pages/HrPages/Performance/Objectives/ObjectiveData")
 );
 
 const organizationChart = lazy(() =>
-  import("@src/Pages/hrPages/OrgChart/OrganizationChart")
+  import("@src/Pages/HrPages/OrgChart/OrganizationChart")
 );
-const policies = lazy(() => import("@src/Pages/hrPages/Policies/Policies"));
-const training = lazy(() => import("@src/Pages/hrPages/training/training"));
-const LeaveRequest = lazy(() => import("@src/Pages/hrPages/Leave/LeaveRequest"));
+const policies = lazy(() => import("@src/Pages/HrPages/Policies/Policies"));
+const training = lazy(() => import("@src/Pages/HrPages/Training/Training"));
+const LeaveRequest = lazy(() => import("@src/Pages/HrPages/Leave/LeaveRequest"));
 const LeavePolicies = lazy(() =>
-  import("@src/Pages/hrPages/Leave/LeavePolicies")
+  import("@src/Pages/HrPages/Leave/LeavePolicies")
 );
-const Grades = lazy(() => import("@src/Pages/hrPages/Leave/CreateGrades"));
+const Grades = lazy(() => import("@src/Pages/HrPages/Leave/CreateGrades"));
 const Inventory = lazy(() => import("@src/Pages/Inventory"));
 const StockMovement = lazy(() => import("@src/Pages/Inventory/StockMovement"));
 const Supplier = lazy(() => import("@src/Pages/Inventory/Supplier"));

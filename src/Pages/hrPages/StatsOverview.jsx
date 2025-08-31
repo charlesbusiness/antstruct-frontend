@@ -5,7 +5,7 @@ import {
   Engineering as EngineeringIcon,
   Work as WorkIcon,
 } from "@mui/icons-material";
-import { dummyEmployees, departments } from "../hrPages/Payroll/data";
+import { dummyEmployees, departments } from "../HrPages/Payroll/data";
 const StatsOverview = () => {
   const totalEmployees = dummyEmployees.length;
 const today = new Date();
