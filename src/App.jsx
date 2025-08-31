@@ -7,6 +7,7 @@ import './App.css'
 import routes from './routes/routes'
 import BusinessSignUp from './Pages/Authentication/BusinessSignUp'
 import BusinessSignIn from './Pages/Authentication/BusinessSignIn'
+import Home from './Pages/LandingPage/index';
 import { ProtectedRoute } from './components/Layout/ProtectedRoute'
 import PageNotFound from './Pages/NotFound';
 import VerifyEmailAddress from './Pages/Authentication/VerifyEmailAddress';
@@ -22,7 +23,8 @@ function App() {
       <Router>
         <ToastContainer />
         <Routes>
-          <Route path="/" element={<BusinessSignIn />} />
+          <Route path="/login" element={<BusinessSignIn />} />
+          <Route path="/" element={<Home />} />
           <Route path="/register" element={<BusinessSignUp />} />
           <Route path="/verify" element={<VerifyEmailAddress />} />
           <Route path="/password/reset/:otp" element={<ResetPassword />} />
