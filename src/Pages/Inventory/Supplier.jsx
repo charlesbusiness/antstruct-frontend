@@ -42,7 +42,7 @@ export default function Supplier() {
   // Delete supplier
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      return await submitData({ method: 'delete', endpoint: `${ApiRoutes.suppliers.delete}/${id}` });
+      return await submitData({ method: 'delete', endpoint: ApiRoutes.suppliers.delete(id) });
     },
     onSuccess: () => queryClient.invalidateQueries(['suppliers'])
   });
