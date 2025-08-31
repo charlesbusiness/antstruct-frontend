@@ -80,7 +80,8 @@ const LeavePolicies = lazy(() =>
 );
 const Grades = lazy(() => import("@src/Pages/hrPages/Leave/CreateGrades"));
 const Inventory = lazy(() => import("@src/Pages/Inventory"));
-const SuppliersAndStock = lazy(() => import("@src/Pages/Inventory/SuppliersAndStock"));
+const StockMovement = lazy(() => import("@src/Pages/Inventory/StockMovement"));
+const Supplier = lazy(() => import("@src/Pages/Inventory/Supplier"));
 const coreRoutes = [
   {
     path: "/dashboard",
@@ -248,11 +249,19 @@ const coreRoutes = [
     title: "Inventory",
     component: Inventory,
   },
+
   {
-    path: "/inventory/suppliers-stock",
-    title: "Suppliers & Stock Movement",
-    component: SuppliersAndStock,
+    path: "/inventory/suppliers",
+    title: "Suppliers ",
+    component: Supplier,
   },
+
+  {
+    path: "/inventory/product-stocks",
+    title: " Stock Movement",
+    component: StockMovement,
+  },
+
   {
     path: "/config/roles",
     title: "Roles",

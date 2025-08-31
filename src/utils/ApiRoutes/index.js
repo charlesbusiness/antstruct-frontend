@@ -158,4 +158,21 @@ export const ApiRoutes = {
     get: 'inventory/products',
     delete: (id) => `inventory/products/${id}`,
   },
+
+  stock: {
+    create: (product) => `inventory/stocks?product_id=${product}`,
+    get: (productId) => {
+      let url = 'inventory/stocks'
+      if (productId) url = url.concat(`?product_id=${productId}`)
+      return url
+    },
+  },
+
+  suppliers: {
+    create: `inventory/suppliers`,
+    get: 'inventory/suppliers',
+    update: (supplier) => `inventory/suppliers/${supplier}`,
+    delete: (supplier) => `inventory/suppliers/${supplier}`,
+  },
 }
+

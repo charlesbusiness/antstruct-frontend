@@ -12,6 +12,7 @@ const useSubmitData = () => {
 
     const submitData = async ({ data, method = 'post', endpoint, successMessage, navigationPath, reload = false }) => {
         try {
+            console.log(method)
             const alternatelMessage = successMessage ?? "Success"
 
             setIsLoading(true);

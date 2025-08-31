@@ -20,9 +20,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  MenuItem,
 } from "@mui/material";
-import { Delete, Edit, Visibility, CloudUpload } from "@mui/icons-material";
+import { Delete, Edit, Visibility, CloudUpload, ManageAccounts } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
+
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import useSubmitData from "../../hooks/useSubmitData";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -128,7 +130,7 @@ const InventoryPage = () => {
         data: {},
         endpoint: ApiRoutes.inventory.get,
         method: 'get',
-      });
+      })
 
       if (!response || response?.error) {
         throw new Error('Failed to fetch inventories');
@@ -166,6 +168,14 @@ const InventoryPage = () => {
     return itemToDelete ? handleConfirmDelete(itemToDelete) : handleConfirmBulkDelete()
   }
 
+  const { data: suppliers = [] } = useQuery({
+    queryKey: ['suppliers'],
+    queryFn: async () => {
+      const res = await submitData({ method: 'get', endpoint: ApiRoutes.suppliers.get });
+      return res?.data ?? [];
+    }
+  });
+  console.log(suppliers)
   return (
     <>
       <ScreenLoader status={isLoading} />
@@ -180,10 +190,18 @@ const InventoryPage = () => {
           <Typography variant="h5">Inventory Management</Typography>
           <Button
             variant="contained"
-            onClick={() => navigate('/inventory/suppliers-stock')}
+            onClick={() => navigate('/inventory/suppliers')}
           >
-            View Suppliers & Stock Movement
+            View Suppliers
           </Button>
+
+          <Button
+            variant="contained"
+            onClick={() => navigate('/inventory/product-stocks')}
+          >
+            Stock Movement
+          </Button>
+
         </Stack>
 
         <Box display="flex" justifyContent="space-between" mb={2}>
@@ -213,6 +231,7 @@ const InventoryPage = () => {
                 <TableCell>Total</TableCell>
                 <TableCell>Supplier</TableCell>
                 <TableCell>Actions</TableCell>
+                <TableCell>Manage Stock</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -226,7 +245,7 @@ const InventoryPage = () => {
                   <TableCell>{item.qty}</TableCell>
                   <TableCell>${item.price}</TableCell>
                   <TableCell>${item.total_price}</TableCell>
-                  <TableCell>{item.supplier}</TableCell>
+                  <TableCell>{item.supplier?.name}</TableCell>
                   <TableCell>
                     <IconButton color="primary" onClick={() => handleOpenModal(item, false)}>
                       <Visibility />
@@ -236,6 +255,9 @@ const InventoryPage = () => {
                     </IconButton>
                     <IconButton color="error" onClick={() => handleDeleteClick(item.id)}>
                       <Delete />
+                    </IconButton>
+                    <IconButton color="secondary" onClick={() => navigate(`/inventory/product-stocks?productId=${item.id}`)}>
+                      <ManageAccounts />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -353,7 +375,15 @@ const InventoryPage = () => {
                   value={currentItem?.supplier_id || ""}
                   onChange={handleInputChange}
                   fullWidth
-                />
+                  select
+                >
+                  <MenuItem value=''>Select</MenuItem>
+                  {
+                    suppliers?.map((supplier) => (
+                      <MenuItem key={supplier.id} value={supplier.id}>{supplier.name}</MenuItem>
+                    ))
+                  }
+                </TextField>
               </Stack>
             ) : (
               <Stack spacing={1}>
