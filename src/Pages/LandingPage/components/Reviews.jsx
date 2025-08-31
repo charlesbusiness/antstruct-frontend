@@ -1,5 +1,5 @@
 // * Images
-import cmpLogosImg from "../media/logos.png";
+import cmpLogosImg from "../media/BANNER.png";
 import starsImg from "../media/Star.png";
 
 // * MUI Components
@@ -35,7 +35,7 @@ export default function Reviews() {
               mt: 2,
             }}
           >
-            More than 45,000 trust Besnik
+            More than 1,000 businesses use AntStruct
           </Typography>
         </Box>
         <Box>

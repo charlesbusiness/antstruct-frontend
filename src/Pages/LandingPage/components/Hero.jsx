@@ -54,8 +54,6 @@ export default function Hero() {
                 fontSize: "18px",
                 color: "#687690",
                 fontWeight: "500",
-                mt: 10,
-                mb: 4,
               }}
             >
               Welcome to Anstruct

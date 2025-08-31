@@ -21,8 +21,8 @@ function App() {
       <Router>
         <ToastContainer />
         <Routes>
-          <Route path="/" element={<BusinessSignIn />} />
-          {/* <Route path="/" element={<Home />} /> */}
+          <Route path="/login" element={<BusinessSignIn />} />
+          <Route path="/" element={<Home />} />
           <Route path="/register" element={<BusinessSignUp />} />
           <Route path="/verify" element={<VerifyEmailAddress />} />
           <Route element={<Layout />} >

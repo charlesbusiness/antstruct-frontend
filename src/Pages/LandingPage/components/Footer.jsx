@@ -1,148 +1,193 @@
-// * Components
-import fbIcon from "../media/fbicon.png";
-import twitterIcon from "../media/twittericon.png";
-import linkedinIcon from "../media/linkedinicon.png";
-
-// * MUI Components
+import React from 'react';
 import { Box, Container, Typography, styled } from "@mui/material";
+import {
+  Facebook,
+  Twitter,
+  LinkedIn,
+  Instagram
+} from "@mui/icons-material";
 
-// * Styled Components
+// Styled Components
+const FooterContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: "#f8fafc",
+  borderTop: "1px solid #e2e8f0",
+  padding: theme.spacing(6, 0, 4, 0),
+}));
+
 const CustomContainer = styled(Container)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-around",
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
   gap: theme.spacing(5),
+  [theme.breakpoints.down("md")]: {
+    gridTemplateColumns: "repeat(2, 1fr)",
+  },
   [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
+    gridTemplateColumns: "1fr",
     textAlign: "center",
+    gap: theme.spacing(4),
+  },
+}));
+
+const FooterLink = styled("span")(({ theme }) => ({
+  fontSize: "1rem",
+  color: "#64748b",
+  fontWeight: "400",
+  cursor: "pointer",
+  display: "block",
+  marginBottom: theme.spacing(1),
+  transition: "color 0.2s ease",
+  "&:hover": {
+    color: "#3b82f6",
   },
 }));
 
 const IconBox = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: "1rem",
+  gap: theme.spacing(2),
+  marginTop: theme.spacing(2),
   [theme.breakpoints.down("sm")]: {
     justifyContent: "center",
   },
 }));
 
-const FooterLink = styled("span")(({ theme }) => ({
-  fontSize: "16px",
-  color: "#7A7A7E",
-  fontWeight: "300",
+const SocialIcon = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "40px",
+  height: "40px",
+  borderRadius: "50%",
+  backgroundColor: "#e2e8f0",
+  color: "#64748b",
   cursor: "pointer",
+  transition: "all 0.2s ease",
   "&:hover": {
-    color: "#000",
+    backgroundColor: "#3b82f6",
+    color: "white",
+    transform: "translateY(-2px)",
   },
+}));
+
+const Copyright = styled(Box)(({ theme }) => ({
+  textAlign: "center",
+  paddingTop: theme.spacing(4),
+  marginTop: theme.spacing(4),
+  borderTop: "1px solid #e2e8f0",
+  color: "#94a3b8",
+  fontSize: "0.9rem",
 }));
 
 export default function Footer() {
   return (
-    <Box sx={{ py: 10 }}>
-      <CustomContainer>
+    <FooterContainer>
+      <Container>
         <CustomContainer>
           <Box>
             <Typography
+              variant="h6"
               sx={{
-                fontSize: "20px",
-                color: "#1C1C1D",
-                fontWeight: "700",
+                color: "#1e293b",
+                fontWeight: "600",
                 mb: 2,
+                fontSize: "1.25rem",
               }}
             >
-              Products
+              Product
             </Typography>
 
-            <FooterLink>Listing</FooterLink>
-            <br />
-            <FooterLink>Properties</FooterLink>
-            <br />
-            <FooterLink>Agents</FooterLink>
-            <br />
-            <FooterLink>Blog</FooterLink>
+            <FooterLink>Features</FooterLink>
+            <FooterLink>Solutions</FooterLink>
+            <FooterLink>Pricing</FooterLink>
+            <FooterLink>Demo</FooterLink>
           </Box>
 
           <Box>
             <Typography
+              variant="h6"
               sx={{
-                fontSize: "20px",
-                color: "#1C1C1D",
-                fontWeight: "700",
+                color: "#1e293b",
+                fontWeight: "600",
                 mb: 2,
+                fontSize: "1.25rem",
               }}
             >
               Resources
             </Typography>
 
-            <FooterLink>Our Homes</FooterLink>
-            <br />
-            <FooterLink>Stories</FooterLink>
-            <br />
-            <FooterLink>Video</FooterLink>
-            <br />
-            <FooterLink>Free Trial</FooterLink>
+            <FooterLink>Blog</FooterLink>
+            <FooterLink>User Guides</FooterLink>
+            <FooterLink>Webinars</FooterLink>
+            <FooterLink>Help Center</FooterLink>
           </Box>
 
           <Box>
             <Typography
+              variant="h6"
               sx={{
-                fontSize: "20px",
-                color: "#1C1C1D",
-                fontWeight: "700",
+                color: "#1e293b",
+                fontWeight: "600",
                 mb: 2,
+                fontSize: "1.25rem",
               }}
             >
               Company
             </Typography>
 
-            <FooterLink>Partnerships</FooterLink>
-            <br />
-            <FooterLink>Terms of use</FooterLink>
-            <br />
-            <FooterLink>Privacy</FooterLink>
-            <br />
-            <FooterLink>Sitemap</FooterLink>
+            <FooterLink>About Us</FooterLink>
+            <FooterLink>Careers</FooterLink>
+            <FooterLink>Press</FooterLink>
+            <FooterLink>Contact</FooterLink>
           </Box>
 
           <Box>
             <Typography
+              variant="h6"
               sx={{
-                fontSize: "20px",
-                color: "#1C1C1D",
-                fontWeight: "700",
+                color: "#1e293b",
+                fontWeight: "600",
                 mb: 2,
+                fontSize: "1.25rem",
               }}
             >
-              Get in touch
+              Connect With Us
             </Typography>
 
             <Typography
+              variant="body2"
               sx={{
-                fontSize: "16px",
-                color: "#7A7A7E",
-                fontWeight: "500",
+                color: "#64748b",
+                fontWeight: "400",
                 mb: 2,
+                lineHeight: 1.5,
               }}
             >
-              You’ll find your next home, in any style you prefer.
+              Follow us on social media to stay updated with the latest news and features.
             </Typography>
 
             <IconBox>
-              <img src={fbIcon} alt="fbIcon" style={{ cursor: "pointer" }} />
-              <img
-                src={twitterIcon}
-                alt="twitterIcon"
-                style={{ cursor: "pointer" }}
-              />
-              <img
-                src={linkedinIcon}
-                alt="linkedinIcon"
-                style={{ cursor: "pointer" }}
-              />
+              <SocialIcon>
+                <Facebook fontSize="small" />
+              </SocialIcon>
+              <SocialIcon>
+                <Twitter fontSize="small" />
+              </SocialIcon>
+              <SocialIcon>
+                <LinkedIn fontSize="small" />
+              </SocialIcon>
+              <SocialIcon>
+                <Instagram fontSize="small" />
+              </SocialIcon>
             </IconBox>
           </Box>
         </CustomContainer>
-      </CustomContainer>
-    </Box>
+
+        <Copyright>
+          <Typography variant="body2">
+            Copyright © {new Date().getFullYear()} AntStruct. All Rights Reserved.
+          </Typography>
+        </Copyright>
+      </Container>
+    </FooterContainer>
   );
 }
