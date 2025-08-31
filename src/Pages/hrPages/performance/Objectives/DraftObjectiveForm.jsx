@@ -11,15 +11,15 @@ export const DraftObjectiveForm = ({ objective }) => {
     const [status, setStatus] = useState({
         status: objective.status,
         comment: ""
-    });
+    })
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setStatus((prev) => ({
             ...prev,
             [name]: value
-        }));
-    };
+        }))
+    }
 
 
     const handleStatusChange = async (e) => {
@@ -75,7 +75,7 @@ export const DraftObjectiveForm = ({ objective }) => {
                 >Save Changes</Button>
             </Box>
         </Box>
-    );
+    )
 }
 
 export default DraftObjectiveForm;

@@ -151,5 +151,11 @@ export const ApiRoutes = {
         return url
       },
     },
-  }
+  },
+
+  inventory: {
+    create: 'inventory/products',
+    get: 'inventory/products',
+    delete: (id) => `inventory/products/${id}`,
+  },
 }

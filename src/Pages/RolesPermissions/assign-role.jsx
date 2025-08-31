@@ -139,7 +139,7 @@ export default function AssignRole({ onSuccess }) {
                 </Box>
               </Box>
             )}
-            
+
             <DialogActions>
               <Button onClick={onSuccess} color="inherit">
                 Cancel
