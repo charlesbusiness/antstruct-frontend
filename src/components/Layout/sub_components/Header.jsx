@@ -2,7 +2,6 @@ import * as React from 'react';
 import Stack from '@mui/material/Stack';
 import NavbarBreadcrumbs from './NavbarBreadcrumbs';
 
-import Search from './Search';
 
 export default function Header() {
   return (
@@ -19,9 +18,6 @@ export default function Header() {
       spacing={2}
     >
       <NavbarBreadcrumbs />
-      <Stack direction="row" sx={{ gap: 1 }}>
-        <Search />
-      </Stack>
     </Stack>
   );
 }

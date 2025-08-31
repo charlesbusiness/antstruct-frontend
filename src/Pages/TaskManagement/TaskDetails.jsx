@@ -10,10 +10,13 @@ import {
   Divider,
   FormControl,
   MenuItem,
-  Select,
   CircularProgress,
   Alert,
-  FormHelperText,
+  TextField,
+  Select,
+  InputLabel,
+  OutlinedInput,
+  ListItemText,
 } from "@mui/material"
 
 import {
@@ -30,20 +33,24 @@ import { Remark } from "./Remarks"
 import { useTitle } from "../../hooks/TitleContext"
 import DataModal from "../../common/DataModal"
 import { useQueryClient } from '@tanstack/react-query'
+import useBusinessProfile from "../../hooks/useBusinessProfile";
 
 export default function TaskDetails() {
   const queryClient = useQueryClient()
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
   const [viewRemark, setViewRemark] = React.useState(false);
-  const [taskData, setTaskData] = React.useState(null);
   const [deliverableId, setId] = React.useState(null);
   const [remarks, setRemarks] = React.useState(null);
   const [type, setType] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [deliverableStatuses, setDeliverableStatuses] = React.useState({})
   const { submitData } = useSubmitData()
+  const { employees, businessInfo } = useBusinessProfile()
 
+  const [formData, setFormData] = React.useState({
+    assignee: '',
+  })
   const { setTitle } = useTitle()
 
   useEffect(() => {
@@ -66,7 +73,6 @@ export default function TaskDetails() {
         statusMap[d.id] = d.deliverable_status;
       });
       setDeliverableStatuses(statusMap);
-      setTaskData(data);
       return data;
     },
   })
@@ -96,7 +102,16 @@ export default function TaskDetails() {
       data: { status: event.target.value },
       method: "post",
     })
+    if (response?.success) {
+      queryClient.invalidateQueries({ queryKey: ['task', id] })
+    }
+  }
 
+  const assignTask = async (event) => {
+    const response = await submitData({
+      endpoint: ApiRoutes.tasks.assignTask,
+      data: { task_id: task.id, assignee: [formData.assignee] },
+    })
     if (response?.success) {
       queryClient.invalidateQueries({ queryKey: ['task', id] })
     }
@@ -111,44 +126,92 @@ export default function TaskDetails() {
     });
   }
 
+  const assignedIds = task?.assignees?.map((a) => a.id) || [];
+
+  const availableEmployees = employees?.filter(
+    (emp) => !assignedIds.includes(emp.id)
+  );
+
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250
+      }
+    }
+  }
+
+  const shouldDisable = businessInfo?.id !== task?.assignees[0]?.assignee.id || !task
+
   if (isLoading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error.message}</Alert>;
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 1 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Typography variant="h4" component="h2" fontWeight="bold" textTransform="capitalize">
+          {task?.title}
+        </Typography>
+        <Chip
+          label={task?.priority}
+          color="primary"
+          icon={getPriorityIcon(task?.priority)}
+          variant="outlined"
+        />
+      </Box>
 
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
-        <Box sx={{ display: "flex", alignItems: "top", gap: 2 }}>
-          <Typography variant="h4" component="h1" fontWeight="bold">
-            Task: {task?.title}
-          </Typography>
-          <Chip
-            label={task?.priority}
-            color="primary"
-            icon={getPriorityIcon(task?.priority)}
-            variant="outlined"
-          />
-          <FormControl size="small">
-            <Select
-              value={status}
-              displayEmpty
-              disabled={!task}
-              onChange={(e) => setStatus(e.target.value)}
-              onBlur={changeStatus}
-              sx={{ minWidth: 200 }}
-            >
-              <MenuItem disabled value="">
-                <em>Select status</em>
+        <TextField
+          label='select to change status'
+          value={status}
+          displayEmpty
+          // disabled={!task}
+          onChange={(e) => setStatus(e.target.value)}
+          onBlur={changeStatus}
+          sx={{ minWidth: 200 }}
+          select
+          disabled={shouldDisable}
+        >
+          <MenuItem disabled value="">
+            <em>Select status</em>
+          </MenuItem>
+          {TaskStatus.map((statusOption) => (
+            <MenuItem value={statusOption} key={statusOption}>
+              {statusOption}
+            </MenuItem>
+          ))}
+        </TextField>
+
+
+
+        <FormControl sx={{ minWidth: 250 }} size="small">
+          <InputLabel id="assignee-label">Select To Assign Task</InputLabel>
+          <Select
+            labelId="assignee-label"
+            value={formData.assignee || ''}
+            onChange={(e) =>
+              setFormData({ ...formData, assignee: e.target.value })
+            }
+            onBlur={assignTask}
+            input={<OutlinedInput label="Assign Task" />}
+            renderValue={(selected) =>
+              availableEmployees.find((emp) => emp.id === selected)?.firstname || ''
+            }
+            MenuProps={MenuProps}
+          >
+            {availableEmployees?.map((emp) => (
+              <MenuItem key={emp.id} value={emp.id}>
+                <ListItemText primary={emp.firstname} />
               </MenuItem>
-              {TaskStatus.map((statusOption) => (
-                <MenuItem value={statusOption} key={statusOption}>
-                  {statusOption}
-                </MenuItem>
-              ))}
-            </Select>
-            <FormHelperText>Select to Change Status</FormHelperText>
-          </FormControl>
-        </Box>
+            ))}
+          </Select>
+        </FormControl>
+
+
         <Button
           component={Link}
           to={`/tasks/${task?.sprint?.id}`}
@@ -160,6 +223,15 @@ export default function TaskDetails() {
       </Box>
 
       <Divider sx={{ my: 3 }} />
+      <Box>
+        <ol>
+          {
+            task?.assignees?.map(assignee => (
+              <li key={assignee.assignee.id}>Assignee : {assignee?.assignee?.firstname}</li>
+            ))
+          }
+        </ol>
+      </Box>
 
       {/* Task Remarks Section */}
       <Box sx={{ mb: 4 }}>
@@ -235,6 +307,7 @@ export default function TaskDetails() {
               <Grid item xs={2}>
                 <FormControl variant="standard" size="small" fullWidth>
                   <Select
+                    disabled={shouldDisable}
                     value={deliverableStatuses[deliverable.id] || ""}
                     onChange={(e) =>
                       setDeliverableStatuses(prev => ({
@@ -314,3 +387,5 @@ export default function TaskDetails() {
     </Container>
   )
 }
+
+

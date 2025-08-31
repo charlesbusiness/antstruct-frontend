@@ -1,0 +1,67 @@
+// PerformanceDashboard.jsx
+import React, { useState } from 'react';
+import {
+    Box,
+    Tab,
+    Tabs
+} from '@mui/material';
+
+import { TabPanel } from '../../../../components/TabPanel';
+import ActivePerformanceObjective from './ActivePerformanceObjective';
+import DraftPerformanceObjective from './DraftPerformanceObjective';
+import { useQuery } from '@tanstack/react-query';
+import { getObjectives } from '@src/hooks';
+import useSubmitData from '@src/hooks/useSubmitData';
+import { useParams } from 'react-router';
+import { OBJECTIVESTATUS } from '@src/utils/consts';
+
+
+const PerformanceDashboard = () => {
+    const { id } = useParams()
+    const { submitData } = useSubmitData()
+    const { data: queryResult } = useQuery({
+        queryKey: ['objectiveData'],
+        queryFn: async () => await getObjectives(submitData, id),
+        keepPreviousData: true
+    })
+
+    const objectives = queryResult || []
+
+    const [value, setValue] = useState(0)
+
+    const handleChange = (event, newValue) => setValue(newValue);
+    const activeObjectives = objectives.filter(obj => obj.status === 'active');
+    const draftObjectives = objectives.filter(obj => {
+        if (obj.status == OBJECTIVESTATUS.DRAFT ||
+            obj.status == OBJECTIVESTATUS.REVIEW
+        ) {
+            return obj
+        }
+    })
+
+    return (
+        <>
+            <Box sx={{ mt: 2, px: 2 }}>
+                <Tabs value={value} onChange={handleChange} aria-label="Objectives">
+                    <Tab label="Performance Review" />
+                    <Tab label="Drafts Objectives" />
+                </Tabs>
+
+                <TabPanel value={value} index={0}>
+                    <ActivePerformanceObjective
+                        objectives={activeObjectives}
+                    />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <DraftPerformanceObjective
+                        objectives={draftObjectives}
+                    />
+                </TabPanel>
+
+            </Box>
+
+        </>
+    )
+}
+
+export default PerformanceDashboard;

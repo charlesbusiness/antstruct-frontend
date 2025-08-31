@@ -4,7 +4,6 @@ export const ApiRoutes = {
     register: 'user/register',
     login: 'user/login',
     verifyAccount: 'user/verify',
-    resendVeirificationCode: 'user/resend/code',
     resendVerificationCode: 'user/resend/code',
     sendForgotPassword: 'account/recovery/email',
     resetPassword: 'account/recovery/reset/password',
@@ -14,12 +13,12 @@ export const ApiRoutes = {
   admin: {
     apiResources: {
       create: 'admin/endpoints',
-      get: 'admin/endpoints',
+      get: (publicStatus) => `admin/endpoints?is_public=${publicStatus}`,
     },
 
     authentication: {
       register: 'admin/register',
-      register: 'admin/login',
+      login: 'admin/login',
     }
   },
 
@@ -42,11 +41,13 @@ export const ApiRoutes = {
   },
 
   employees: {
+    assignGrade: (id) => `config/business/employees/grade/${id}`,
     create: 'config/business/employees',
     getEmployees: 'config/business/employees',
     assignRole: 'config/business/employees/roles',
     removeAssignRole: 'config/business/employees/roles',
     getAssignedRole: 'config/business/employees/roles',
+    department: (department) => `config/business/employees/department/data/${department}`,
   },
 
   employeeResourceMap: {
@@ -66,6 +67,7 @@ export const ApiRoutes = {
     tasks: (query, sprint) => `tasks/admin/tasks?sprint=${sprint}`,
     task: (id) => `tasks/admin/task/${id}`,
     taskUpdate: (id) => `tasks/admin/task/status/${id}`,
+    assignTask: `tasks/admin/assign`,
     deliverableUpdate: `tasks/admin/deliverable/status`,
   },
 
@@ -89,7 +91,7 @@ export const ApiRoutes = {
   requisitions: {
     make: 'requisitions/make',
     approve: (id) => `requisitions/approve/${id}`,
-    review: 'requisitions/review',
+    review: (id) => `requisitions/review/${id}`,
     cancel: 'requisitions/cancel',
     requisitions: 'requisitions',
     requisition: (id) => `requisitions/${id}`,
@@ -100,6 +102,77 @@ export const ApiRoutes = {
       create: 'hr/manager/deliverables/create',
       update: (id) => `hr/manager/deliverables/update/${id}`,
       get: (search) => `hr/manager/deliverables?${search}`,
-    }
-  }
+    },
+
+    leave: {
+      category: {
+        create: 'hr/manager/leave/category',
+        get: 'hr/manager/leave/category',
+        delete: (id) => `hr/manager/leave/category/${id}`,
+      },
+      applications: {
+        apply: 'leave/manager/apply',
+        update: (leave) => `leave/manager/apply/${leave}`,
+        leaves: 'leave/manager/apply/leaves'
+      }
+    },
+
+    grades: {
+      create: 'hr/manager/employment/grade',
+      get: 'hr/manager/employment/grade',
+      delete: (id) => `hr/manager/employment/grade/${id}`,
+      update: (id) => `hr/manager/employment/grade/${id}`,
+    },
+  },
+
+  performanceManager: {
+    cycle: {
+      create: 'performance/manager/cycles',
+      update: (id) => `hr/manager/deliverables/update/${id}`,
+      get: 'performance/manager/cycles',
+    },
+
+    quarters: {
+      create: 'performance/manager/quarters',
+    },
+
+    reviews: {
+      startReview: 'performance/manager/reviews',
+    },
+
+    objectives: {
+      create: 'performance/manager/objectives',
+      update: (id) => `performance/manager/objectives/${id}`,
+      changeStatus: (id) => `performance/manager/objectives/status/${id}`,
+      getObjectives: (employee, cycleId) => {
+        let url = 'performance/manager/objectives'
+        if (employee) url = url.concat(`/${employee}`)
+        if (cycleId) url = url.concat(`?cycle_id=${cycleId}`)
+        return url
+      },
+    },
+  },
+
+  inventory: {
+    create: 'inventory/products',
+    get: 'inventory/products',
+    delete: (id) => `inventory/products/${id}`,
+  },
+
+  stock: {
+    create: (product) => `inventory/stocks?product_id=${product}`,
+    get: (productId) => {
+      let url = 'inventory/stocks'
+      if (productId) url = url.concat(`?product_id=${productId}`)
+      return url
+    },
+  },
+
+  suppliers: {
+    create: `inventory/suppliers`,
+    get: 'inventory/suppliers',
+    update: (supplier) => `inventory/suppliers/${supplier}`,
+    delete: (supplier) => `inventory/suppliers/${supplier}`,
+  },
 }
+

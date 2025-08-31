@@ -14,9 +14,9 @@ const Roles = lazy(() => import("@src/Pages/RolesPermissions/Roles"));
 
 const Employees = lazy(() => import("@src/Pages/HrPages/Employee/Employees"));
 
-const HrDashboard = lazy(() => import("@src/Pages/hrPages/HRDashBoard"));
+const HrDashboard = lazy(() => import("@src/Pages/HrPages/HRDashBoard"));
 const DailyDeliverables = lazy(() =>
-  import("@src/Pages/hrPages/DailyDeliverables")
+  import("@src/Pages/HrPages/DailyDeliverables")
 );
 const Dashboard = lazy(() => import("@src/Pages/BusinessDashboard"));
 
@@ -39,20 +39,12 @@ const TaskDashboard = lazy(() =>
   import("@src/Pages/TaskManagement/TaskDashboard")
 );
 const TaskDetails = lazy(() => import("@src/Pages/TaskManagement/TaskDetails"));
-const CreateEmployee = lazy(() =>
-  import("@src/Pages/HrPages/Employee/EmployeeCreation")
-);
-const CreateRole = lazy(() => import("../Pages/RolesPermissions/create-roles"));
+
 const AssignRole = lazy(() => import("../Pages/RolesPermissions/assign-role"));
-const UnassignRole = lazy(() =>
-  import("../Pages/RolesPermissions/unassign-role")
-);
+
 const MapResources = lazy(() =>
   import("@src/Pages/Configuration/Resources/MapResources")
 );
-// const UnMapResources = lazy(() =>
-//   import("@src/Pages/Configuration/Resources/UnMapResources")
-// );
 const DepartmentManager = lazy(() =>
   import("@src/Pages/Configuration/DepartmentManagers/DepartmentManager")
 );
@@ -64,16 +56,32 @@ const UnAssignDepartmentManager = lazy(() =>
 const Requisition = lazy(() =>
   import("@src/Pages/HrPages/Requisitions/Requisition")
 );
-const payroll = lazy(() => import("@src/Pages/hrPages/Payroll/Payroll"));
-const performance = lazy(() =>
-  import("@src/Pages/hrPages/PerformanceReview/PerformanceReview")
+const payroll = lazy(() => import("@src/Pages/HrPages/Payroll/Payroll"));
+
+const Appraisal = lazy(() =>
+  import("@src/Pages/HrPages/PerformanceCycle/CycleManager/Appraisal")
 );
+
+const PerformanceDashboard = lazy(() =>
+  import("@src/Pages/HrPages/Performance/Objectives/PerformanceObjectiveDashboard")
+);
+const ObjectiveData = lazy(() =>
+  import("@src/Pages/HrPages/Performance/Objectives/ObjectiveData")
+);
+
 const organizationChart = lazy(() =>
-  import("@src/Pages/hrPages/OrgChart/OrganizationChart")
+  import("@src/Pages/HrPages/OrgChart/OrganizationChart")
 );
-const policies = lazy(() => import("@src/Pages/hrPages/Policies/Policies"));
-const training = lazy(() => import("@src/Pages/hrPages/training/training"));
-const LeaveRequest = lazy(() => import("@src/Pages/hrPages/Leave/LeaveRequest"));
+const policies = lazy(() => import("@src/Pages/HrPages/Policies/Policies"));
+const training = lazy(() => import("@src/Pages/HrPages/Training/Training"));
+const LeaveRequest = lazy(() => import("@src/Pages/HrPages/Leave/LeaveRequest"));
+const LeavePolicies = lazy(() =>
+  import("@src/Pages/HrPages/Leave/LeavePolicies")
+);
+const Grades = lazy(() => import("@src/Pages/HrPages/Leave/CreateGrades"));
+const Inventory = lazy(() => import("@src/Pages/Inventory"));
+const StockMovement = lazy(() => import("@src/Pages/Inventory/StockMovement"));
+const Supplier = lazy(() => import("@src/Pages/Inventory/Supplier"));
 const coreRoutes = [
   {
     path: "/dashboard",
@@ -87,7 +95,7 @@ const coreRoutes = [
   },
   {
     path: "/tasks/:id",
-    title: "Porject Management",
+    title: "Tasks Management",
     component: TaskDashboard,
   },
 
@@ -105,13 +113,13 @@ const coreRoutes = [
 
   {
     path: "/project/dashboard",
-    title: "projects-dashboard",
+    title: "Projects Dashboard",
     component: ProjectDashboard,
   },
 
   {
     path: "/sprints/:id",
-    title: "Sprint-dashboard",
+    title: "Sprint Dashboard",
     component: Sprint,
   },
 
@@ -152,24 +160,9 @@ const coreRoutes = [
     component: Employees,
   },
   {
-    path: "hr/create/employees",
-    title: "Create Employee",
-    component: CreateEmployee,
-  },
-  {
-    path: "/create/business/role",
-    title: "Create Role",
-    component: CreateRole,
-  },
-  {
     path: "/config/assign/role",
     title: "Assign Role",
     component: AssignRole,
-  },
-  {
-    path: "/config/unassign/role",
-    title: "Unassign Role",
-    component: UnassignRole,
   },
 
   {
@@ -183,17 +176,31 @@ const coreRoutes = [
     title: "Payroll",
     component: payroll,
   },
+
   {
     path: "/performace",
     title: "Performace",
-    component: performance,
+    component: Appraisal,
   },
+
+  {
+    path: "/objectives",
+    title: "Objective",
+    component: ObjectiveData,
+  },
+
+  {
+    path: "/reviews",
+    title: "Performance Review",
+    component: PerformanceDashboard,
+  },
+
   {
     path: "/policies",
     title: "Policies",
     component: policies,
   },
-    {
+  {
     path: "/leave",
     title: "Leave Request",
     component: LeaveRequest,
@@ -225,6 +232,34 @@ const coreRoutes = [
     path: "/unmapped/dept",
     title: "UnAssign Department Managers",
     component: UnAssignDepartmentManager,
+  },
+
+  {
+    path: "/hr/leave-policies",
+    title: "Leave Policies",
+    component: LeavePolicies,
+  },
+  {
+    path: "/hr/grades",
+    title: "Grades",
+    component: Grades,
+  },
+  {
+    path: "/inventory",
+    title: "Inventory",
+    component: Inventory,
+  },
+
+  {
+    path: "/inventory/suppliers",
+    title: "Suppliers ",
+    component: Supplier,
+  },
+
+  {
+    path: "/inventory/product-stocks",
+    title: " Stock Movement",
+    component: StockMovement,
   },
 
   {

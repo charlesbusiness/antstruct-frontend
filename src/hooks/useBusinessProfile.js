@@ -19,10 +19,46 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
-    });
+    })
 
+    const apiResources = useQuery({
+        queryKey: ['apiResources'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.admin.apiResources.get(true),
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch  Api endpoints');
+            return response.data;
+        },
+        keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
+    })
 
+    // Once the businessProfileQuery has data, build allowed & endpoints:
+    const { allowed, endpoints } = useMemo(() => {
+        const resources = apiResources?.data || [];
 
+        const allowedSet = new Set();
+        const endpointsMap = {};
+
+        resources?.forEach(r => {
+            allowedSet.add(r.endpoint);
+
+            // e.g. 'createProject' → 'CREATE_PROJECT'
+            const key = r.endpoint
+                .replace(/([A-Z])/g, '_$1')  // camelCase → _camel_Case
+                .toUpperCase()               // → _CAMEL_CASE
+                .replace(/^_/, '');          // → CAMEL_CASE
+
+            endpointsMap[key] = r.endpoint;
+        });
+
+        return { allowed: allowedSet, endpoints: endpointsMap };
+    }, [apiResources.data]);
+
+    // console.log(endpoints)
     const appModules = useQuery({
         queryKey: ['appModules'],
         queryFn: async () => {
@@ -35,6 +71,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     });
 
     const employeesQuery = useQuery({
@@ -53,7 +90,7 @@ const useBusinessProfile = () => {
     });
 
     const departmentsQuery = useQuery({
-        queryKey: ['departments'],
+        queryKey: ['departmentsQuery'],
         queryFn: async () => {
             const response = await submitData({
                 data: {},
@@ -112,6 +149,7 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     })
 
 
@@ -155,6 +193,37 @@ const useBusinessProfile = () => {
             return response.data;
         },
         keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
+    });
+
+    const leaveCategory = useQuery({
+        queryKey: ['leaveCategory'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.hrManager.leave.category.get,
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch API resources');
+            return response.data;
+        },
+        keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
+    });
+
+    const employmentGrade = useQuery({
+        queryKey: ['employmentGrade'],
+        queryFn: async () => {
+            const response = await submitData({
+                data: {},
+                endpoint: ApiRoutes.hrManager.grades.get,
+                method: 'get',
+            });
+            if (response?.error) throw new Error('Failed to fetch API resources');
+            return response.data;
+        },
+        keepPreviousData: true,
+        enabled: !!businessProfileQuery?.data
     });
 
 
@@ -176,11 +245,16 @@ const useBusinessProfile = () => {
             ...prev,
             [moduleName]: !prev[moduleName],
         }));
-    };
+    }
+
 
     return {
         businessUserProfile: groupedResources,
         businessInfo: businessProfileQuery.data,
+        allowed,
+        endpoints,
+        employmentGrade: employmentGrade.data,
+        leaveCategory: leaveCategory.data,
         employees: employeesQuery.data,
         businessCategories: businessCategories.data,
         businessSizes: businessSizes.data,

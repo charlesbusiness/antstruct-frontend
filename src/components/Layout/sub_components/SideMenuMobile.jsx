@@ -44,12 +44,18 @@ function SideMenuMobile({ open, toggleDrawer }) {
           >
             <Avatar
               sizes="small"
-              alt={businessInfo?.business_name || ' '}
+              alt={
+                businessInfo?.employee ?
+                  businessInfo.employee.firstname : businessInfo?.business_name || ' '}
               src="/static/images/avatar/7.jpg"
               sx={{ width: 24, height: 24 }}
             />
             <Typography component="p" variant="h6">
-              {businessInfo?.business_name || ' '}
+              {
+                businessInfo?.employee ?
+                  businessInfo.employee.email :
+                  businessInfo?.business_name || ' '
+              }
             </Typography>
           </Stack>
         </Stack>

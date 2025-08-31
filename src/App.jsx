@@ -12,6 +12,8 @@ import { ProtectedRoute } from './components/Layout/ProtectedRoute'
 import PageNotFound from './Pages/NotFound';
 import VerifyEmailAddress from './Pages/Authentication/VerifyEmailAddress';
 import { TitleProvider } from './hooks/TitleContext';
+import ResetPassword from './Pages/Authentication/ResetPassword';
+import VerifyPasswordOtpForm from './Pages/Authentication/VerifyPasswordOtpForm';
 const Layout = lazy(() => import('./components/Layout/Dashboard'));
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<BusinessSignUp />} />
           <Route path="/verify" element={<VerifyEmailAddress />} />
+          <Route path="/password/reset/:otp" element={<ResetPassword />} />
+          <Route path='/verify-password/otp/:id' element={<VerifyPasswordOtpForm />} />
           <Route element={<Layout />} >
             <Route path='/' element={<ProtectedRoute />}>
               {routes.map((route, index) => {

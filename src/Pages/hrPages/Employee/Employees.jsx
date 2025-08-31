@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import useBusinessProfile from "@src/hooks/useBusinessProfile";
 import CreateEmployee from "./EmployeeCreation";
+import Can from "../../../components/Can";
+import { ENDPOINTS } from "../../../utils/consts";
 
 export default function Employees() {
   const { employees } = useBusinessProfile();
@@ -53,7 +55,9 @@ export default function Employees() {
             </Typography>
           </Grid>
           <Grid>
-            <Button variant="contained" onClick={handleCloseEmployeeForm}>Add New Employee</Button>
+            <Can endpoint={ENDPOINTS.CREATE_BUSINESS_EMPLOYEES}>
+              <Button variant="contained" onClick={handleCloseEmployeeForm}>Add New Employee</Button>
+            </Can>
           </Grid>
         </Grid>
         {employees?.length > 0 ? (

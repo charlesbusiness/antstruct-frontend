@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -32,83 +33,81 @@ import {
 import {
   CheckCircle as ApproveIcon,
   Cancel as DeclineIcon,
-  Person as PersonIcon,
   Event as CalendarIcon,
-  FilterList as FilterIcon,
   Refresh as RefreshIcon,
-  Info as InfoIcon
 } from "@mui/icons-material";
-import allEmployees from "../Payroll/data";
+import useSubmitData from "../../../hooks/useSubmitData";
+import { ApiRoutes } from "../../../utils/ApiRoutes";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { formatDate, isAdmin, isManager, resetFormData } from "../../../utils/general";
+import useBusinessProfile from "../../../hooks/useBusinessProfile";
+import { APPLICATIONSTAGES, LEAVESTATUS } from "../../../utils/consts";
 
 const LeaveRequest = () => {
-  const [employees, setEmployees] = useState(allEmployees);
+  const { submitData } = useSubmitData()
+  const { employees, businessInfo: profile } = useBusinessProfile()
   const [filterStatus, setFilterStatus] = useState("all");
+  const lastFocusedElement = React.useRef(null);
+  const queryClient = useQueryClient()
+  const [employeeFilter, setEmployeeFilter] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [note, setNote] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const navigate = useNavigate();
+  const adminUser = isAdmin(profile)
+  const isManagerUser = isManager(profile)
+  const statusParam = filterStatus !== "all" ? `&status=${filterStatus}` : "";
+  const employeeParams = employeeFilter !== null ? `&employee_id=${employeeFilter}` : "";
 
-  const handleApprove = (empId, requestId) => {
-    setEmployees(prev =>
-      prev.map(emp =>
-        emp.id === empId
-          ? {
-              ...emp,
-              leaveRequests: emp.leaveRequests.map(req =>
-                req.id === requestId 
-                  ? { ...req, status: "Approved", note } 
-                  : req
-              ),
-            }
-          : emp
-      )
-    );
-    setDialogOpen(false);
-    setNote("");
-  };
+  const leaveRequest = useQuery({
+    queryKey: ['leaveRequests', filterStatus, employeeFilter, rowsPerPage],
+    queryFn: async () => {
+      const response = await submitData({
+        data: {},
+        endpoint: `${ApiRoutes.hrManager.leave.applications.leaves}?per_page=${rowsPerPage}${statusParam + employeeParams}`,
+        method: 'get',
+      });
+      if (response?.error) throw new Error('Failed to fetch employees');
+      const data = response?.data;
+      return {
+        pageData: data?.paginated,
+        leaveData: data?.grouped
+      }
+    },
+    keepPreviousData: true,
+  });
 
-  const handleDecline = (empId, requestId) => {
-    setEmployees(prev =>
-      prev.map(emp =>
-        emp.id === empId
-          ? {
-              ...emp,
-              leaveRequests: emp.leaveRequests.map(req =>
-                req.id === requestId 
-                  ? { ...req, status: "Declined", note } 
-                  : req
-              ),
-            }
-          : emp
-      )
-    );
-    setDialogOpen(false);
-    setNote("");
-  };
 
-  const openActionDialog = (empId, requestId, action) => {
+  const openActionDialog = (empId, requestId, action, event) => {
     setSelectedRequest({ empId, requestId, action });
-    setDialogOpen(true);
+    setDialogOpen(!dialogOpen);
   };
+
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Approved": return "success";
-      case "Declined": return "error";
-      case "Pending": return "warning";
+      case "approved": return "success";
+      case "declined": return "error";
+      case "pending": return "warning";
       default: return "default";
     }
-  };
+  }
 
-  const filteredEmployees = employees
-    .map(emp => ({
-      ...emp,
-      leaveRequests: filterStatus === "all" 
-        ? emp.leaveRequests 
-        : emp.leaveRequests?.filter(req => req.status === filterStatus)
-    }))
-    .filter(emp => emp.leaveRequests?.length > 0);
+  const handleStatusChange = async () => {
+    const response = await submitData({
+      endpoint: ApiRoutes.hrManager.leave.applications.update(selectedRequest.requestId),
+      method: 'patch',
+      data: { status: selectedRequest.action }
+    })
+    if (response.success) {
+      resetFormData(selectedRequest)
+      setDialogOpen(!dialogOpen);
+      queryClient.invalidateQueries(['leaveRequests'])
+    }
+  }
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -117,13 +116,40 @@ const LeaveRequest = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
+  }
+  const handleShouldBeDisabled = (req) => {
+    const stage = req.stage;
+    if (!adminUser && !isManagerUser) return true;
+    if (stage == APPLICATIONSTAGES.MANAGER && !isManagerUser) return true;
+    if (stage == APPLICATIONSTAGES.HRM && !adminUser) return true;
+    if (stage == APPLICATIONSTAGES.FINAL) return true;
 
+    return false;
+  }
+  console.log(profile)
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
         Leave Request Management
       </Typography>
+
+
+      <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/hr/leave-policies")}
+        >
+          Manage Leave Policies
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate("/hr/grades")}
+        >
+          Manage Grades
+        </Button>
+      </Stack>
 
       <Card elevation={2} sx={{ mb: 4 }}>
         <CardHeader
@@ -135,13 +161,29 @@ const LeaveRequest = () => {
                 <Select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  label="Filter by status"
                 >
                   <MenuItem value="all">All Requests</MenuItem>
-                  <MenuItem value="Pending">Pending</MenuItem>
-                  <MenuItem value="Approved">Approved</MenuItem>
-                  <MenuItem value="Declined">Declined</MenuItem>
+                  <MenuItem value="pending">Pending</MenuItem>
+                  <MenuItem value="approved">Approved</MenuItem>
+                  <MenuItem value="completed">Completed</MenuItem>
+                  <MenuItem value="declined">Declined</MenuItem>
                 </Select>
+
+              </FormControl>
+
+              <FormControl size="small" sx={{ minWidth: 150 }}>
+                <InputLabel>Filter by Employee</InputLabel>
+                <Select
+                  value={employeeFilter || ''}
+                  onChange={(e) => setEmployeeFilter(e.target.value)}
+                >
+                  {
+                    employees?.map(employee => (
+                      <MenuItem key={employee?.id} value={employee.id}>{employee?.firstname}</MenuItem>
+                    ))
+                  }
+                </Select>
+
               </FormControl>
               <Tooltip title="Refresh">
                 <IconButton>
@@ -164,107 +206,162 @@ const LeaveRequest = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredEmployees.length > 0 ? (
-                filteredEmployees
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((emp) => (
-                    <TableRow key={emp.id} hover>
-                      <TableCell>
-                        <Stack direction="row" alignItems="center" spacing={2}>
-                          <Avatar sx={{ bgcolor: 'primary.main' }}>
-                            {emp.name.charAt(0)}
-                          </Avatar>
-                          <Typography fontWeight="medium">{emp.name}</Typography>
-                        </Stack>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Chip label={emp.leaveEntitlement} variant="outlined" />
-                      </TableCell>
-                      <TableCell align="center">
-                        <Chip 
-                          label={emp.leaveTaken} 
-                          color="primary" 
-                          variant="outlined" 
-                        />
-                      </TableCell>
-                      <TableCell align="center">
-                        <Chip
-                          label={emp.leaveEntitlement - emp.leaveTaken}
-                          color={
-                            (emp.leaveEntitlement - emp.leaveTaken) > 5 
-                              ? "success" 
-                              : "warning"
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Stack spacing={1}>
-                          {emp.leaveRequests?.map((req) => (
-                            <Paper 
-                              key={req.id} 
-                              variant="outlined" 
-                              sx={{ p: 2, position: 'relative' }}
-                            >
-                              <Stack 
-                                direction="row" 
-                                justifyContent="space-between" 
-                                alignItems="center"
-                              >
-                                <Box>
-                                  <Stack direction="row" spacing={1} alignItems="center">
-                                    <CalendarIcon color="action" fontSize="small" />
-                                    <Typography variant="body1" fontWeight="medium">
-                                      {req.type}
-                                    </Typography>
-                                    <Chip 
-                                      label={req.status}
+              {leaveRequest?.data?.pageData?.total > 0 ? leaveRequest?.data?.leaveData?.map((emp) => (
+                <TableRow key={`emp-${emp.employee_id}`} hover>
+
+                  <TableCell>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <Avatar sx={{ bgcolor: 'primary.main' }}>
+                        {emp?.employee_name?.charAt(0)}
+                      </Avatar>
+                      <Typography fontWeight="medium">{emp.employee_name}</Typography>
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Chip label={emp.entitled} variant="outlined" />
+                  </TableCell>
+                  <TableCell align="center">
+                    <Chip
+                      label={emp.taken}
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </TableCell>
+                  <TableCell align="center">
+                    <Chip
+                      label={emp.remaining}
+                      color={
+                        (emp.taken) > 5
+                          ? "success"
+                          : "warning"
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Stack spacing={1}>
+                      {emp?.leaves?.map((req) => (
+                        <Paper
+                          key={`leave-${req.leave_id}`}  // Add unique key here
+                          variant="outlined"
+                          sx={{ p: 2, position: 'relative' }}
+                        >
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
+                            <Box>
+                              <Stack direction="row" spacing={1} alignItems="center">
+                                <CalendarIcon color="action" fontSize="small" />
+                                <Typography variant="body1" fontWeight="medium">
+                                  {req.category_name}
+                                </Typography>
+                                <Chip
+                                  label={req.status}
+                                  size="small"
+                                  color={getStatusColor(req.status)}
+                                  variant="outlined"
+                                />
+                              </Stack>
+                              <Typography variant="body2" color="textSecondary">
+                                {formatDate(req.start_date)}
+                                <br />
+                                {formatDate(req.end_date)
+                                }
+                              </Typography>
+                              {req.reason && (
+                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                  <strong>Reason:</strong> {req.reason}
+                                </Typography>
+                              )}
+                            </Box>
+                            {req.status === LEAVESTATUS.PENDING && (
+                              <Stack direction="row" spacing={0.5}>
+                                <Tooltip title="Approve">
+                                  <span> {/* Wrap the disabled button in a span */}
+                                    <IconButton
                                       size="small"
-                                      color={getStatusColor(req.status)}
-                                      variant="outlined"
-                                    />
-                                  </Stack>
-                                  <Typography variant="body2" color="textSecondary">
-                                    {req.startDate} to {req.endDate} • {req.duration} days
-                                  </Typography>
-                                  {req.reason && (
-                                    <Typography variant="body2" sx={{ mt: 1 }}>
-                                      <strong>Reason:</strong> {req.reason}
-                                    </Typography>
-                                  )}
-                                </Box>
-                                {req.status === "Pending" && (
-                                  <Stack direction="row" spacing={0.5}>
-                                    <Tooltip title="Approve">
+                                      color="success"
+                                      onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.APPROVE)}
+                                      disabled={handleShouldBeDisabled(req)}
+                                    >
+                                      <ApproveIcon fontSize="small" />
+                                    </IconButton>
+                                  </span>
+                                </Tooltip>
+                                {
+                                  profile?.employee?.id == emp.employee_id ?
+                                    <Tooltip title="Cancel">
                                       <IconButton
                                         size="small"
-                                        color="success"
-                                        onClick={() => openActionDialog(emp.id, req.id, "approve")}
+                                        color="error"
+                                        onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.CANCLED)}
                                       >
-                                        <ApproveIcon fontSize="small" />
+                                        <DeclineIcon fontSize="small" />
                                       </IconButton>
-                                    </Tooltip>
+                                    </Tooltip> :
                                     <Tooltip title="Decline">
                                       <IconButton
                                         size="small"
                                         color="error"
-                                        onClick={() => openActionDialog(emp.id, req.id, "decline")}
+                                        onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.DECLINED)}
                                       >
                                         <DeclineIcon fontSize="small" />
                                       </IconButton>
                                     </Tooltip>
-                                  </Stack>
-                                )}
+                                }
+
                               </Stack>
-                            </Paper>
-                          ))}
-                        </Stack>
-                      </TableCell>
-                      <TableCell>
-                        {/* This cell remains for any employee-level actions if needed */}
-                      </TableCell>
-                    </TableRow>
-                  ))
-              ) : (
+                            )}
+                            {req.status === LEAVESTATUS.APPROVE && profile.employee.id === emp?.employee_id && (
+                              <Stack direction="row" spacing={0.5}>
+                                <Tooltip title="Mark completed">
+                                  <span> {/* Wrap the disabled button in a span */}
+                                    <IconButton
+                                      size="small"
+                                      color="success"
+                                      onClick={() => openActionDialog(emp.employee_id, req.leave_id, LEAVESTATUS.COMPLETED)}
+                                    >
+                                      <ApproveIcon fontSize="small" />
+                                    </IconButton>
+                                  </span>
+                                </Tooltip>
+
+
+                              </Stack>
+                            )}
+                          </Stack>
+                          <Divider sx={{ my: 2 }} />
+                          <Stack direction="row" spacing={1} alignItems="center">
+                            <Chip
+                              label={`Entitled: ${req.entitled}`}
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
+                            <Chip
+                              label={`Used: ${req.used}`}
+                              size="small"
+                              color="secondary"
+                              variant="outlined"
+                            />
+                            <Chip
+                              label={`Remaining: ${req.remaining}`}
+                              size="small"
+                              color="success"
+                              variant="outlined"
+                            />
+                          </Stack>
+                        </Paper>
+                      ))}
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    {/* This cell remains for any employee-level actions if needed */}
+                  </TableCell>
+                </TableRow>
+
+              )) :
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
                     <Typography variant="body1" color="textSecondary">
@@ -272,15 +369,15 @@ const LeaveRequest = () => {
                     </Typography>
                   </TableCell>
                 </TableRow>
-              )}
+              }
             </TableBody>
           </Table>
         </TableContainer>
-        
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredEmployees.length}
+          count={leaveRequest?.data?.pageData?.total || 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -302,7 +399,7 @@ const LeaveRequest = () => {
             multiline
             rows={3}
             fullWidth
-            value={note}
+            value={note || ''}
             onChange={(e) => setNote(e.target.value)}
             variant="outlined"
           />
@@ -312,16 +409,12 @@ const LeaveRequest = () => {
           <Button
             color={selectedRequest?.action === "approve" ? "success" : "error"}
             variant="contained"
-            onClick={() => {
-              selectedRequest?.action === "approve"
-                ? handleApprove(selectedRequest.empId, selectedRequest.requestId)
-                : handleDecline(selectedRequest.empId, selectedRequest.requestId);
-            }}
+            onClick={handleStatusChange}
             startIcon={
               selectedRequest?.action === "approve" ? <ApproveIcon /> : <DeclineIcon />
             }
           >
-            {selectedRequest?.action === "approve" ? "Approve" : "Decline"}
+            {selectedRequest?.action}
           </Button>
         </DialogActions>
       </Dialog>

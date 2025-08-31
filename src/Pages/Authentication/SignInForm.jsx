@@ -34,9 +34,7 @@ export default function SignInForm() {
 
   const location = useLocation()
   const navigate = useNavigate();
-
   const { from } = location.state || { from: { pathname: '/dashboard' } };
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -77,7 +75,6 @@ export default function SignInForm() {
     } catch (e) {
       const data = e?.response?.data
       if (data?.data && data.data?.email_isVerified == false) {
-        alert("Here")
         setContextData({ email: formData.email })
         navigate('/verify')
       }

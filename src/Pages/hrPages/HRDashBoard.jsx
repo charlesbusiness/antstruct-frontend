@@ -3,106 +3,177 @@ import {
   Container,
   Typography,
   Grid,
-  Paper,
-  CssBaseline
+  CssBaseline,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Snackbar,
+  Alert,
 } from '@mui/material';
-import EmployeeTable from "./EmployeeTable";
 import QuickLinks from "./QuickLinks";
-import EmployeeDetailModal from "./EmployeeModal";
 import StatsOverview from "./StatsOverview";
 
+import useBusinessProfile from '../../hooks/useBusinessProfile';
+import useSubmitData from '../../hooks/useSubmitData';
+import { ApiRoutes } from '../../utils/ApiRoutes';
+
 const HRDashboard = () => {
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false)
+  const { submitData } = useSubmitData()
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
-  // Sample data
-  const employees = [
-    {
-      id: 1,
-      name: 'John Doe',
-      position: 'Software Engineer',
-      department: 'Engineering',
-      status: 'Active',
-      hireDate: '2020-05-15',
-      email: 'john.doe@company.com',
-      phone: '(555) 123-4567',
-      salary: '$85,000',
-      documents: ['Resume.pdf', 'OfferLetter.pdf'],
-      paystubs: [
-        { date: '2023-06-01', amount: '$3,200', download: 'paystub_0601.pdf' },
-        { date: '2023-05-01', amount: '$3,200', download: 'paystub_0501.pdf' }
-      ],
-      appraisals: [
-        { date: '2023-01-15', rating: '4.5/5', comments: 'Excellent performance' }
-      ],
-      image: 'https://randomuser.me/api/portraits/men/1.jpg'
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      position: 'HR Manager',
-      department: 'Human Resources',
-      status: 'Leave',
-      hireDate: '2019-03-10',
-      email: 'jane.smith@company.com',
-      phone: '(555) 987-6543',
-      salary: '$95,000',
-      documents: ['Resume.pdf', 'Degree.pdf'],
-      paystubs: [
-        { date: '2023-06-01', amount: '$3,650', download: 'paystub_0601.pdf' },
-        { date: '2023-05-01', amount: '$3,650', download: 'paystub_0501.pdf' }
-      ],
-      appraisals: [
-        { date: '2023-01-15', rating: '5/5', comments: 'Outstanding leadership' }
-      ],
-      image: 'https://randomuser.me/api/portraits/women/1.jpg'
-    },
-    // Add more employees as needed
-  ];
+  const { businessInfo } = useBusinessProfile()
 
-  const handleViewMore = (employee) => {
-    setSelectedEmployee(employee);
-    setIsModalOpen(true);
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+  const [formData, setFormData] = useState({
+    leave_category_id: '',
+    request_days: '',
+    start_date: '',
+    end_date: '',
+    reason: ''
+  })
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleApply = async (e) => {
+    e.preventDefault()
+    const response = await submitData({
+      endpoint: ApiRoutes.hrManager.leave.applications.apply,
+      data: formData,
+      reload: false
+    })
+    if (response.success) {
+      showSnackbar("Leave application submitted!", "success");
+      setOpen(false);
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedEmployee(null);
-  };
+  React.useEffect(() => {
+    if (formData.start_date && formData.request_days) {
+      const start = new Date(formData.start_date);
+      const days = parseInt(formData.request_days, 10);
+
+      if (!isNaN(start.getTime()) && !isNaN(days) && days > 0) {
+        // Add request_days - 1 to the start date
+        const end = new Date(start);
+        end.setDate(start.getDate() + days - 1);
+
+        setFormData(prev => ({
+          ...prev,
+          end_date: end.toISOString().split("T")[0] // YYYY-MM-DD
+        }));
+      }
+    }
+  }, [formData.start_date, formData.request_days]);
+
 
   return (
     <>
       <CssBaseline />
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          HR Dashboard
-        </Typography>
+        <Grid container justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+            HR Dashboard
+          </Typography>
+          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+            Apply for Leave
+          </Button>
+        </Grid>
 
-        {/* Stats Overview */}
-        <StatsOverview employees={employees} />
-
+        {/* <StatsOverview /> */}
         <Grid container spacing={3} mt={2}>
-
           <Grid item xs={12} md={12}>
-            {/* Quick Links */}
             <QuickLinks />
           </Grid>
-          {/* <Grid item xs={12} md={12}>
-
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" component="h2" gutterBottom>
-                Employee Records
-              </Typography>
-              <EmployeeTable employees={employees} onViewMore={handleViewMore} />
-            </Paper>
-          </Grid> */}
         </Grid>
       </Container>
 
-      {/* Employee Detail Modal */}
-      {isModalOpen && selectedEmployee ? (
-        <EmployeeDetailModal employee={selectedEmployee} onClose={closeModal} />
-      ) : null}
+      {/* Apply Leave Dialog */}
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth component={'form'} onSubmit={handleApply}>
+        <DialogTitle>Apply for Leave</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Leave Type</InputLabel>
+            <Select
+              value={formData.leave_category_id}
+              onChange={handleInputChange}
+              name='leave_category_id'
+            >
+              {businessInfo?.leavePlans?.map(policy => (
+                <MenuItem key={policy.id} value={policy.id}>{policy.leave_type}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Start Date"
+            type="date"
+            name='start_date'
+            value={formData.start_date}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Leave Days"
+            name='request_days'
+            type='number'
+            value={formData.request_days}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="End Date"
+            type="date"
+            name="end_date"
+            value={formData.end_date}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Reason (Optional)"
+            multiline
+            rows={3}
+            name='reason'
+            value={formData.reason}
+            onChange={handleInputChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button variant="contained" type='submit'>Submit</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for feedback */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert severity={snackbar.severity} variant="filled" onClose={() => setSnackbar({ ...snackbar, open: false })}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
