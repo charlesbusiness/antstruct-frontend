@@ -54,7 +54,7 @@ const UnAssignDepartmentManager = lazy(() =>
   )
 );
 const Requisition = lazy(() =>
-  import("@src/Pages/HrPages/Requisitions/Requisition")
+  import("@src/Pages/hrPages/Requisitions/Requisition")
 );
 const payroll = lazy(() => import("@src/Pages/hrPages/Payroll/Payroll"));
 
