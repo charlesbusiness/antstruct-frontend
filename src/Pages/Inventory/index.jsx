@@ -188,12 +188,13 @@ const InventoryPage = () => {
           spacing={2}
         >
           <Typography variant="h5">Inventory Management</Typography>
-          <Button
-            variant="contained"
-            onClick={() => navigate('/inventory/suppliers')}
-          >
-            View Suppliers
-          </Button>
+          <Box display="flex" gap={2}>
+            <Button
+              variant="contained"
+              onClick={() => navigate('/inventory/suppliers')}
+            >
+              View Suppliers
+            </Button>
 
           <Button
             variant="contained"
@@ -201,6 +202,7 @@ const InventoryPage = () => {
           >
             Stock Movement
           </Button>
+          </Box>
 
         </Stack>
 
@@ -256,6 +258,8 @@ const InventoryPage = () => {
                     <IconButton color="error" onClick={() => handleDeleteClick(item.id)}>
                       <Delete />
                     </IconButton>
+                  </TableCell>
+                  <TableCell>
                     <IconButton color="secondary" onClick={() => navigate(`/inventory/product-stocks?productId=${item.id}`)}>
                       <ManageAccounts />
                     </IconButton>
