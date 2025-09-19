@@ -6,7 +6,7 @@ import {
     Tabs
 } from '@mui/material';
 
-import { TabPanel } from '@src/Components/TabPanel';
+import { TabPanel } from '../../../../components/TabPanel';
 import ActivePerformanceObjective from './ActivePerformanceObjective';
 import DraftPerformanceObjective from './DraftPerformanceObjective';
 import { useQuery } from '@tanstack/react-query';

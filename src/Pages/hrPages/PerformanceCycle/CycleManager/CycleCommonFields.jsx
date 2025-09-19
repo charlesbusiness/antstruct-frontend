@@ -1,6 +1,6 @@
 import { Grid, MenuItem, TextField } from "@mui/material"
 import { LabelBox } from "./LabelBox"
-import { CyclesYearFilter } from "@src/Components/CyclesYearFilter"
+import { CyclesYearFilter } from "../../../../components/CyclesYearFilter"
 import React from "react";
 
 

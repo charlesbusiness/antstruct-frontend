@@ -25,7 +25,7 @@ import {
 } from '@mui/icons-material';
 import { useBusinessProfileContext } from '../../../contexts/profileContext';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../../../assets/logo.jpeg';
+import logo from '../../../assets/logo.png';
 
 const SideMenu = () => {
   const [openSubmenus, setOpenSubmenus] = React.useState({});

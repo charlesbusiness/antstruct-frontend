@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, Tab, Card, CardContent, Box } from '@mui/material';
 
 import 'react-circular-progressbar/dist/styles.css';
-import { TabPanel } from '@src/Components/TabPanel';
+import { TabPanel } from '../../../../components/TabPanel';
 import CycleManager from './CycleManager';
 import CreateObjectiveFlow from './CreateObjectiveFlow';
 import useBusinessProfile from '../../../../hooks/useBusinessProfile';

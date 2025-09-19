@@ -2,41 +2,20 @@ import React, { useState } from 'react';
 import {
   Box,
   Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
   Snackbar,
   Alert,
-  IconButton
 } from '@mui/material';
-import { Add, Delete, Check, Close } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 import { CreateRequisition } from './requisition-form';
 import { RequisitionList } from './requisition-list';
 
-const RequisitionPage = () => {
+const Requisition = () => {
   const [openDialog, setOpenDialog] = useState(false);
-  const [newRequisition, setNewRequisition] = useState({
-    purpose: '',
-    approval_officer: '',
-    requesting_department: '',
-    description: '',
-    budget: '',
-    quantity: 1,
-    department: '',
-    date: new Date().toISOString().split('T')[0]
-  });
-
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -93,4 +72,4 @@ const RequisitionPage = () => {
   );
 };
 
-export default RequisitionPage;
+export default Requisition;

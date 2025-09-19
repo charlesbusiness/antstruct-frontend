@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
   Box, Typography, Paper, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Button, IconButton, Dialog, DialogActions,
-  DialogContent, DialogTitle, TextField
+  DialogContent, DialogTitle, TextField,
+  Stack
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -60,13 +61,15 @@ export default function Supplier() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Button variant="outlined" sx={{ mb: 2 }} onClick={() => navigate('/inventory')}>
-        Back to Inventory
-      </Button>
+      <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mb: 2 }}>
+        <Button variant="outlined" sx={{ mb: 2 }} onClick={() => navigate('/inventory')}>
+          Back to Inventory
+        </Button>
 
       <Button variant="contained" sx={{ mb: 2 }} onClick={() => handleOpen()}>
-        + Add Supplier
+       Add Supplier + 
       </Button>
+      </Stack>
 
       <TableContainer component={Paper}>
         <Table size="small">

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 export const TabPanel = ({ children, value, index }) => {
     return (
